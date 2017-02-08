@@ -1,9 +1,5 @@
-﻿// (C) Copyright 2017 by  
-//
-
-using Autodesk.AutoCAD.ApplicationServices;
+﻿using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using Fences;
@@ -22,13 +18,13 @@ namespace Fences
         {
             get { return Application.DocumentManager.MdiActiveDocument; }
         }
+
         [CommandMethod("CreateFence", CommandFlags.Modal)]
-        public void CreateFence() // This method can have any name
+        public void CreateFence()
         {
             var editor = AcDoc.Editor;
             var selAll = editor.GetSelection();
             var selectionSet = selAll.Value;
-            //       _editor.WriteMessage(_SelectionSet + "");
 
             using (var transaction = AcDoc.TransactionManager.StartTransaction())
             {
@@ -44,26 +40,25 @@ namespace Fences
                             sWid = pl.GetStartWidthAt(j),
                             eWid = pl.GetEndWidthAt(j);
                         editor.WriteMessage(string.Format(vert, id, j, pt.X, pt.Y, bul, sWid, eWid));
-                        Creator(pt.X, pt.Y);
-                        //editor.WriteMessage(string.Format(vert, id, pt.x, pt.y, bul));
+                        DrawCircle(pt.X, pt.Y, AcDoc.Database);
                     }
                 }
+                transaction.Commit();
             }
         }
 
-        public void Creator(double x, double y)
+        public void DrawCircle(double x, double y, Database d)
         {
-            Document acDoc = Application.DocumentManager.MdiActiveDocument;
-            Database acCurDb = acDoc.Database;
-            using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
+            using (var acTrans = d.TransactionManager.StartTransaction())
             {
                 BlockTable acBlkTbl;
-                acBlkTbl = acTrans.GetObject(acCurDb.BlockTableId, OpenMode.ForRead) as BlockTable;
+                acBlkTbl = acTrans.GetObject(d.BlockTableId, OpenMode.ForRead) as BlockTable;
 
                 BlockTableRecord acBlkTblRec;
-                acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                acBlkTblRec =
+                    acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
 
-                using (Circle acCirc = new Circle())
+                using (var acCirc = new Circle())
                 {
                     acCirc.Center = new Point3d(x, y, 0);
                     acCirc.Radius = 4.25;
@@ -73,7 +68,6 @@ namespace Fences
                 }
                 acTrans.Commit();
             }
-
         }
     }
 }

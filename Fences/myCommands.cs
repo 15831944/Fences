@@ -72,11 +72,6 @@ namespace Fences
                     if (gap % 10 != 0) // Надо заменить на что-нибудь 
                         gap = Round(gap);
 
-                    double min;
-                    double lmin;
-                    double lminx;
-                    double lminy;
-
                     if (j == 0 && check[j] == false)
                     {
                         Drawer((double) xcord[j], (double) ycord[j], (double) xcord[j + 1],
@@ -89,17 +84,17 @@ namespace Fences
 
                             if (segNum[j] - 250 > 900)
                             {
-                                var div = ((int)segNum[j] - 250) / 900;
-                                if ((int)segNum[j] / 900 != 0)
+                                var div = ((int) segNum[j] - 250) / 900;
+                                if ((int) segNum[j] / 900 != 0)
                                     div++;
-                                var segments = ((int)segNum[j] - 250) / div;
+                                var segments = ((int) segNum[j] - 250) / div;
                                 Drawer((double) xcord[j], (double) ycord[j], (double) xcord[j + 1],
                                     (double) ycord[j + 1], 100, AcDoc.Database, AcDoc, angle);
-                                double px1 = (double) xcord[j];
+                                var px1 = (double) xcord[j];
 
-                                double py1 = (double) ycord[j];
-                                double px2 = GetPoint(px1, py1, (double)xcord[j + 1], (double)ycord[j+1], 100).Item1;
-                                double py2= GetPoint(px1, py1, (double)xcord[j + 1], (double)ycord[j + 1], 100).Item2;
+                                var py1 = (double) ycord[j];
+                                var px2 = GetPoint(px1, py1, (double) xcord[j + 1], (double) ycord[j + 1], 100).Item1;
+                                var py2 = GetPoint(px1, py1, (double) xcord[j + 1], (double) ycord[j + 1], 100).Item2;
 
                                 for (var k = 0; k < segments - 2; k++)
                                 {
@@ -110,27 +105,18 @@ namespace Fences
                             }
                         }
 
-
                         check[j] = true;
                     }
                     else
                     {
                         if (j == segNum.Length - 2 && segNum[j] < 430 && check[j] == false)
                         {
-                            min = segNum[segNum.Length - 2] - 100;
-                            lmin = length((double) xcord[j], (double) ycord[j], (double) xcord[j + 1],
-                                (double) ycord[j + 1]);
-                            lminx = pointA((double) xcord[j], (double) xcord[j + 1], lmin, min);
-                            lminy = pointA((double) ycord[j], (double) ycord[j + 1], lmin, min);
-                            DrawBar(lminx, lminy, AcDoc.Database, AcDoc, angle);
+                            Drawer((double) xcord[j], (double) ycord[j], (double) xcord[j + 1],
+                                (double) ycord[j + 1], segNum[segNum.Length - 2] - 100, AcDoc.Database, AcDoc, angle);
                             check[j] = true;
                         }
                     }
-
-
-                    // DrawBar(MiddlePoint((double) xcord[j + 1], (double) xcord[j]),
-                    //       MiddlePoint((double) ycord[j + 1], (double) ycord[j]), AcDoc.Database, AcDoc, angle);
-                }
+               }
 
                 transaction.Commit();
             }
@@ -138,18 +124,18 @@ namespace Fences
 
         public static Tuple<double, double> GetPoint(double px1, double py1, double px2, double py2, double dist)
         {
-            double min = dist;
-            double lmin = length(px1, py1, px2, py2);
-            double lx = pointA(px1, px2, lmin, min);
-            double ly = pointA(py1, py2, lmin, min);
+            var min = dist;
+            var lmin = length(px1, py1, px2, py2);
+            var lx = pointA(px1, px2, lmin, min);
+            var ly = pointA(py1, py2, lmin, min);
             return Tuple.Create(lx, ly);
         }
 
         public static void Drawer(double px1, double py1, double px2, double py2, double dist, Database d, Document doc,
             double ang)
         {
-            double ax = GetPoint(px1, py1, px2, py2, dist).Item1;
-            double ay = GetPoint(px1, py1, px2, py2, dist).Item2;
+            var ax = GetPoint(px1, py1, px2, py2, dist).Item1;
+            var ay = GetPoint(px1, py1, px2, py2, dist).Item2;
             DrawBar(ax, ay, d, doc, ang);
         }
 
@@ -158,11 +144,6 @@ namespace Fences
             if (i % 10 < 5)
                 return i - i % 10;
             return i - i % 10 + 10;
-        }
-
-        public double MiddlePoint(double x1, double x2)
-        {
-            return (x1 + x2) / 2;
         }
 
         public static double length(double x1, double y1, double x2, double y2)

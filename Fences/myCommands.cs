@@ -51,14 +51,20 @@ namespace Fences
                 }
 
                 var segNum = new double[Xcord.Count];
+                double angle;
                 for (var j = 0; j < segNum.Length - 1; j++)
                 {
                     segNum[j] =
                         Math.Sqrt(Math.Pow((double) Xcord[j + 1] - (double) Xcord[j], 2) +
                                   Math.Pow((double) Ycord[j + 1] - (double) Ycord[j], 2));
                     editor.WriteMessage(string.Format(segNum[j] + " "));
+
+                    Point2d pt1 = new Point2d((double) Xcord[j], (double)Ycord[j]);
+                    Point2d pt2 = new Point2d((double) Xcord[j + 1], (double) Ycord[j + 1]);
+                    angle = pt1.GetVectorTo(pt2).Angle;
+
                     DrawBar(middlePoint((double) Xcord[j + 1], (double) Xcord[j]),
-                        middlePoint((double) Ycord[j + 1], (double) Ycord[j]), AcDoc.Database, AcDoc);
+                        middlePoint((double) Ycord[j + 1], (double) Ycord[j]), AcDoc.Database, AcDoc, angle);
                 }
 
                 transaction.Commit();
@@ -71,7 +77,7 @@ namespace Fences
         }
 
 
-        public void DrawBar(double x, double y, Database d, Document doc)
+        public void DrawBar(double x, double y, Database d, Document doc, double ang)
         {
             using (var acTrans = d.TransactionManager.StartTransaction())
             {
@@ -97,7 +103,7 @@ namespace Fences
                 var curUCSMatrix = doc.Editor.CurrentUserCoordinateSystem;
                 var curUCS = curUCSMatrix.CoordinateSystem3d;
 
-                bar.TransformBy(Matrix3d.Rotation(0.7854, curUCS.Zaxis, new Point3d(x, y, 0)));
+                bar.TransformBy(Matrix3d.Rotation(ang, curUCS.Zaxis, new Point3d(x, y, 0)));
 
                 acBlkTblRec.AppendEntity(bar);
                 acTrans.AddNewlyCreatedDBObject(bar, true);
@@ -105,5 +111,17 @@ namespace Fences
                 acTrans.Commit();
             }
         }
+
+        /*
+        [CommandMethod("AngleFromXAxis")]
+        public static void AngleFromXAxis()
+        {
+            Point2d pt1 = new Point2d(2, 5);
+            Point2d pt2 = new Point2d(5, 2);
+
+            Application.ShowAlertDialog("Angle from XAxis: " +
+                                        pt1.GetVectorTo(pt2).Angle.ToString());
+        }
+        */
     }
 }

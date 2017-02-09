@@ -79,24 +79,42 @@ namespace Fences
 
                             if (segNum[j] - 250 > 900)
                             {
-                                var div = ((int) segNum[j] - 250) / 900;
+                                int div = ((int) segNum[j] - 250) / 900; //Делим на 900 и округляем вверх
                                 if ((int) segNum[j] / 900 != 0)
-                                    div++;
-                                var segments = ((int) segNum[j] - 250) / div;
-                                Drawer((double) xcord[j], (double) ycord[j], (double) xcord[j + 1],
-                                    (double) ycord[j + 1], 100, AcDoc.Database, AcDoc, angle);
-                                var px1 = (double) xcord[j];
+                                    div++; //div - это количество отрезков
 
-                                var py1 = (double) ycord[j];
-                                var px2 = GetPoint(px1, py1, (double) xcord[j + 1], (double) ycord[j + 1], 100).Item1;
-                                var py2 = GetPoint(px1, py1, (double) xcord[j + 1], (double) ycord[j + 1], 100).Item2;
-
-                                for (var k = 0; k < segments - 2; k++)
+                                int[] dd = new int[div];
+                                for (int k = 0; k < div - 1; k++)
                                 {
-                               //     Drawer(px1, py1, px2, py2, segments + 10, AcDoc.Database, AcDoc, angle);
-                                    DrawBar(GetPoint(px1, py1, px2, py2, segments + 10).Item1, GetPoint(px1, py1, px2, py2, segments + 10).Item2, AcDoc.Database, AcDoc, angle);
-                                    px1 = GetPoint(px1, py1, px2, py2, segments + 10).Item1;
-                                    py1 = GetPoint(px1, py1, px2, py2, segments + 10).Item2;
+                                    dd[k] = ((int) segNum[j] - 250) / div;
+                                }
+                                int m = 0;
+                                for (int t = (((int)segNum[j] - 250) / div) / 10; t == 0; t--)
+                                {
+                                    m++;
+                                    if (m == div - 1)
+                                    {
+                                        m = 0;
+
+                                    }
+                                    dd[m] = dd[m] + 10;
+                                }
+
+                              //  Drawer((double) xcord[j], (double) ycord[j], (double) xcord[j + 1],
+                           //         (double) ycord[j + 1], 100, AcDoc.Database, AcDoc, angle);
+                                double px1 = (double) xcord[j];
+
+                                double py1 = (double) ycord[j];
+                                double px2 = GetPoint(px1, py1, (double) xcord[j + 1], (double) ycord[j + 1], 100).Item1;
+                                double py2 = GetPoint(px1, py1, (double) xcord[j + 1], (double) ycord[j + 1], 100).Item2;
+
+                                for (int z = 0; z < div; z++)
+                                {
+                                    editor.WriteMessage(string.Format(dd[z] + " "));
+                                    Drawer(px1, py1, px2, py2, dd[z], AcDoc.Database, AcDoc, angle);
+                               //     DrawBar(GetPoint(px1, py1, px2, py2, segments + 10).Item1, GetPoint(px1, py1, px2, py2, segments + 10).Item2, AcDoc.Database, AcDoc, angle);
+                                    px1 = GetPoint(px1, py1, px2, py2, dd[z]).Item1;
+                                    py1 = GetPoint(px1, py1, px2, py2, dd[z]).Item2;
                                 }
                             }
                         }

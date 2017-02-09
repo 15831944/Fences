@@ -27,9 +27,7 @@ namespace Fences
             var editor = AcDoc.Editor;
             var selAll = editor.GetSelection();
             var selectionSet = selAll.Value;
-            //double[] Xcord = new double[100];
-            //double[] Ycord = new double[100];
-            //  Dictionary<int, double> Ycord = new Dictionary<int, double>();
+
             var Xcord = new ArrayList();
             var Ycord = new ArrayList();
 
@@ -60,7 +58,7 @@ namespace Fences
                                   Math.Pow((double) Ycord[j + 1] - (double) Ycord[j], 2));
                     editor.WriteMessage(string.Format(segNum[j] + " "));
                     DrawBar(middlePoint((double) Xcord[j + 1], (double) Xcord[j]),
-                        middlePoint((double) Ycord[j + 1], (double) Ycord[j]), AcDoc.Database);
+                        middlePoint((double) Ycord[j + 1], (double) Ycord[j]), AcDoc.Database, AcDoc);
                 }
 
                 transaction.Commit();
@@ -73,7 +71,7 @@ namespace Fences
         }
 
 
-        public void DrawBar(double x, double y, Database d)
+        public void DrawBar(double x, double y, Database d, Document doc)
         {
             using (var acTrans = d.TransactionManager.StartTransaction())
             {
@@ -83,16 +81,6 @@ namespace Fences
                 BlockTableRecord acBlkTblRec;
                 acBlkTblRec =
                     acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-                /*
-                using (var acCirc = new Circle())
-                {
-                    acCirc.Center = new Point3d(x, y, 0);
-                    acCirc.Radius = 4.25;
-
-                    acBlkTblRec.AppendEntity(acCirc);
-                    acTrans.AddNewlyCreatedDBObject(acCirc, true);
-                }
-                */
 
                 var xleft = x + 60;
                 var yleft = y + 90;
@@ -103,6 +91,13 @@ namespace Fences
                 bar.AddVertexAt(0, new Point2d(xleft - 120, yleft - 180), 0, 0, 0);
                 bar.AddVertexAt(0, new Point2d(xleft - 120, yleft), 0, 0, 0);
                 bar.AddVertexAt(0, new Point2d(xleft, yleft), 0, 0, 0);
+
+                bar.Closed = true;
+
+                var curUCSMatrix = doc.Editor.CurrentUserCoordinateSystem;
+                var curUCS = curUCSMatrix.CoordinateSystem3d;
+
+                bar.TransformBy(Matrix3d.Rotation(0.7854, curUCS.Zaxis, new Point3d(x, y, 0)));
 
                 acBlkTblRec.AppendEntity(bar);
                 acTrans.AddNewlyCreatedDBObject(bar, true);

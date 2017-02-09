@@ -67,11 +67,6 @@ namespace Fences
                     var pt2 = new Point2d((double) xcord[j + 1], (double) ycord[j + 1]);
                     angle = pt1.GetVectorTo(pt2).Angle + Math.PI / 2;
 
-                    gap = (int) segNum[j];
-
-                    if (gap % 10 != 0) // Надо заменить на что-нибудь 
-                        gap = Round(gap);
-
                     if (j == 0 && check[j] == false)
                     {
                         Drawer((double) xcord[j], (double) ycord[j], (double) xcord[j + 1],
@@ -98,9 +93,10 @@ namespace Fences
 
                                 for (var k = 0; k < segments - 2; k++)
                                 {
-                                    Drawer(px1, py1, px2, py2, segments + 10, AcDoc.Database, AcDoc, angle);
+                               //     Drawer(px1, py1, px2, py2, segments + 10, AcDoc.Database, AcDoc, angle);
+                                    DrawBar(GetPoint(px1, py1, px2, py2, segments + 10).Item1, GetPoint(px1, py1, px2, py2, segments + 10).Item2, AcDoc.Database, AcDoc, angle);
                                     px1 = GetPoint(px1, py1, px2, py2, segments + 10).Item1;
-                                    px2 = GetPoint(px1, py1, px2, py2, segments + 10).Item2;
+                                    py1 = GetPoint(px1, py1, px2, py2, segments + 10).Item2;
                                 }
                             }
                         }
@@ -124,10 +120,9 @@ namespace Fences
 
         public static Tuple<double, double> GetPoint(double px1, double py1, double px2, double py2, double dist)
         {
-            var min = dist;
             var lmin = length(px1, py1, px2, py2);
-            var lx = pointA(px1, px2, lmin, min);
-            var ly = pointA(py1, py2, lmin, min);
+            var lx = pointA(px1, px2, lmin, dist);
+            var ly = pointA(py1, py2, lmin, dist);
             return Tuple.Create(lx, ly);
         }
 

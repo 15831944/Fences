@@ -123,6 +123,15 @@ namespace Fences
                 acBlkTblRec =
                     acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
 
+                LayerTable lt = (LayerTable)acTrans.GetObject(_database.LayerTableId, OpenMode.ForRead);
+                string sLayerName = "Опорная плита стойки";
+                if (lt.Has(sLayerName) == true)
+                {
+                    // Set the layer Center current
+                    _database.Clayer = lt[sLayerName];
+
+                }
+
 
                 double w = 180;
                 double h = 120;
@@ -136,6 +145,7 @@ namespace Fences
 
                 bar.Closed = true;
 
+               // bar.SetLayerId();
 
                 Matrix3d curUcsMatrix = _document.Editor.CurrentUserCoordinateSystem;
                 CoordinateSystem3d curUcs = curUcsMatrix.CoordinateSystem3d;

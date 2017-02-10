@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
@@ -30,32 +31,35 @@ namespace Fences
 
             List<Point2d> points = new List<Point2d>();
 
-
-            using (Transaction transaction = _document.TransactionManager.StartTransaction())
+            if (selAll.Status == PromptStatus.OK)
             {
-                foreach (ObjectId id in selectionSet.GetObjectIds())
-                {
-                    Polyline pl = (Polyline) transaction.GetObject(id, OpenMode.ForRead);
 
-                    for (int j = 0; j < pl.NumberOfVertices; j++)
+                using (Transaction transaction = _document.TransactionManager.StartTransaction())
+                {
+                    foreach (ObjectId id in selectionSet.GetObjectIds())
                     {
-                        Point2d pt = pl.GetPoint2dAt(j);
-                        points.Add(pt);
-                    }
-                    for (int i = 0; i < points.Count - 1; i++)
-                    {
-                        int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i, points.Count - 1);
-                        int dist = 0;
-                        for (int k = 0; k < segments.Length - 1; k++)
+                        Polyline pl = (Polyline) transaction.GetObject(id, OpenMode.ForRead);
+
+                        for (int j = 0; j < pl.NumberOfVertices; j++)
                         {
-                            dist += segments[k];
-                            Drawer(points[i], points[i + 1], dist);
+                            Point2d pt = pl.GetPoint2dAt(j);
+                            points.Add(pt);
+                        }
+                        for (int i = 0; i < points.Count - 1; i++)
+                        {
+                            int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i, points.Count - 1);
+                            int dist = 0;
+                            for (int k = 0; k < segments.Length - 1; k++)
+                            {
+                                dist += segments[k];
+                                Drawer(points[i], points[i + 1], dist);
+                            }
                         }
                     }
+
+
+                    transaction.Commit();
                 }
-
-
-                transaction.Commit();
             }
         }
 
@@ -114,24 +118,16 @@ namespace Fences
 
         public void DrawBar(Point2d p, double ang)
         {
-            using (Transaction acTrans = _document.TransactionManager.StartTransaction())
+            using (Transaction transaction = _document.TransactionManager.StartTransaction())
             {
                 BlockTable acBlkTbl;
-                acBlkTbl = acTrans.GetObject(_database.BlockTableId, OpenMode.ForRead) as BlockTable;
+                acBlkTbl = transaction.GetObject(_database.BlockTableId, OpenMode.ForRead) as BlockTable;
 
                 BlockTableRecord acBlkTblRec;
                 acBlkTblRec =
-                    acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                    transaction.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
 
-                LayerTable lt = (LayerTable)acTrans.GetObject(_database.LayerTableId, OpenMode.ForRead);
-                string sLayerName = "Опорная плита стойки";
-                if (lt.Has(sLayerName) == true)
-                {
-                    // Set the layer Center current
-                    _database.Clayer = lt[sLayerName];
-
-                }
-
+                Colorist(transaction, "Опорная плита стойки");
 
                 double w = 180;
                 double h = 120;
@@ -144,8 +140,7 @@ namespace Fences
                 bar.AddVertexAt(0, p.Add(new Vector2d(w / 2, h / 2)), 0, 0, 0);
 
                 bar.Closed = true;
-
-               // bar.SetLayerId();
+                   
 
                 Matrix3d curUcsMatrix = _document.Editor.CurrentUserCoordinateSystem;
                 CoordinateSystem3d curUcs = curUcsMatrix.CoordinateSystem3d;
@@ -153,9 +148,51 @@ namespace Fences
                 bar.TransformBy(Matrix3d.Rotation(ang, curUcs.Zaxis, new Point3d(p.X, p.Y, 0)));
 
                 acBlkTblRec.AppendEntity(bar);
-                acTrans.AddNewlyCreatedDBObject(bar, true);
+                transaction.AddNewlyCreatedDBObject(bar, true);
 
-                acTrans.Commit();
+                Colorist(transaction, "Стойки ограждений");
+
+                Polyline rack = new Polyline();
+                rack.AddVertexAt(0, p.Add(new Vector2d(-16, 10.4)), 0, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(-10.4, 16)), 0.414213562373095, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(10.4, 16)), 0, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(16, 10.4)), 0.414213562373095, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(16, -10.4)), 0, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(10.4, -16)), 0.414213562373095, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(-10.4, -16)), 0, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(-16, -10.4)), 0.414213562373095, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(-16, 10.4)), 0, 0, 0);
+
+                rack.Closed = true;
+
+                rack.TransformBy(Matrix3d.Rotation(ang, curUcs.Zaxis, new Point3d(p.X, p.Y, 0)));
+
+                acBlkTblRec.AppendEntity(rack);
+                transaction.AddNewlyCreatedDBObject(rack, true);
+
+                transaction.Commit();
+            }
+        }
+
+        public void Colorist(Transaction acTrans, string sLayerName)
+        {
+            LayerTable lt = (LayerTable)acTrans.GetObject(_database.LayerTableId, OpenMode.ForRead);
+            if (lt.Has(sLayerName) == true)
+            {
+                _database.Clayer = lt[sLayerName];
+            }
+            else
+            {
+                LayerTableRecord ltr = new LayerTableRecord();
+                ltr.Name = sLayerName;
+                ltr.Color = Color.FromColorIndex(ColorMethod.ByAci, 50);
+                ltr.LineWeight = LineWeight.LineWeight018;
+
+                lt.UpgradeOpen();
+                ObjectId ltId = lt.Add(ltr);
+                acTrans.AddNewlyCreatedDBObject(ltr, true);
+
+                _database.Clayer = ltId;
             }
         }
     }

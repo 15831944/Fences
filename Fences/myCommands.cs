@@ -32,8 +32,6 @@ namespace Fences
             List<Point2d> points = new List<Point2d>();
 
             if (selAll.Status == PromptStatus.OK)
-            {
-
                 using (Transaction transaction = _document.TransactionManager.StartTransaction())
                 {
                     foreach (ObjectId id in selectionSet.GetObjectIds())
@@ -60,7 +58,6 @@ namespace Fences
 
                     transaction.Commit();
                 }
-            }
         }
 
         public static int[] Divide(int lenght, int index, int n)
@@ -140,7 +137,7 @@ namespace Fences
                 bar.AddVertexAt(0, p.Add(new Vector2d(w / 2, h / 2)), 0, 0, 0);
 
                 bar.Closed = true;
-                   
+
 
                 Matrix3d curUcsMatrix = _document.Editor.CurrentUserCoordinateSystem;
                 CoordinateSystem3d curUcs = curUcsMatrix.CoordinateSystem3d;
@@ -170,14 +167,22 @@ namespace Fences
                 acBlkTblRec.AppendEntity(rack);
                 transaction.AddNewlyCreatedDBObject(rack, true);
 
+                DBObjectCollection acDbObjColl = rack.GetOffsetCurves(4);
+
+                foreach (Entity acEnt in acDbObjColl)
+                {
+                    acBlkTblRec.AppendEntity(acEnt);
+                    transaction.AddNewlyCreatedDBObject(acEnt, true);
+                }
+
                 transaction.Commit();
             }
         }
 
         public void Colorist(Transaction acTrans, string sLayerName)
         {
-            LayerTable lt = (LayerTable)acTrans.GetObject(_database.LayerTableId, OpenMode.ForRead);
-            if (lt.Has(sLayerName) == true)
+            LayerTable lt = (LayerTable) acTrans.GetObject(_database.LayerTableId, OpenMode.ForRead);
+            if (lt.Has(sLayerName))
             {
                 _database.Clayer = lt[sLayerName];
             }
@@ -185,8 +190,18 @@ namespace Fences
             {
                 LayerTableRecord ltr = new LayerTableRecord();
                 ltr.Name = sLayerName;
-                ltr.Color = Color.FromColorIndex(ColorMethod.ByAci, 50);
-                ltr.LineWeight = LineWeight.LineWeight018;
+
+                if (sLayerName == "Опорная плита стойки")
+                {
+                    ltr.Color = Color.FromColorIndex(ColorMethod.ByAci, 50);
+                    ltr.LineWeight = LineWeight.LineWeight018;
+                }
+
+                if (sLayerName == "Стойки ограждений")
+                {
+                    ltr.Color = Color.FromColorIndex(ColorMethod.ByAci, 70);
+                    ltr.LineWeight = LineWeight.LineWeight040;
+                }
 
                 lt.UpgradeOpen();
                 ObjectId ltId = lt.Add(ltr);

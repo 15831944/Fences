@@ -38,8 +38,10 @@ namespace Fences
                 using (Transaction transaction = _document.TransactionManager.StartTransaction())
                 {
                     foreach (ObjectId id in selectionSet.GetObjectIds())
+                        //TODO Сейчас при выделении нескольких полилиний, получается ерунда
                     {
                         Polyline pl = (Polyline) transaction.GetObject(id, OpenMode.ForRead);
+                            //TODO Добавить случай для линии
 
                         for (int j = 0; j < pl.NumberOfVertices; j++)
                         {
@@ -249,8 +251,7 @@ namespace Fences
 
         public void ToFile(string id, double length, int pilnum) // HACK Временный говнокод, нужно улучшить
         {
-
-            int barnum = (int)(Math.Ceiling(length / 100 - pilnum));
+            int barnum = (int) Math.Ceiling(length / 100 - pilnum);
 
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             string path = @"C:\ToFile\table.xls";
@@ -275,14 +276,14 @@ namespace Fences
 
                 int num = int.Parse(x);
                 if ("id" + id != bits[1])
-                {
                     num++;
-                }
                 using (StreamWriter file = new StreamWriter(path, true))
                 {
                     file.WriteLine(num + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
                 }
             }
         }
+
+        //TODO Запилить класс, делающий расчеты
     }
 }

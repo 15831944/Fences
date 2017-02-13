@@ -104,6 +104,7 @@ namespace Fences
         public void Drawer(Point2d p1, Point2d p2, double dist)
         {
             DrawBar(MoveDist(p1, p2, dist), p1.GetVectorTo(p2).Angle);
+           // Dim(p1, p2);
         }
 
         public int Round(int i)
@@ -124,7 +125,7 @@ namespace Fences
                 acBlkTblRec =
                     transaction.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
 
-                Colorist(transaction, "Опорная плита стойки");
+                ChangeLayer(transaction, "Опорная плита стойки");
 
                 double w = 180;
                 double h = 120;
@@ -147,7 +148,7 @@ namespace Fences
                 acBlkTblRec.AppendEntity(bar);
                 transaction.AddNewlyCreatedDBObject(bar, true);
 
-                Colorist(transaction, "Стойки ограждений");
+                ChangeLayer(transaction, "Стойки ограждений");
 
                 Polyline rack = new Polyline();
                 rack.AddVertexAt(0, p.Add(new Vector2d(-16, 10.4)), 0, 0, 0);
@@ -179,7 +180,7 @@ namespace Fences
             }
         }
 
-        public void Colorist(Transaction acTrans, string sLayerName)
+        public void ChangeLayer(Transaction acTrans, string sLayerName)
         {
             LayerTable lt = (LayerTable) acTrans.GetObject(_database.LayerTableId, OpenMode.ForRead);
             if (lt.Has(sLayerName))
@@ -210,5 +211,34 @@ namespace Fences
                 _database.Clayer = ltId;
             }
         }
+/*
+        public void Dim(Point2d p1, Point2d p2)
+        {
+            using (Transaction acTrans = _database.TransactionManager.StartTransaction())
+            {
+                BlockTable acBlkTbl;
+                acBlkTbl = acTrans.GetObject(_database.BlockTableId, OpenMode.ForRead) as BlockTable;
+
+                BlockTableRecord acBlkTblRec;
+                acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+
+                using (RotatedDimension acRotDim = new RotatedDimension())
+                {
+                    acRotDim.XLine1Point = new Point3d(p1.X, p1.Y, 0);
+                    acRotDim.XLine2Point = new Point3d(p2.X, p2.Y, 0);
+                    acRotDim.Rotation = p1.GetVectorTo(p2).Angle;
+                    acRotDim.Annotative = AnnotativeStates.True;
+
+                 //   acRotDim.DimLinePoint = new Point3d(20,20,0);
+                    acRotDim.DimensionStyle = _database.Dimstyle;
+
+                    acBlkTblRec.AppendEntity(acRotDim);
+                    acTrans.AddNewlyCreatedDBObject(acRotDim, true);
+                }
+
+                acTrans.Commit();
+            }
+        }
+        */
     }
 }

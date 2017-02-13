@@ -48,15 +48,16 @@ namespace Fences
                         }
                         for (int i = 0; i < points.Count - 1; i++)
                         {
-                            ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]));
-                            // Как сюда передать количество стоек
                             int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i, points.Count - 1);
                             int dist = 0;
+                            int barnum = 0;
                             for (int k = 0; k < segments.Length - 1; k++)
                             {
                                 dist += segments[k];
                                 Drawer(points[i], points[i + 1], dist);
+                                barnum++;
                             }
+                            ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), barnum);
                         }
                     }
                     transaction.Commit();
@@ -215,6 +216,7 @@ namespace Fences
             }
         }
 
+        //TODO Заставить адекватно работать 
 /*
         public void Dim(Point2d p1, Point2d p2)
         {
@@ -245,16 +247,19 @@ namespace Fences
         }
         */
 
-        public void ToFile(string id, double length)
+        public void ToFile(string id, double length, int pilnum) // HACK Временный говнокод, нужно улучшить
         {
+
+            int barnum = (int)(Math.Ceiling(length / 100 - pilnum));
+
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            string path = @"C:\ToFile\table.txt";
+            string path = @"C:\ToFile\table.xls";
             if (!File.Exists(path))
             {
                 using (StreamWriter sw = File.CreateText(path))
                 {
-                    sw.WriteLine("File Created");
-                    sw.WriteLine(1 + "\t" + id + "\t" + length);
+                    sw.WriteLine("#\tID\tLength\tNumber of pillars\tNumber of bars");
+                    sw.WriteLine(1 + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
                 }
             }
             else
@@ -269,11 +274,13 @@ namespace Fences
                 ed.WriteMessage(x);
 
                 int num = int.Parse(x);
-                num++;
-
+                if ("id" + id != bits[1])
+                {
+                    num++;
+                }
                 using (StreamWriter file = new StreamWriter(path, true))
                 {
-                    file.WriteLine(num + "\t" + id + "\t" + length);
+                    file.WriteLine(num + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
                 }
             }
         }

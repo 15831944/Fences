@@ -37,7 +37,6 @@ namespace Fences
             if (selAll.Status == PromptStatus.OK)
                 using (Transaction transaction = _document.TransactionManager.StartTransaction())
                 {
-                    int o = 1;
                     foreach (ObjectId id in selectionSet.GetObjectIds())
                     {
                         Polyline pl = (Polyline) transaction.GetObject(id, OpenMode.ForRead);
@@ -49,6 +48,7 @@ namespace Fences
                         }
                         for (int i = 0; i < points.Count - 1; i++)
                         {
+                            Calc(id.ToString(), points[i].GetDistanceTo(points[i+1]));
                             int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i, points.Count - 1);
                             int dist = 0;
                             for (int k = 0; k < segments.Length - 1; k++)
@@ -58,8 +58,6 @@ namespace Fences
                             }
                         }
 
-                        Calc(id.ToString());
-                        o++;
                     }
 
 
@@ -249,8 +247,9 @@ namespace Fences
         }
         */
 
-        public void Calc(string id)
+        public void Calc(string id, double length)
         {
+
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             string path = @"C:\Calc\table.txt";
             if (!File.Exists(path))
@@ -258,7 +257,7 @@ namespace Fences
                 using (StreamWriter sw = File.CreateText(path))
                 {
                     sw.WriteLine("File Created");
-                    sw.WriteLine(1 + "\t" + id);
+                    sw.WriteLine(1 + "\t" + id + "\t" + length);
                 }
             }
             else
@@ -267,13 +266,17 @@ namespace Fences
 
                 string text = File.ReadLines(path).Last();
                 string[] bits = text.Split('\t');
+   
 
                 x = bits[0];
+                ed.WriteMessage(x);
+
                 int num = int.Parse(x);
+                num++;
 
                 using (StreamWriter file = new StreamWriter(path, true))
                 {
-                    file.WriteLine(num + "\t" + id + "\n");
+                    file.WriteLine(num + "\t" + id + "\t" + length);
                 }
             }
         }

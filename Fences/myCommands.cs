@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
@@ -18,6 +20,7 @@ namespace Fences
     {
         private Database _database;
         private Document _document;
+        // private Editor _editor;
 
         [CommandMethod("CreateFence", CommandFlags.Modal)]
         public void CreateFence()
@@ -34,6 +37,7 @@ namespace Fences
             if (selAll.Status == PromptStatus.OK)
                 using (Transaction transaction = _document.TransactionManager.StartTransaction())
                 {
+                    int o = 1;
                     foreach (ObjectId id in selectionSet.GetObjectIds())
                     {
                         Polyline pl = (Polyline) transaction.GetObject(id, OpenMode.ForRead);
@@ -53,6 +57,9 @@ namespace Fences
                                 Drawer(points[i], points[i + 1], dist);
                             }
                         }
+
+                        Calc(id.ToString());
+                        o++;
                     }
 
 
@@ -104,7 +111,7 @@ namespace Fences
         public void Drawer(Point2d p1, Point2d p2, double dist)
         {
             DrawBar(MoveDist(p1, p2, dist), p1.GetVectorTo(p2).Angle);
-           // Dim(p1, p2);
+            // Dim(p1, p2);
         }
 
         public int Round(int i)
@@ -211,6 +218,7 @@ namespace Fences
                 _database.Clayer = ltId;
             }
         }
+
 /*
         public void Dim(Point2d p1, Point2d p2)
         {
@@ -240,5 +248,34 @@ namespace Fences
             }
         }
         */
+
+        public void Calc(string id)
+        {
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            string path = @"C:\Calc\table.txt";
+            if (!File.Exists(path))
+            {
+                using (StreamWriter sw = File.CreateText(path))
+                {
+                    sw.WriteLine("File Created");
+                    sw.WriteLine(1 + "\t" + id);
+                }
+            }
+            else
+            {
+                string x;
+
+                string text = File.ReadLines(path).Last();
+                string[] bits = text.Split('\t');
+
+                x = bits[0];
+                int num = int.Parse(x);
+
+                using (StreamWriter file = new StreamWriter(path, true))
+                {
+                    file.WriteLine(num + "\t" + id + "\n");
+                }
+            }
+        }
     }
 }

@@ -10,7 +10,6 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using Fences;
-using AcApp = Autodesk.AutoCAD.ApplicationServices.Application;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 [assembly: CommandClass(typeof(MyCommands))]
@@ -21,7 +20,6 @@ namespace Fences
     {
         private Database _database;
         private Document _document;
-
         [CommandMethod("CreateFence", CommandFlags.Modal)]
         public void CreateFence()
         {
@@ -284,9 +282,10 @@ namespace Fences
                 {
                     file.WriteLine(num + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
                 }
-            }
+            } //TODO Добавить проверку на все айдишники, а не только в последней строке
         }
 
         //TODO Запилить класс, делающий расчеты
+        //TODO Перенести всю работу с файлами в другой класс
     }
 }

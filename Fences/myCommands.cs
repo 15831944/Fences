@@ -48,7 +48,8 @@ namespace Fences
                         }
                         for (int i = 0; i < points.Count - 1; i++)
                         {
-                            Calc(id.ToString(), points[i].GetDistanceTo(points[i+1]));
+                            ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]));
+                            // Как сюда передать количество стоек
                             int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i, points.Count - 1);
                             int dist = 0;
                             for (int k = 0; k < segments.Length - 1; k++)
@@ -57,10 +58,7 @@ namespace Fences
                                 Drawer(points[i], points[i + 1], dist);
                             }
                         }
-
                     }
-
-
                     transaction.Commit();
                 }
         }
@@ -247,11 +245,10 @@ namespace Fences
         }
         */
 
-        public void Calc(string id, double length)
+        public void ToFile(string id, double length)
         {
-
             Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            string path = @"C:\Calc\table.txt";
+            string path = @"C:\ToFile\table.txt";
             if (!File.Exists(path))
             {
                 using (StreamWriter sw = File.CreateText(path))
@@ -266,7 +263,7 @@ namespace Fences
 
                 string text = File.ReadLines(path).Last();
                 string[] bits = text.Split('\t');
-   
+
 
                 x = bits[0];
                 ed.WriteMessage(x);

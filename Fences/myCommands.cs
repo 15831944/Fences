@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
@@ -20,7 +21,6 @@ namespace Fences
     {
         private Database _database;
         private Document _document;
-        // private Editor _editor;
 
         [CommandMethod("CreateFence", CommandFlags.Modal)]
         public void CreateFence()
@@ -39,29 +39,35 @@ namespace Fences
                 {
                     foreach (ObjectId id in selectionSet.GetObjectIds())
                         //TODO Сейчас при выделении нескольких полилиний, получается ерунда
-                    {
-                        Polyline pl = (Polyline) transaction.GetObject(id, OpenMode.ForRead);
-                            //TODO Добавить случай для линии
+                        if (id.ObjectClass == RXObject.GetClass(typeof(Polyline)))
+                        {
+                            Polyline pl = (Polyline) transaction.GetObject(id, OpenMode.ForRead);
 
-                        for (int j = 0; j < pl.NumberOfVertices; j++)
-                        {
-                            Point2d pt = pl.GetPoint2dAt(j);
-                            points.Add(pt);
-                        }
-                        for (int i = 0; i < points.Count - 1; i++)
-                        {
-                            int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i, points.Count - 1);
-                            int dist = 0;
-                            int barnum = 0;
-                            for (int k = 0; k < segments.Length - 1; k++)
+
+                            for (int j = 0; j < pl.NumberOfVertices; j++)
                             {
-                                dist += segments[k];
-                                Drawer(points[i], points[i + 1], dist);
-                                barnum++;
+                                Point2d pt = pl.GetPoint2dAt(j);
+                                points.Add(pt);
                             }
-                            ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), barnum);
+                            for (int i = 0; i < points.Count - 1; i++)
+                            {
+                                int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i,
+                                    points.Count - 1);
+                                int dist = 0;
+                                int barnum = 0;
+                                for (int k = 0; k < segments.Length - 1; k++)
+                                {
+                                    dist += segments[k];
+                                    Drawer(points[i], points[i + 1], dist);
+                                    barnum++;
+                                }
+                                ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), barnum);
+                            }
                         }
-                    }
+                        else
+                        {
+                            MessageBox.Show("Используйте только полилинии"); //HACK Временный вариант
+                        }
                     transaction.Commit();
                 }
         }
@@ -110,7 +116,6 @@ namespace Fences
         public void Drawer(Point2d p1, Point2d p2, double dist)
         {
             DrawBar(MoveDist(p1, p2, dist), p1.GetVectorTo(p2).Angle);
-            // Dim(p1, p2);
         }
 
         public int Round(int i)
@@ -265,13 +270,11 @@ namespace Fences
             }
             else
             {
-                string x;
-
                 string text = File.ReadLines(path).Last();
                 string[] bits = text.Split('\t');
 
 
-                x = bits[0];
+                string x = bits[0];
                 ed.WriteMessage(x);
 
                 int num = int.Parse(x);

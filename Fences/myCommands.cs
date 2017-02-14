@@ -64,6 +64,7 @@ namespace Fences
                         {
                             MessageBox.Show("Используйте только полилинии"); //HACK Временный вариант
                         }
+                    Table.Calculator();
                     transaction.Commit();
                 }
         }

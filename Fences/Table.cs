@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Autodesk.AutoCAD.EditorInput;
 
 namespace Fences
@@ -52,7 +51,6 @@ namespace Fences
             {
                 string text = File.ReadAllText(Path);
                 
-               // throw new ArgumentException(Convert.ToString(Lines));
                 int lines = TotalLines(Path);
                 
                 double[] lng = new double[lines];
@@ -65,10 +63,8 @@ namespace Fences
                     string[] get = bits[i].Split('\t');
                     lng[i - 1] = Convert.ToDouble(get[3]);
                     brs[i - 1] = Convert.ToDouble(get[4]);
-                    //ed.WriteMessage(lng[i-1] + " " + brs[i-1] + "\n");
                 }
                 //TODO Создаем новый файл для записи расчетов
-
             }
         }
 

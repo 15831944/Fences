@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Colors;
@@ -59,7 +57,7 @@ namespace Fences
                                     Drawer(points[i], points[i + 1], dist);
                                     barnum++;
                                 }
-                                ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), barnum);
+                                Table.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), barnum);
                             }
                         }
                         else
@@ -220,72 +218,5 @@ namespace Fences
                 _database.Clayer = ltId;
             }
         }
-
-        //TODO Заставить адекватно работать 
-/*
-        public void Dim(Point2d p1, Point2d p2)
-        {
-            using (Transaction acTrans = _database.TransactionManager.StartTransaction())
-            {
-                BlockTable acBlkTbl;
-                acBlkTbl = acTrans.GetObject(_database.BlockTableId, OpenMode.ForRead) as BlockTable;
-
-                BlockTableRecord acBlkTblRec;
-                acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-
-                using (RotatedDimension acRotDim = new RotatedDimension())
-                {
-                    acRotDim.XLine1Point = new Point3d(p1.X, p1.Y, 0);
-                    acRotDim.XLine2Point = new Point3d(p2.X, p2.Y, 0);
-                    acRotDim.Rotation = p1.GetVectorTo(p2).Angle;
-                    acRotDim.Annotative = AnnotativeStates.True;
-
-                 //   acRotDim.DimLinePoint = new Point3d(20,20,0);
-                    acRotDim.DimensionStyle = _database.Dimstyle;
-
-                    acBlkTblRec.AppendEntity(acRotDim);
-                    acTrans.AddNewlyCreatedDBObject(acRotDim, true);
-                }
-
-                acTrans.Commit();
-            }
-        }
-        */
-
-        public void ToFile(string id, double length, int pilnum) // HACK Временный говнокод, нужно улучшить
-        {
-            int barnum = (int) Math.Ceiling(length / 100 - pilnum);
-
-            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            string path = @"C:\ToFile\table.xls";
-            if (!File.Exists(path))
-            {
-                using (StreamWriter sw = File.CreateText(path))
-                {
-                    sw.WriteLine("#\tID\tLength\tNumber of pillars\tNumber of bars");
-                    sw.WriteLine(1 + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
-                }
-            }
-            else
-            {
-                string text = File.ReadLines(path).Last();
-                string[] bits = text.Split('\t');
-
-
-                string x = bits[0];
-                ed.WriteMessage(x);
-
-                int num = int.Parse(x);
-                if ("id" + id != bits[1])
-                    num++;
-                using (StreamWriter file = new StreamWriter(path, true))
-                {
-                    file.WriteLine(num + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
-                }
-            } //TODO Добавить проверку на все айдишники, а не только в последней строке
-        }
-
-        //TODO Запилить класс, делающий расчеты
-        //TODO Перенести всю работу с файлами в другой класс
     }
 }

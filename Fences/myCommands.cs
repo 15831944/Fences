@@ -58,14 +58,14 @@ namespace Fences
                                     Drawer(points[i], points[i + 1], dist);
                                     barnum++;
                                 }
-                                Table.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), barnum);
+                                CreateFile.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), barnum);
                             }
                         }
                         else
                         {
                             MessageBox.Show("Используйте только полилинии"); //HACK Временный вариант
                         }
-                    Table.Calculator();
+                    CreateFile.GetFromFile();
                     transaction.Commit();
                 }
         }
@@ -189,7 +189,7 @@ namespace Fences
             }
         }
 
-        public void ChangeLayer(Transaction acTrans, string sLayerName)
+        public void ChangeLayer(Transaction acTrans, string sLayerName) //Переносим стойки и пластины на нужный слой
         {
             LayerTable lt = (LayerTable) acTrans.GetObject(_database.LayerTableId, OpenMode.ForRead);
             if (lt.Has(sLayerName))
@@ -201,7 +201,7 @@ namespace Fences
                 LayerTableRecord ltr = new LayerTableRecord();
                 ltr.Name = sLayerName;
 
-                if (sLayerName == "Опорная плита стойки")
+                if (sLayerName == "Опорная плита стойки") //HACK Очень не красивый способ решения проблемы. Можно  улучшить.
                 {
                     ltr.Color = Color.FromColorIndex(ColorMethod.ByAci, 50);
                     ltr.LineWeight = LineWeight.LineWeight018;
@@ -219,6 +219,6 @@ namespace Fences
 
                 _database.Clayer = ltId;
             }
-        }
+        } 
     }
 }

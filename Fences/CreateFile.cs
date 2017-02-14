@@ -1,11 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using Autodesk.AutoCAD.EditorInput;
+using Excel = Microsoft.Office.Interop.Excel;
+
+
 
 namespace Fences
 {
-    public class Table
+    public class CreateFile
     {
         public const string Path = @"C:\ToFile\table.xls";
 
@@ -38,7 +42,7 @@ namespace Fences
             } //TODO Добавить проверку на все айдишники, а не только в последней строке
         }
 
-        public static void Calculator() //TODO Добавить поддержку рандомной локации
+        public static void GetFromFile() //TODO Добавить поддержку рандомной локации
         {
             Editor ed = Autodesk.AutoCAD.ApplicationServices.Core.Application.DocumentManager.MdiActiveDocument.Editor;
             ed.WriteMessage("It works\n");
@@ -54,6 +58,7 @@ namespace Fences
                 int lines = TotalLines(Path);
                 
                 double[] lng = new double[lines];
+                double[] pls = new double[lines];
                 double[] brs = new double[lines];
 
                 string[] bits = text.Split('\n');
@@ -62,13 +67,22 @@ namespace Fences
                 {
                     string[] get = bits[i].Split('\t');
                     lng[i - 1] = Convert.ToDouble(get[3]);
-                    brs[i - 1] = Convert.ToDouble(get[4]);
+                    pls[i - 1] = Convert.ToDouble(get[4]);
+                    brs[i - 1] = Convert.ToDouble(get[5]);
                 }
-                //TODO Создаем новый файл для записи расчетов
+
+                Calculator(lng, pls, brs);
             }
         }
 
-         public static int TotalLines(string filePath)
+        private static void Calculator(double[] lng, double[] pls, double[] brs)
+        {
+
+            //Cчитаем из файла
+            //TODO Проблема в количестве секций + 
+        }
+
+        public static int TotalLines(string filePath)
         {
             using (StreamReader r = new StreamReader(filePath))
             {
@@ -77,5 +91,15 @@ namespace Fences
                 return i;
             }
         }
+        //TODO Или переписать под Excel api, или вывести результаты в файл
+        /*
+        public static void ToExcel()
+        {
+            Excel.Application xlApp = new Excel.Application();
+            Excel.Workbook xlWorkBook;
+            Excel.Worksheet xlWorkSheet;
+
+        }
+        */
     }
 }

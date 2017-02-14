@@ -29,6 +29,7 @@ namespace Fences
             SelectionSet selectionSet = selAll.Value;
 
             List<Point2d> points = new List<Point2d>();
+            //editor.WriteMessage("Выберите ось ограждения:"); TODO Как это реализовать нормально?
 
             if (selAll.Status == PromptStatus.OK)
                 using (Transaction transaction = _document.TransactionManager.StartTransaction())

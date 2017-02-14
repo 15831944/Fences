@@ -76,6 +76,5 @@ namespace Fences.Tests
             Assert.AreEqual(100, segments[1]);
 
         }
-
     }
 }

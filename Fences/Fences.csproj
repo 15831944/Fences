@@ -124,7 +124,7 @@
     </Compile>
     <Compile Include="myCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CreateFile.cs" />
+    <Compile Include="FileCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="myCommands.resx">

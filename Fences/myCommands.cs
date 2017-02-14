@@ -28,18 +28,18 @@ namespace Fences
             PromptSelectionResult selAll = editor.GetSelection();
             SelectionSet selectionSet = selAll.Value;
 
-            List<Point2d> points = new List<Point2d>();
-            //editor.WriteMessage("Выберите ось ограждения:"); TODO Как это реализовать нормально?
+            //List<Point2d> points = new List<Point2d>();
+            //editor.WriteMessage("Выберите ось ограждения:"); //TODO Как это реализовать нормально?
 
             if (selAll.Status == PromptStatus.OK)
                 using (Transaction transaction = _document.TransactionManager.StartTransaction())
                 {
                     foreach (ObjectId id in selectionSet.GetObjectIds())
-                        //TODO Сейчас при выделении нескольких полилиний, получается ерунда
+                    {
                         if (id.ObjectClass == RXObject.GetClass(typeof(Polyline)))
                         {
                             Polyline pl = (Polyline) transaction.GetObject(id, OpenMode.ForRead);
-
+                            List<Point2d> points = new List<Point2d>();
 
                             for (int j = 0; j < pl.NumberOfVertices; j++)
                             {
@@ -51,21 +51,20 @@ namespace Fences
                                 int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i,
                                     points.Count - 1);
                                 int dist = 0;
-                                int barnum = 0;
                                 for (int k = 0; k < segments.Length - 1; k++)
                                 {
                                     dist += segments[k];
                                     Drawer(points[i], points[i + 1], dist);
-                                    barnum++;
                                 }
-                                CreateFile.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), barnum);
+                                //FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), barnum);
                             }
                         }
                         else
                         {
                             MessageBox.Show("Используйте только полилинии"); //HACK Временный вариант
                         }
-                    CreateFile.GetFromFile();
+                    }
+                    //FileCreator.GetFromFile();
                     transaction.Commit();
                 }
         }
@@ -134,7 +133,7 @@ namespace Fences
                 acBlkTblRec =
                     transaction.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
 
-                ChangeLayer(transaction, "Опорная плита стойки");
+                ChangeLayer(transaction, CreateLayer("Опорная плита стойки", Color.FromColorIndex(ColorMethod.ByAci, 50), LineWeight.LineWeight018));
 
                 double w = 180;
                 double h = 120;
@@ -157,7 +156,7 @@ namespace Fences
                 acBlkTblRec.AppendEntity(bar);
                 transaction.AddNewlyCreatedDBObject(bar, true);
 
-                ChangeLayer(transaction, "Стойки ограждений");
+                ChangeLayer(transaction, CreateLayer("Опорная плита стойки", Color.FromColorIndex(ColorMethod.ByAci, 70), LineWeight.LineWeight040));
 
                 Polyline rack = new Polyline();
                 rack.AddVertexAt(0, p.Add(new Vector2d(-16, 10.4)), 0, 0, 0);
@@ -189,34 +188,27 @@ namespace Fences
             }
         }
 
-        public void ChangeLayer(Transaction acTrans, string sLayerName) //Переносим стойки и пластины на нужный слой
+        public LayerTableRecord CreateLayer(string name, Color color, LineWeight weight)
+        {
+            LayerTableRecord layer = new LayerTableRecord();
+            layer.Name = name;
+            layer.Color = color;
+            layer.LineWeight = weight;
+            return layer;
+        }
+
+        public void ChangeLayer(Transaction acTrans, LayerTableRecord ltr) //Переносим стойки и пластины на нужный слой
         {
             LayerTable lt = (LayerTable) acTrans.GetObject(_database.LayerTableId, OpenMode.ForRead);
-            if (lt.Has(sLayerName))
+            if (lt.Has(ltr.Name))
             {
-                _database.Clayer = lt[sLayerName];
+                _database.Clayer = lt[ltr.Name];
             }
             else
             {
-                LayerTableRecord ltr = new LayerTableRecord();
-                ltr.Name = sLayerName;
-
-                if (sLayerName == "Опорная плита стойки") //HACK Очень не красивый способ решения проблемы. Можно  улучшить.
-                {
-                    ltr.Color = Color.FromColorIndex(ColorMethod.ByAci, 50);
-                    ltr.LineWeight = LineWeight.LineWeight018;
-                }
-
-                if (sLayerName == "Стойки ограждений")
-                {
-                    ltr.Color = Color.FromColorIndex(ColorMethod.ByAci, 70);
-                    ltr.LineWeight = LineWeight.LineWeight040;
-                }
-
                 lt.UpgradeOpen();
                 ObjectId ltId = lt.Add(ltr);
                 acTrans.AddNewlyCreatedDBObject(ltr, true);
-
                 _database.Clayer = ltId;
             }
         } 

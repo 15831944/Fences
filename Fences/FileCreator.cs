@@ -9,7 +9,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Fences
 {
-    public class CreateFile
+    public class FileCreator
     {
         public const string Path = @"C:\ToFile\table.xls";
 

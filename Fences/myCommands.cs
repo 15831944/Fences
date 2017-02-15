@@ -17,7 +17,7 @@ namespace Fences
 {
     public class MyCommands
     {
-        private int _guessnum;
+        private int _guessnum = 1;
         private Database _database;
         private Document _document;
         private SelectionSet _selectionSet;
@@ -69,6 +69,7 @@ namespace Fences
                     foreach (ObjectId id in _selectionSet.GetObjectIds())
                         if (id.ObjectClass == RXObject.GetClass(typeof(Polyline)))
                         {
+                            GetNumFloor(); //HACK Тоже не лучшее решение - в случае выбора нескольких сразу будет лажа
                             Polyline pl = (Polyline)transaction.GetObject(id, OpenMode.ForRead);
                             List<Point2d> points = new List<Point2d>();
 
@@ -87,10 +88,8 @@ namespace Fences
                                     dist += segments[k];
                                     Drawer(points[i], points[i + 1], dist);
                                 }
-                                FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), segments.Length - 1, _path);
+                                FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), segments.Length - 1, _path, _guessnum);
                             }
-                            _guessnum = 1;
-                            GetNumFloor();
                         }
                         else
                         {

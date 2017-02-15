@@ -11,14 +11,14 @@ namespace Fences
 {
     public class FileCreator
     {
-        public static void ToFile(string id, double length, int pilnum, string path) // HACK Временный вариант, нужно улучшить
+        public static void ToFile(string id, double length, int pilnum, string path, int flrnum) // HACK Временный вариант, нужно улучшить
         {
             int barnum = (int)Math.Ceiling(length / 100 - pilnum);
 
                     using (StreamWriter sw = File.CreateText(path))
                     {
-                        sw.WriteLine("#\tID\tLength\tNumber of pillars\tNumber of bars");
-                        sw.WriteLine(1 + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
+                        sw.WriteLine("#\tID\tLength\tNumber of pillars\tNumber of bars\tNumber of floors");
+                        sw.WriteLine(1 + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum + "\t" + flrnum);
                     }
   
                     string text = File.ReadLines(path).Last();
@@ -31,7 +31,7 @@ namespace Fences
                         num++;
                     using (StreamWriter file = new StreamWriter(path, true))
                     {
-                        file.WriteLine(num + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
+                        file.WriteLine(num + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum + "\t" + flrnum);
                     }              
             }      
             //TODO Добавить проверку на все айдишники, а не только в последней строке

@@ -53,7 +53,6 @@ namespace Fences
 
         public void MySelect()
         {
-            Editor editor = _document.Editor;
             if (_selAll.Status == PromptStatus.OK)
                 using (Transaction transaction = _document.TransactionManager.StartTransaction())
                 {

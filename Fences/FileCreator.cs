@@ -36,35 +36,36 @@ namespace Fences
             }
         }
 
-        public static void GetFromFile(string path) //TODO Добавить поддержку рандомной локации
+        public static void GetFromFile(string path)
         {
-                string text = File.ReadAllText(path);
-                
-                int lines = TotalLines(path);
-                
-                double[] lng = new double[lines];
-                double[] pls = new double[lines];
-                double[] brs = new double[lines];
+            string text = File.ReadAllText(path);
 
-                string[] bits = text.Split('\n');
+            int lines = TotalLines(path);
 
-                for (int i = 1; i < lines; i++)
-                {
-                    string[] get = bits[i].Split('\t');
-                    lng[i - 1] = Convert.ToDouble(get[3]);
-                    pls[i - 1] = Convert.ToDouble(get[4]);
-                    brs[i - 1] = Convert.ToDouble(get[5]);
-                }
-            
+            double[] lng = new double[lines];
+            double[] pls = new double[lines];
+            double[] brs = new double[lines];
+
+            string[] bits = text.Split('\n');
+
+            for (int i = 1; i < lines; i++)
+            {
+                string[] get = bits[i].Split('\t');
+                lng[i - 1] = Convert.ToDouble(get[3]);
+                pls[i - 1] = Convert.ToDouble(get[4]);
+                brs[i - 1] = Convert.ToDouble(get[5]);
+            }
+            Calculator(lng, pls, brs);
         }
-        /*
+
         private static void Calculator(double[] lng, double[] pls, double[] brs)
         {
-
-            //Cчитаем из файла
-            //TODO Проблема в количестве секций + 
+            double totalLng = lng.Sum();
+            double totalPls = pls.Sum();
+            double totalBrs = brs.Sum(); //TODO Сделать метод с таблицей
         }
-        */
+
+        //TODO Придумать как передавать массу металла
 
         public static int TotalLines(string filePath)
         {

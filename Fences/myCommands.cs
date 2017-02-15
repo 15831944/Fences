@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Configuration;
-using System.IO;
 using System.Windows.Forms;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Colors;
@@ -11,12 +8,13 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using Fences;
-using Microsoft.Vbe.Interop;
-using static System.Configuration.ConfigurationSettings;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 using MessageBox = System.Windows.MessageBox;
 
 [assembly: CommandClass(typeof(MyCommands))]
+
+//TODO Переписать все под settings
+//TODO Научиться запускать автоматом
 
 namespace Fences
 {

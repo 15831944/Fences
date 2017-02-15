@@ -196,20 +196,20 @@ namespace Fences
                     CreateLayer("Стойки ограждений", Color.FromColorIndex(ColorMethod.ByAci, 70),
                         LineWeight.LineWeight040));
 
-                const double wr = 16;
-                const double hr = 10.4;
+                const double wr = 32;
+                const double hr = 20.8;
                 const double rad = 0.414213562373095;
 
                 Polyline rack = new Polyline();
-                rack.AddVertexAt(0, p.Add(new Vector2d(-wr, hr)), 0, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(-hr, wr)), rad, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(hr, wr)), 0, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(wr, hr)), rad, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(wr, -hr)), 0, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(hr, -wr)), rad, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(-hr, -wr)), 0, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(-wr, -hr)), rad, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(-wr, hr)), 0, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(-wr / 2, hr / 2)), 0, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(-hr / 2, wr / 2)), rad, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(hr / 2, wr / 2)), 0, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(wr / 2, hr / 2)), rad, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(wr / 2, -hr / 2)), 0, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(hr / 2, -wr / 2)), rad, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(-hr / 2, -wr / 2)), 0, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(-wr / 2, -hr / 2)), rad, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(-wr / 2, hr / 2)), 0, 0, 0);
 
                 rack.Closed = true;
 

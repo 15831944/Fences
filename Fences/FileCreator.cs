@@ -1,12 +1,19 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.EditorInput;
 using Microsoft.Win32;
 
 namespace Fences
 {
     public class FileCreator
     {
+        private static Database _db;
+        private static Editor _ed;
+        private Document _doc;
+
         public static void ToFile(string id, double length, int pilnum, string path, int flrnum)
             // HACK Временный вариант, нужно улучшить
         {
@@ -62,10 +69,26 @@ namespace Fences
         {
             double totalLng = lng.Sum();
             double totalPls = pls.Sum();
-            double totalBrs = brs.Sum(); //TODO Сделать метод с таблицей
+            double totalBrs = brs.Sum();
+        }
+
+        public static void CreateTable() //TODO Сделать метод с таблицей
+        {
+            PromptPointResult pr = _ed.GetPoint("\nУкажите место расположения таблицы :");
+            Table tb = new Table();
+            EditTablestyle();
+            tb.TableStyle = _db.Tablestyle;
+            tb.NumRows = 19;
+            tb.NumColumns = 7;
+            tb.SetRowHeight(3);
+            tb.SetColumnWidth(15);
+            tb.Position = pr.Value;
         }
 
         //TODO Придумать как передавать массу металла
+        public static void EditTablestyle() //TODO Сделать метод со стилем таблицы
+        {
+        }
 
         public static int TotalLines(string filePath)
         {

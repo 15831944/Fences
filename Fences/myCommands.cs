@@ -61,7 +61,7 @@ namespace Fences
                         }
                         else
                         {
-                            MessageBox.Show("Используйте только полилинии"); //HACK Временный вариант
+                            MessageBox.Show("Используйте только полилинии");
                         }
                     }
                     //FileCreator.GetFromFile();
@@ -190,10 +190,12 @@ namespace Fences
 
         public LayerTableRecord CreateLayer(string name, Color color, LineWeight weight)
         {
-            LayerTableRecord layer = new LayerTableRecord();
-            layer.Name = name;
-            layer.Color = color;
-            layer.LineWeight = weight;
+            LayerTableRecord layer = new LayerTableRecord
+            {
+                Name = name,
+                Color = color,
+                LineWeight = weight
+            };
             return layer;
         }
 

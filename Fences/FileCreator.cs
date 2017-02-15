@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using Autodesk.AutoCAD.EditorInput;
-using Excel = Microsoft.Office.Interop.Excel;
 
 
 
@@ -71,16 +69,17 @@ namespace Fences
                     brs[i - 1] = Convert.ToDouble(get[5]);
                 }
 
-                Calculator(lng, pls, brs);
+                //Calculator(lng, pls, brs);
             }
         }
-
+        /*
         private static void Calculator(double[] lng, double[] pls, double[] brs)
         {
 
             //Cчитаем из файла
             //TODO Проблема в количестве секций + 
         }
+        */
 
         public static int TotalLines(string filePath)
         {

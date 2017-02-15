@@ -18,6 +18,7 @@ namespace Fences
     {
         private Database _database;
         private Document _document;
+
         [CommandMethod("CreateFence", CommandFlags.Modal)]
         public void CreateFence()
         {
@@ -35,7 +36,6 @@ namespace Fences
                 using (Transaction transaction = _document.TransactionManager.StartTransaction())
                 {
                     foreach (ObjectId id in selectionSet.GetObjectIds())
-                    {
                         if (id.ObjectClass == RXObject.GetClass(typeof(Polyline)))
                         {
                             Polyline pl = (Polyline) transaction.GetObject(id, OpenMode.ForRead);
@@ -63,7 +63,6 @@ namespace Fences
                         {
                             MessageBox.Show("Используйте только полилинии");
                         }
-                    }
                     //FileCreator.GetFromFile();
                     transaction.Commit();
                 }
@@ -133,10 +132,12 @@ namespace Fences
                 acBlkTblRec =
                     transaction.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
 
-                ChangeLayer(transaction, CreateLayer("Опорная плита стойки", Color.FromColorIndex(ColorMethod.ByAci, 50), LineWeight.LineWeight018));
+                ChangeLayer(transaction,
+                    CreateLayer("Опорная плита стойки", Color.FromColorIndex(ColorMethod.ByAci, 50),
+                        LineWeight.LineWeight018));
 
-                double w = 180;
-                double h = 120;
+                const double w = 180;
+                const double h = 120;
 
                 Polyline bar = new Polyline();
                 bar.AddVertexAt(0, p.Add(new Vector2d(w / 2, h / 2)), 0, 0, 0);
@@ -153,10 +154,15 @@ namespace Fences
 
                 bar.TransformBy(Matrix3d.Rotation(ang, curUcs.Zaxis, new Point3d(p.X, p.Y, 0)));
 
-                acBlkTblRec.AppendEntity(bar);
-                transaction.AddNewlyCreatedDBObject(bar, true);
+                if (acBlkTblRec != null)
+                {
+                    acBlkTblRec.AppendEntity(bar);
+                    transaction.AddNewlyCreatedDBObject(bar, true);
+                }
 
-                ChangeLayer(transaction, CreateLayer("Опорная плита стойки", Color.FromColorIndex(ColorMethod.ByAci, 70), LineWeight.LineWeight040));
+                ChangeLayer(transaction,
+                    CreateLayer("Опорная плита стойки", Color.FromColorIndex(ColorMethod.ByAci, 70),
+                        LineWeight.LineWeight040));
 
                 Polyline rack = new Polyline();
                 rack.AddVertexAt(0, p.Add(new Vector2d(-16, 10.4)), 0, 0, 0);
@@ -173,17 +179,19 @@ namespace Fences
 
                 rack.TransformBy(Matrix3d.Rotation(ang, curUcs.Zaxis, new Point3d(p.X, p.Y, 0)));
 
-                acBlkTblRec.AppendEntity(rack);
-                transaction.AddNewlyCreatedDBObject(rack, true);
-
-                DBObjectCollection acDbObjColl = rack.GetOffsetCurves(4);
-
-                foreach (Entity acEnt in acDbObjColl)
+                if (acBlkTblRec != null)
                 {
-                    acBlkTblRec.AppendEntity(acEnt);
-                    transaction.AddNewlyCreatedDBObject(acEnt, true);
-                }
+                    acBlkTblRec.AppendEntity(rack);
+                    transaction.AddNewlyCreatedDBObject(rack, true);
 
+                    DBObjectCollection acDbObjColl = rack.GetOffsetCurves(4);
+
+                    foreach (Entity acEnt in acDbObjColl)
+                    {
+                        acBlkTblRec.AppendEntity(acEnt);
+                        transaction.AddNewlyCreatedDBObject(acEnt, true);
+                    }
+                }
                 transaction.Commit();
             }
         }
@@ -213,6 +221,6 @@ namespace Fences
                 acTrans.AddNewlyCreatedDBObject(ltr, true);
                 _database.Clayer = ltId;
             }
-        } 
+        }
     }
 }

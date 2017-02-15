@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
+using System.Windows.Forms;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
@@ -9,6 +9,7 @@ using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using Fences;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
+using MessageBox = System.Windows.MessageBox;
 
 [assembly: CommandClass(typeof(MyCommands))]
 
@@ -20,6 +21,29 @@ namespace Fences
         private Document _document;
         private SelectionSet _selectionSet;
         private PromptSelectionResult _selAll;
+        private string _path; //HACK Это довольно неудобное решение, можно сделать лучше
+
+        [CommandMethod("CreateFenceSetting", CommandFlags.Modal)]
+        public void CreateFenceSetting()
+        {
+            DialogBox m = new DialogBox();
+            m.ShowDialog();
+            if (m.DialogResult == DialogResult.OK)
+            {
+                if (DialogBox.ReturnValue)
+                {
+                    _path = FileCreator.CreateFile();
+                }
+                else
+                {
+                    _path = FileCreator.OpenFile();
+                }
+            }
+            else
+            {
+                throw new NullReferenceException();
+            }
+        }
 
         [CommandMethod("CreateFence", CommandFlags.Modal)]
         public void CreateFence()
@@ -61,13 +85,13 @@ namespace Fences
                                     dist += segments[k];
                                     Drawer(points[i], points[i + 1], dist);
                                 }
+                                FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), segments.Length - 1, _path);
                             }
                         }
                         else
                         {
                             MessageBox.Show("Используйте только полилинии");
                         }
-                    //FileCreator.GetFromFile();
                     transaction.Commit();
                 }
         }

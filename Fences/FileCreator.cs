@@ -36,21 +36,6 @@ namespace Fences
             }      
             //TODO Добавить проверку на все айдишники, а не только в последней строке
         
-
-        public static string Dialog()
-        {
-            DialogBox m = new DialogBox();
-            m.ShowDialog();
-            if (m.DialogResult == DialogResult.OK)
-            {
-                if (DialogBox.ReturnValue)
-                {
-                    return CreateFile();
-                }
-                return OpenFile();
-            }
-            throw new NullReferenceException();
-        }
         /*
         public static void GetFromFile() //TODO Добавить поддержку рандомной локации
         {
@@ -114,6 +99,7 @@ namespace Fences
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
             saveFileDialog1.ShowDialog();
+            File.Create(saveFileDialog1.FileName).Dispose();
 
             return saveFileDialog1.FileName;
         }

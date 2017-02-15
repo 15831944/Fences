@@ -1,56 +1,46 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Windows;
-using System.Windows.Forms;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
-using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-
+using Microsoft.Win32;
 
 namespace Fences
 {
     public class FileCreator
     {
-        public static void ToFile(string id, double length, int pilnum, string path, int flrnum) // HACK Временный вариант, нужно улучшить
+        public static void ToFile(string id, double length, int pilnum, string path, int flrnum)
+            // HACK Временный вариант, нужно улучшить
         {
-            int barnum = (int)Math.Ceiling(length / 100 - pilnum);
+            int barnum = (int) Math.Ceiling(length / 100 - pilnum);
 
-                    using (StreamWriter sw = File.CreateText(path))
-                    {
-                        sw.WriteLine("#\tID\tLength\tNumber of pillars\tNumber of bars\tNumber of floors");
-                        sw.WriteLine(1 + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum + "\t" + flrnum);
-                    }
-  
-                    string text = File.ReadLines(path).Last();
-                    string[] bits = text.Split('\t');
+            length = length * flrnum;
+            pilnum = pilnum * flrnum;
+            barnum = barnum * flrnum;
 
-                    string x = bits[0];
-
-                    int num = int.Parse(x);
-                    if ("id" + id != bits[1])
-                        num++;
-                    using (StreamWriter file = new StreamWriter(path, true))
-                    {
-                        file.WriteLine(num + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum + "\t" + flrnum);
-                    }              
-            }      
-            //TODO Добавить проверку на все айдишники, а не только в последней строке
-        
-        /*
-        public static void GetFromFile() //TODO Добавить поддержку рандомной локации
-        {
-            Editor ed = Autodesk.AutoCAD.ApplicationServices.Core.Application.DocumentManager.MdiActiveDocument.Editor;
-            ed.WriteMessage("It works\n");
-
-            if (!File.Exists(Path))
+            using (StreamWriter sw = File.CreateText(path))
             {
-                throw new ArgumentException("Файла не существует");
+                sw.WriteLine("#\tID\tLength\tNumber of pillars\tNumber of bars");
+                sw.WriteLine(1 + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
             }
-            else
+
+            string text = File.ReadLines(path).Last();
+            string[] bits = text.Split('\t');
+
+            string x = bits[0];
+
+            int num = int.Parse(x);
+            if ("id" + id != bits[1])
+                num++;
+            using (StreamWriter file = new StreamWriter(path, true))
             {
-                string text = File.ReadAllText(Path);
+                file.WriteLine(num + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
+            }
+        }
+
+        public static void GetFromFile(string path) //TODO Добавить поддержку рандомной локации
+        {
+                string text = File.ReadAllText(path);
                 
-                int lines = TotalLines(Path);
+                int lines = TotalLines(path);
                 
                 double[] lng = new double[lines];
                 double[] pls = new double[lines];
@@ -65,10 +55,9 @@ namespace Fences
                     pls[i - 1] = Convert.ToDouble(get[4]);
                     brs[i - 1] = Convert.ToDouble(get[5]);
                 }
-
-                //Calculator(lng, pls, brs);
-            }
+            
         }
+        /*
         private static void Calculator(double[] lng, double[] pls, double[] brs)
         {
 
@@ -82,7 +71,7 @@ namespace Fences
             using (StreamReader r = new StreamReader(filePath))
             {
                 int i = 0;
-                while (r.ReadLine() != null) { i++; }
+                while (r.ReadLine() != null) i++;
                 return i;
             }
         }
@@ -103,6 +92,5 @@ namespace Fences
 
             return saveFileDialog1.FileName;
         }
-
     }
 }

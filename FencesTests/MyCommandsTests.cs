@@ -1,23 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Fences;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Fences;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Fences.Tests
+namespace FencesTests
 {
-    [TestClass()]
+    [TestClass]
     public class MyCommandsTests
     {
-        
-
-        [TestMethod()]
+        [TestMethod]
         public void LengthOfAllSegmentsMustBeDivisibleByTen()
         {
             int[] segments = MyCommands.Divide(5000, 0, 3);
-            Assert.AreEqual(8,segments.Length);
+            Assert.AreEqual(8, segments.Length);
             Assert.AreEqual(100, segments[0]);
             Assert.AreEqual(800, segments[1]);
             Assert.AreEqual(790, segments[2]);
@@ -26,10 +19,9 @@ namespace Fences.Tests
             Assert.AreEqual(790, segments[5]);
             Assert.AreEqual(790, segments[6]);
             Assert.AreEqual(150, segments[7]);
-            
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void Test()
         {
             int[] segments = MyCommands.Divide(5000, 0, 1);
@@ -42,10 +34,9 @@ namespace Fences.Tests
             Assert.AreEqual(800, segments[5]);
             Assert.AreEqual(800, segments[6]);
             Assert.AreEqual(100, segments[7]);
-
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void DivisionWithoutRest()
         {
             int[] segments = MyCommands.Divide(2100, 2, 5);
@@ -54,27 +45,24 @@ namespace Fences.Tests
             Assert.AreEqual(900, segments[1]);
             Assert.AreEqual(900, segments[2]);
             Assert.AreEqual(150, segments[3]);
-
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IfLineIsTooSmallThereMustBeOneBar()
         {
             int[] segments = MyCommands.Divide(200, 0, 3);
             Assert.AreEqual(2, segments.Length);
             Assert.AreEqual(100, segments[0]);
             Assert.AreEqual(100, segments[1]);
-
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IfLastOneIsTooSmallThereMustBeOneBar()
         {
             int[] segments = MyCommands.Divide(230, 2, 3);
             Assert.AreEqual(2, segments.Length);
             Assert.AreEqual(130, segments[0]);
             Assert.AreEqual(100, segments[1]);
-
         }
     }
 }

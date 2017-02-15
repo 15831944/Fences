@@ -17,12 +17,12 @@ namespace Fences
 {
     public class MyCommands
     {
-        private int _guessnum = 1;
         private Database _database;
         private Document _document;
-        private SelectionSet _selectionSet;
-        private PromptSelectionResult _selAll;
+        private int _guessnum = 1;
         private string _path; //HACK Это довольно неудобное решение, можно сделать лучше
+        private PromptSelectionResult _selAll;
+        private SelectionSet _selectionSet;
 
         [CommandMethod("CreateFenceSetting", CommandFlags.Modal)]
         public void CreateFenceSetting()
@@ -30,20 +30,10 @@ namespace Fences
             DialogBox m = new DialogBox();
             m.ShowDialog();
             if (m.DialogResult == DialogResult.OK)
-            {
                 if (DialogBox.ReturnValue)
-                {
                     _path = FileCreator.CreateFile();
-                }
                 else
-                {
                     _path = FileCreator.OpenFile();
-                }
-            }
-            else
-            {
-                throw new NullReferenceException();
-            }
         }
 
         [CommandMethod("CreateFence", CommandFlags.Modal)]
@@ -58,6 +48,7 @@ namespace Fences
             _selectionSet = _selAll.Value;
 
             MySelect();
+            FileCreator.GetFromFile(_path);
         }
 
         public void MySelect()
@@ -70,7 +61,7 @@ namespace Fences
                         if (id.ObjectClass == RXObject.GetClass(typeof(Polyline)))
                         {
                             GetNumFloor(); //HACK Тоже не лучшее решение - в случае выбора нескольких сразу будет лажа
-                            Polyline pl = (Polyline)transaction.GetObject(id, OpenMode.ForRead);
+                            Polyline pl = (Polyline) transaction.GetObject(id, OpenMode.ForRead);
                             List<Point2d> points = new List<Point2d>();
 
                             for (int j = 0; j < pl.NumberOfVertices; j++)
@@ -80,7 +71,7 @@ namespace Fences
                             }
                             for (int i = 0; i < points.Count - 1; i++)
                             {
-                                int[] segments = Divide((int)points[i].GetDistanceTo(points[i + 1]), i,
+                                int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i,
                                     points.Count - 1);
                                 int dist = 0;
                                 for (int k = 0; k < segments.Length - 1; k++)
@@ -88,7 +79,8 @@ namespace Fences
                                     dist += segments[k];
                                     Drawer(points[i], points[i + 1], dist);
                                 }
-                                FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), segments.Length - 1, _path, _guessnum);
+                                FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]),
+                                    segments.Length - 1, _path, _guessnum);
                             }
                         }
                         else
@@ -98,6 +90,7 @@ namespace Fences
                     transaction.Commit();
                 }
         }
+
         public void GetNumFloor()
         {
             _document.Editor.WriteMessage("На скольких этажах встречается({0}):", _guessnum);
@@ -106,9 +99,7 @@ namespace Fences
             PromptIntegerResult pKeyRes = _document.Editor.GetInteger(pKeyOpts);
 
             if (pKeyRes.Value != _guessnum)
-            {
                 _guessnum = pKeyRes.Value;
-            }
             //_document.Editor.WriteMessage("Встречается на {0}", _guessnum);
         }
 
@@ -171,7 +162,8 @@ namespace Fences
             {
                 BlockTable acBlkTbl = transaction.GetObject(_database.BlockTableId, OpenMode.ForRead) as BlockTable;
 
-                BlockTableRecord acBlkTblRec = transaction.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                BlockTableRecord acBlkTblRec =
+                    transaction.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
 
                 ChangeLayer(transaction,
                     CreateLayer("Опорная плита стойки", Color.FromColorIndex(ColorMethod.ByAci, 50),

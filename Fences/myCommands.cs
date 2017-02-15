@@ -17,6 +17,7 @@ namespace Fences
 {
     public class MyCommands
     {
+        private int _guessnum;
         private Database _database;
         private Document _document;
         private SelectionSet _selectionSet;
@@ -61,6 +62,7 @@ namespace Fences
 
         public void MySelect()
         {
+            Editor editor = _document.Editor;
             if (_selAll.Status == PromptStatus.OK)
                 using (Transaction transaction = _document.TransactionManager.StartTransaction())
                 {
@@ -87,6 +89,8 @@ namespace Fences
                                 }
                                 FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), segments.Length - 1, _path);
                             }
+                            _guessnum = 1;
+                            GetNumFloor();
                         }
                         else
                         {
@@ -94,6 +98,19 @@ namespace Fences
                         }
                     transaction.Commit();
                 }
+        }
+        public void GetNumFloor()
+        {
+            _document.Editor.WriteMessage("На скольких этажах встречается({0}):", _guessnum);
+            PromptIntegerOptions pKeyOpts = new PromptIntegerOptions("");
+
+            PromptIntegerResult pKeyRes = _document.Editor.GetInteger(pKeyOpts);
+
+            if (pKeyRes.Value != _guessnum)
+            {
+                _guessnum = pKeyRes.Value;
+            }
+            //_document.Editor.WriteMessage("Встречается на {0}", _guessnum);
         }
 
         public static int[] Divide(int lenght, int index, int n)

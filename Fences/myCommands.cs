@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Configuration;
+using System.IO;
 using System.Windows.Forms;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Colors;
@@ -8,6 +11,8 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using Fences;
+using Microsoft.Vbe.Interop;
+using static System.Configuration.ConfigurationSettings;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 using MessageBox = System.Windows.MessageBox;
 
@@ -27,6 +32,7 @@ namespace Fences
         [CommandMethod("CreateFenceSetting", CommandFlags.Modal)]
         public void CreateFenceSetting()
         {
+
             DialogBox m = new DialogBox();
             m.ShowDialog();
             if (m.DialogResult == DialogResult.OK)
@@ -43,6 +49,7 @@ namespace Fences
             _database = _document.Database;
 
             Editor editor = _document.Editor;
+            
             editor.WriteMessage("Выберите ось ограждения:");
             _selAll = editor.GetSelection();
             _selectionSet = _selAll.Value;
@@ -257,6 +264,11 @@ namespace Fences
                 acTrans.AddNewlyCreatedDBObject(ltr, true);
                 _database.Clayer = ltId;
             }
+        }
+
+        public static string Aliz()
+        {
+            return Properties.Settings.Default.Setting;
         }
     }
 }

@@ -18,6 +18,8 @@ namespace Fences
     {
         private Database _database;
         private Document _document;
+        private SelectionSet _selectionSet;
+        private PromptSelectionResult _selAll;
 
         [CommandMethod("CreateFence", CommandFlags.Modal)]
         public void CreateFence()
@@ -26,19 +28,22 @@ namespace Fences
             _database = _document.Database;
 
             Editor editor = _document.Editor;
-            PromptSelectionResult selAll = editor.GetSelection();
-            SelectionSet selectionSet = selAll.Value;
+            editor.WriteMessage("Выберите ось ограждения:");
+            _selAll = editor.GetSelection();
+            _selectionSet = _selAll.Value;
 
-            //List<Point2d> points = new List<Point2d>();
-            //editor.WriteMessage("Выберите ось ограждения:"); //TODO Как это реализовать нормально?
+            MySelect();
+        }
 
-            if (selAll.Status == PromptStatus.OK)
+        public void MySelect()
+        {
+            if (_selAll.Status == PromptStatus.OK)
                 using (Transaction transaction = _document.TransactionManager.StartTransaction())
                 {
-                    foreach (ObjectId id in selectionSet.GetObjectIds())
+                    foreach (ObjectId id in _selectionSet.GetObjectIds())
                         if (id.ObjectClass == RXObject.GetClass(typeof(Polyline)))
                         {
-                            Polyline pl = (Polyline) transaction.GetObject(id, OpenMode.ForRead);
+                            Polyline pl = (Polyline)transaction.GetObject(id, OpenMode.ForRead);
                             List<Point2d> points = new List<Point2d>();
 
                             for (int j = 0; j < pl.NumberOfVertices; j++)
@@ -48,7 +53,7 @@ namespace Fences
                             }
                             for (int i = 0; i < points.Count - 1; i++)
                             {
-                                int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i,
+                                int[] segments = Divide((int)points[i].GetDistanceTo(points[i + 1]), i,
                                     points.Count - 1);
                                 int dist = 0;
                                 for (int k = 0; k < segments.Length - 1; k++)
@@ -56,7 +61,6 @@ namespace Fences
                                     dist += segments[k];
                                     Drawer(points[i], points[i + 1], dist);
                                 }
-                                //FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]), barnum);
                             }
                         }
                         else
@@ -125,12 +129,9 @@ namespace Fences
         {
             using (Transaction transaction = _document.TransactionManager.StartTransaction())
             {
-                BlockTable acBlkTbl;
-                acBlkTbl = transaction.GetObject(_database.BlockTableId, OpenMode.ForRead) as BlockTable;
+                BlockTable acBlkTbl = transaction.GetObject(_database.BlockTableId, OpenMode.ForRead) as BlockTable;
 
-                BlockTableRecord acBlkTblRec;
-                acBlkTblRec =
-                    transaction.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                BlockTableRecord acBlkTblRec = transaction.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
 
                 ChangeLayer(transaction,
                     CreateLayer("Опорная плита стойки", Color.FromColorIndex(ColorMethod.ByAci, 50),
@@ -161,19 +162,23 @@ namespace Fences
                 }
 
                 ChangeLayer(transaction,
-                    CreateLayer("Опорная плита стойки", Color.FromColorIndex(ColorMethod.ByAci, 70),
+                    CreateLayer("Стойки ограждений", Color.FromColorIndex(ColorMethod.ByAci, 70),
                         LineWeight.LineWeight040));
 
+                const double wr = 16;
+                const double hr = 10.4;
+                const double rad = 0.414213562373095;
+
                 Polyline rack = new Polyline();
-                rack.AddVertexAt(0, p.Add(new Vector2d(-16, 10.4)), 0, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(-10.4, 16)), 0.414213562373095, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(10.4, 16)), 0, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(16, 10.4)), 0.414213562373095, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(16, -10.4)), 0, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(10.4, -16)), 0.414213562373095, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(-10.4, -16)), 0, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(-16, -10.4)), 0.414213562373095, 0, 0);
-                rack.AddVertexAt(0, p.Add(new Vector2d(-16, 10.4)), 0, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(-wr, hr)), 0, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(-hr, wr)), rad, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(hr, wr)), 0, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(wr, hr)), rad, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(wr, -hr)), 0, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(hr, -wr)), rad, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(-hr, -wr)), 0, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(-wr, -hr)), rad, 0, 0);
+                rack.AddVertexAt(0, p.Add(new Vector2d(-wr, hr)), 0, 0, 0);
 
                 rack.Closed = true;
 

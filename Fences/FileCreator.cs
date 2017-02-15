@@ -1,45 +1,57 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Autodesk.AutoCAD.EditorInput;
-
+using System.Windows;
+using System.Windows.Forms;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 
 
 namespace Fences
 {
     public class FileCreator
     {
-        public const string Path = @"C:\ToFile\table.xls";
-
-        public static void ToFile(string id, double length, int pilnum) // HACK Временный вариант, нужно улучшить
+        public static void ToFile(string id, double length, int pilnum, string path) // HACK Временный вариант, нужно улучшить
         {
             int barnum = (int)Math.Ceiling(length / 100 - pilnum);
 
-            if (!File.Exists(Path))
+                    using (StreamWriter sw = File.CreateText(path))
+                    {
+                        sw.WriteLine("#\tID\tLength\tNumber of pillars\tNumber of bars");
+                        sw.WriteLine(1 + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
+                    }
+  
+                    string text = File.ReadLines(path).Last();
+                    string[] bits = text.Split('\t');
+
+                    string x = bits[0];
+
+                    int num = int.Parse(x);
+                    if ("id" + id != bits[1])
+                        num++;
+                    using (StreamWriter file = new StreamWriter(path, true))
+                    {
+                        file.WriteLine(num + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
+                    }              
+            }      
+            //TODO Добавить проверку на все айдишники, а не только в последней строке
+        
+
+        public static string Dialog()
+        {
+            DialogBox m = new DialogBox();
+            m.ShowDialog();
+            if (m.DialogResult == DialogResult.OK)
             {
-                using (StreamWriter sw = File.CreateText(Path))
+                if (DialogBox.ReturnValue)
                 {
-                    sw.WriteLine("#\tID\tLength\tNumber of pillars\tNumber of bars");
-                    sw.WriteLine(1 + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
+                    return CreateFile();
                 }
+                return OpenFile();
             }
-            else
-            {
-                string text = File.ReadLines(Path).Last();
-                string[] bits = text.Split('\t');
-
-                string x = bits[0];
-
-                int num = int.Parse(x);
-                if ("id" + id != bits[1])
-                    num++;
-                using (StreamWriter file = new StreamWriter(Path, true))
-                {
-                    file.WriteLine(num + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
-                }
-            } //TODO Добавить проверку на все айдишники, а не только в последней строке
+            throw new NullReferenceException();
         }
-
+        /*
         public static void GetFromFile() //TODO Добавить поддержку рандомной локации
         {
             Editor ed = Autodesk.AutoCAD.ApplicationServices.Core.Application.DocumentManager.MdiActiveDocument.Editor;
@@ -72,7 +84,6 @@ namespace Fences
                 //Calculator(lng, pls, brs);
             }
         }
-        /*
         private static void Calculator(double[] lng, double[] pls, double[] brs)
         {
 
@@ -90,15 +101,22 @@ namespace Fences
                 return i;
             }
         }
-        //TODO Или переписать под Excel api, или вывести результаты в файл
-        /*
-        public static void ToExcel()
-        {
-            Excel.Application xlApp = new Excel.Application();
-            Excel.Workbook xlWorkBook;
-            Excel.Worksheet xlWorkSheet;
 
+        public static string OpenFile()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog {Filter = "Текстовые файлы (*.txt) | *.txt"};
+            openFileDialog.ShowDialog();
+            return openFileDialog.FileName;
         }
-        */
+
+        public static string CreateFile()
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            saveFileDialog1.ShowDialog();
+
+            return saveFileDialog1.FileName;
+        }
+
     }
 }

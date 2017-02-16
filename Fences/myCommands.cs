@@ -59,7 +59,13 @@ namespace Fences
             _selectionSet = _selAll.Value;
 
             MySelect();
-            //FileCreator.GetFromFile(_path);
+           //FileCreator.GetFromFile(Properties.Settings.Default.path);
+        }
+
+        [CommandMethod("CreateFenceGet", CommandFlags.Modal)]
+        public void CreateFenceGet()
+        {
+            FileCreator.GetFromFile(Properties.Settings.Default.path);
         }
 
         public void MySelect()
@@ -90,7 +96,7 @@ namespace Fences
                                     Drawer(points[i], points[i + 1], dist);
                                 }
                                 FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]),
-                                    segments.Length - 1, Properties.Settings.Default.path, _guessnum);
+segments.Length - 1, Properties.Settings.Default.path, _guessnum);
                                 //Dimension.Dim(points[i], points[i + 1]);
                             }
                         }

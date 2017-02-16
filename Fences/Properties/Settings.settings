@@ -11,14 +11,20 @@
     <Setting Name="bar" Type="System.Double" Scope="Application">
       <Value Profile="(Default)">1.539</Value>
     </Setting>
-    <Setting Name="ending" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">0,0564</Value>
+    <Setting Name="ending" Type="System.Double" Scope="Application">
+      <Value Profile="(Default)">0.0564</Value>
     </Setting>
-    <Setting Name="btm" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">1,6956</Value>
+    <Setting Name="btm" Type="System.Double" Scope="Application">
+      <Value Profile="(Default)">1.6956</Value>
     </Setting>
     <Setting Name="path" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="pilLength" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1.21</Value>
+    </Setting>
+    <Setting Name="barLength" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1.05</Value>
     </Setting>
   </Settings>
 </SettingsFile>

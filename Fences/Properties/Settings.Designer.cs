@@ -52,19 +52,19 @@ namespace Fences.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0,0564")]
-        public string ending {
+        [global::System.Configuration.DefaultSettingValueAttribute("0.0564")]
+        public double ending {
             get {
-                return ((string)(this["ending"]));
+                return ((double)(this["ending"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1,6956")]
-        public string btm {
+        [global::System.Configuration.DefaultSettingValueAttribute("1.6956")]
+        public double btm {
             get {
-                return ((string)(this["btm"]));
+                return ((double)(this["btm"]));
             }
         }
         
@@ -77,6 +77,30 @@ namespace Fences.Properties {
             }
             set {
                 this["path"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.21")]
+        public double pilLength {
+            get {
+                return ((double)(this["pilLength"]));
+            }
+            set {
+                this["pilLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.05")]
+        public double barLength {
+            get {
+                return ((double)(this["barLength"]));
+            }
+            set {
+                this["barLength"] = value;
             }
         }
     }

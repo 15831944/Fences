@@ -9,34 +9,7 @@ namespace Fences
     {
         //TODO Заставить адекватно работать 
         private static Database _database;
-                /*public static void Dim(Point2d p1, Point2d p2)
-                {
-                    using (Transaction acTrans = _database.TransactionManager.StartTransaction())
-                    {
-                        BlockTable acBlkTbl;
-                        acBlkTbl = acTrans.GetObject(_database.BlockTableId, OpenMode.ForRead) as BlockTable;
-
-                        BlockTableRecord acBlkTblRec;
-                        acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
-
-                        using (RotatedDimension acRotDim = new RotatedDimension())
-                        {
-                            acRotDim.XLine1Point = new Point3d(p1.X, p1.Y, 0);
-                            acRotDim.XLine2Point = new Point3d(p2.X, p2.Y, 0);
-                            acRotDim.Rotation = p1.GetVectorTo(p2).Angle;
-                            //acRotDim.Annotative = AnnotativeStates.True;
-
-                         //   acRotDim.DimLinePoint = new Point3d(20,20,0);
-                            //acRotDim.DimensionStyle = _database.Dimstyle;
-
-                            acBlkTblRec.AppendEntity(acRotDim);
-                            acTrans.AddNewlyCreatedDBObject(acRotDim, true);
-                        }
-
-                        acTrans.Commit();
-                    }
-                }*/
-
+ 
         public static void Dim(Point2d p1, Point2d p2)
         {
             // Get the current database
@@ -59,12 +32,14 @@ namespace Fences
                 // Create the rotated dimension
                 using (RotatedDimension acRotDim = new RotatedDimension())
                 {
+                    int n = 200;
                     acRotDim.XLine1Point = new Point3d(p1.X, p1.Y, 0);
                     acRotDim.XLine2Point = new Point3d(p2.X, p2.Y, 0);
                     acRotDim.Rotation = p1.GetVectorTo(p2).Angle;
-                    acRotDim.DimLinePoint = acRotDim.XLine2Point.RotateBy(Math.PI / 10, acRotDim.XLine1Point.GetVectorTo(acRotDim.XLine2Point), acRotDim.XLine1Point);
+                    Vector3d vector = acRotDim.XLine2Point.GetVectorTo(acRotDim.XLine1Point).GetNormal().MultiplyBy(n);
+                    acRotDim.DimLinePoint = acRotDim.XLine2Point.Add(vector.RotateBy(Math.PI / 2, new Vector3d(0, 0, 1)));
 
-                   // acRotDim.DimLinePoint = new Point3d(0, 5, 0);
+
                     acRotDim.DimensionStyle = acCurDb.Dimstyle;
 
                     // Add the new object to Model space and the transaction

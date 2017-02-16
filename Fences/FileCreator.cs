@@ -8,7 +8,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Microsoft.Win32;
 using Application = Autodesk.AutoCAD.ApplicationServices.Application;
 
-namespace Fences
+namespace Fences //TODO Реализовать нестандартный этаж
 {
     public class FileCreator
     {
@@ -54,15 +54,13 @@ namespace Fences
                 }
            }
         
-        public static void GetFromFile(string path) //TODO FIX
+        public static void GetFromFile(string path) //TODO FI
         {
-            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
             string text = File.ReadAllText(path);
 
             int lines = TotalLines(path);
             lines--;
             string[] bits = text.Split('\n');
-            MessageBox.Show(lines.ToString());
             double[] lng = new double[lines];
             double[] pls = new double[lines];
             double[] brs = new double[lines];
@@ -72,13 +70,9 @@ namespace Fences
             for (int i = 1; i <= lines; i++)
             {
                 string[] get = bits[i].Split('\t');
-                
-                lng[i] = Convert.ToDouble(get[2]);
-                pls[i] = Convert.ToDouble(get[3]);
-                brs[i] = Convert.ToDouble(get[4]);
-                MessageBox.Show(string.Join(",", lng));
-                MessageBox.Show(string.Join(",", pls));
-                MessageBox.Show(string.Join(",", brs));
+                lng[i-1] = Convert.ToDouble(get[2]);
+                pls[i-1] = Convert.ToDouble(get[3]);
+                brs[i-1] = Convert.ToDouble(get[4]);
             }
 
             Calculator(lng, pls, brs);
@@ -86,13 +80,13 @@ namespace Fences
 
         private static void Calculator(double[] lng, double[] pls, double[] brs)
         {
-            double total60X30X4 = lng.Sum()/1000*Properties.Settings.Default.top;
-            double total40X30X4 = pls.Sum()*Properties.Settings.Default.pil*Properties.Settings.Default.pilLength + (lng.Sum()/1000 - 0.04*pls.Sum()) * Properties.Settings.Default.pil;
-            double totalT10 = pls.Sum()*Properties.Settings.Default.btm;
-            double totalT4 = ((lng.Length - 1) * 2)* Properties.Settings.Default.ending;
-            double totalt14 = brs.Sum() * Properties.Settings.Default.barLength * Properties.Settings.Default.bar;
+            double total60X30X4 = lng.Sum()*Properties.Settings.Default.top * 0.000001;
+            double total40X30X4 = pls.Sum()*Properties.Settings.Default.pil*Properties.Settings.Default.pilLength * 0.000001 + (lng.Sum() - 0.04*pls.Sum()) * Properties.Settings.Default.pil * 0.000001;
+            double totalT10 = pls.Sum()*Properties.Settings.Default.btm * 0.000001;
+            double totalT4 = ((lng.Length) * 2)* Properties.Settings.Default.ending * 0.000001;
+            double totalt14 = brs.Sum() * Properties.Settings.Default.barLength * Properties.Settings.Default.bar * 0.000001;
 
-            CreateTable(total60X30X4/1000, total40X30X4 / 1000, totalT10 / 1000, totalT4 / 1000, totalt14 / 1000); //TODO Переделать для первых этажей
+            CreateTable(total60X30X4, total40X30X4, totalT10, totalT4, totalt14); //TODO Переделать для первых этажей
         }
 
         public static void CreateTable(double t60, double t40, double t10, double t4, double t14)
@@ -110,8 +104,8 @@ namespace Fences
             tb.SetRowHeight(3);
             tb.SetColumnWidth(14);
             tb.Position = pr.Value;
-
-            string[,] str = new string[14, 7];
+            
+            string[,] str = new string[14, 7];       
             for (int i = 0; i < tb.NumRows; i++)
             {
                 for (int j = 0; j < tb.NumColumns; j++)
@@ -119,8 +113,7 @@ namespace Fences
                     str[i, j] = "-";
                 }
             }
-
-
+            
             str[0, 0] = "Техническая спецификация стали";
             str[1, 0] = "Вид профиля ГОСТ";
             str[1, 1] = "Марка металла ГОСТ";
@@ -128,17 +121,75 @@ namespace Fences
             str[1, 3] = "№ п/п";
             str[1, 4] = "Ограждение";
             str[1, 5] = "Общая масса, т";
+            str[2, 0] = "Трубы стальные прямоугольные по ГОСТ 8645-68";
+            str[2, 1] = "C255 ГОСТ 27772-2015";
+            str[2, 2] = "Гн □ 60х30х4";
             str[2, 4] = t60.ToString();
             str[2, 5] = t60.ToString();
+            str[3, 4] = t60.ToString();
+            str[3, 5] = t60.ToString();
+            str[3, 0] = "Всего профиля";
+            str[4, 0] = "Стальные гнутые замкнутые сварные квадратные профили по ГОСТ 30245 - 2003";
+            str[4, 1] = "C255 ГОСТ 27772-2015";
+            str[4, 2] = "Гн □ 40х4";
             str[4, 4] = t40.ToString();
+            str[4, 5] = t40.ToString();
+            str[5, 4] = t40.ToString();
+            str[5, 5] = t40.ToString();
+            str[5, 0] = "Всего профиля";
+            str[6, 0] = "Прокат листовой Горячекатаный ГОСТ 19903-74*";
+            str[6, 1] = "C245 ГОСТ 27772-2015";
+            str[6, 2] = "t 10";
             str[6, 4] = t10.ToString();
+            str[6, 5] = t10.ToString();
+            str[7, 2] = "t 4";
             str[7, 4] = t4.ToString();
+            str[7, 5] = t4.ToString();
+            str[8, 4] = (t4+t10).ToString();
+            str[8, 5] = (t4 + t10).ToString();
+            str[8, 0] = "Всего профиля";
+            str[9, 0] = "Прокат стальной горячекатаный квадратный ГОСТ 2591-88";
+            str[9, 1] = "C245 ГОСТ 27772-2015";
+            str[9, 2] = "■ 14";
             str[9, 4] = t14.ToString();
+            str[9, 5] = t14.ToString();
+            str[10, 4] = t14.ToString();
+            str[10, 5] = t14.ToString();
+            str[10, 0] = "Всего профиля";
+            str[11, 4] = (t14+t4+t10+t40+t60).ToString();
+            str[11, 5] = (t14 + t4 + t10 + t40 + t60).ToString();
+            str[11, 0] = "Всего масса материала по обьекту";
+            str[12, 0] = "В том числе по маркам стали";
+            str[12, 2] = "С255";
+            str[12, 4] = (t40 + t60).ToString();
+            str[12, 5] = (t40 + t60).ToString();
+            str[13, 2] = "С245";
+            str[13, 4] = (t14 + t4 + t10).ToString();
+            str[13, 5] = (t14 + t4 + t10).ToString();
 
-            //CellRange mcells1 = CellRange.Create(tb, 1, 1, 1, 7);
-            //CellRange mcells2 = CellRange.Create(tb, 4, 1, 4, 3);
-            //tb.MergeCells(mcells1);
-            //tb.MergeCells(mcells2);
+            for (int i = 0; i < 12; i++)
+            {
+                str[i + 2, 3] = (i + 1).ToString();
+            }
+
+            CellRange mcells1 = CellRange.Create(tb, 3, 0, 3, 2); //TODO Наверняка можно сделать проще
+            tb.MergeCells(mcells1);
+            CellRange mcells2 = CellRange.Create(tb, 5, 0, 5, 2);
+            tb.MergeCells(mcells2);
+            CellRange mcells3 = CellRange.Create(tb, 8, 0, 8, 2);
+            tb.MergeCells(mcells3);
+            CellRange mcells4 = CellRange.Create(tb, 10, 0, 10, 2);
+            tb.MergeCells(mcells4);
+            CellRange mcells5 = CellRange.Create(tb, 11, 0, 11, 2);
+            tb.MergeCells(mcells5);
+            CellRange mcells6 = CellRange.Create(tb, 11, 0, 11, 2);
+            tb.MergeCells(mcells6);
+            CellRange mcells7 = CellRange.Create(tb, 12, 0, 13, 1);
+            tb.MergeCells(mcells7);
+            CellRange mcells8 = CellRange.Create(tb, 6, 0, 7, 0);
+            tb.MergeCells(mcells8);
+            CellRange mcells9 = CellRange.Create(tb, 6, 1, 7, 1);
+            tb.MergeCells(mcells9);
 
             for (int i = 0; i < 14; i++)
             {
@@ -171,7 +222,6 @@ namespace Fences
             }
         }
 
-        //TODO Придумать как передавать массу металла
         public static void EditTablestyle() //TODO Сделать метод со стилем таблицы
         {
         }
@@ -198,7 +248,6 @@ namespace Fences
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
             saveFileDialog1.ShowDialog();
-            //File.Create(saveFileDialog1.FileName).Dispose();
 
             return saveFileDialog1.FileName;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Windows.Forms;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Colors;
@@ -14,7 +15,6 @@ using MessageBox = System.Windows.MessageBox;
 [assembly: CommandClass(typeof(MyCommands))]
 
 //TODO Переписать все под settings
-//TODO Научиться запускать автоматом
 
 namespace Fences
 {
@@ -23,26 +23,32 @@ namespace Fences
         private Database _database;
         private Document _document;
         private int _guessnum = 1;
-        private string _path; //HACK Это довольно неудобное решение, можно сделать лучше
         private PromptSelectionResult _selAll;
         private SelectionSet _selectionSet;
 
         [CommandMethod("CreateFenceSetting", CommandFlags.Modal)]
         public void CreateFenceSetting()
         {
+            MessageBox.Show(Properties.Settings.Default.path);
 
             DialogBox m = new DialogBox();
             m.ShowDialog();
             if (m.DialogResult == DialogResult.OK)
+            {
                 if (DialogBox.ReturnValue)
-                    _path = FileCreator.CreateFile();
+                    Properties.Settings.Default.path = FileCreator.CreateFile();
                 else
-                    _path = FileCreator.OpenFile();
+                    Properties.Settings.Default.path = FileCreator.OpenFile();
+            }
+            Properties.Settings.Default.Save();
+            MessageBox.Show(Properties.Settings.Default.path);
         }
 
         [CommandMethod("CreateFence", CommandFlags.Modal)]
         public void CreateFence()
         {
+            if (Properties.Settings.Default.path == null)
+                CreateFenceSetting();
             _document = Application.DocumentManager.MdiActiveDocument;
             _database = _document.Database;
 
@@ -53,7 +59,7 @@ namespace Fences
             _selectionSet = _selAll.Value;
 
             MySelect();
-            FileCreator.GetFromFile(_path);
+            //FileCreator.GetFromFile(_path);
         }
 
         public void MySelect()
@@ -84,7 +90,8 @@ namespace Fences
                                     Drawer(points[i], points[i + 1], dist);
                                 }
                                 FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]),
-                                    segments.Length - 1, _path, _guessnum);
+                                    segments.Length - 1, Properties.Settings.Default.path, _guessnum);
+                                //Dimension.Dim(points[i], points[i + 1]);
                             }
                         }
                         else
@@ -102,9 +109,8 @@ namespace Fences
 
             PromptIntegerResult pKeyRes = _document.Editor.GetInteger(pKeyOpts);
 
-            if (pKeyRes.Value != _guessnum)
+            if (pKeyRes.Value != _guessnum || pKeyRes.Value >= 0)
                 _guessnum = pKeyRes.Value;
-            //_document.Editor.WriteMessage("Встречается на {0}", _guessnum);
         }
 
         public static int[] Divide(int lenght, int index, int n)
@@ -264,9 +270,9 @@ namespace Fences
             }
         }
 
-        public static string Aliz()
+        public static double Aliz()
         {
-            return Properties.Settings.Default.Setting;
+            return Properties.Settings.Default.top;
         }
     }
 }

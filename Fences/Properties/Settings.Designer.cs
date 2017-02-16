@@ -23,15 +23,60 @@ namespace Fences.Properties {
             }
         }
         
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4.93")]
+        public double top {
+            get {
+                return ((double)(this["top"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4.2")]
+        public double pil {
+            get {
+                return ((double)(this["pil"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.539")]
+        public double bar {
+            get {
+                return ((double)(this["bar"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0,0564")]
+        public string ending {
+            get {
+                return ((string)(this["ending"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1,6956")]
+        public string btm {
+            get {
+                return ((string)(this["btm"]));
+            }
+        }
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public string Setting {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string path {
             get {
-                return ((string)(this["Setting"]));
+                return ((string)(this["path"]));
             }
             set {
-                this["Setting"] = value;
+                this["path"] = value;
             }
         }
     }

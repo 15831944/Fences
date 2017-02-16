@@ -2,8 +2,23 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Fences.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="Setting" Type="System.String" Scope="User">
-      <Value Profile="(Default)">1</Value>
+    <Setting Name="top" Type="System.Double" Scope="Application">
+      <Value Profile="(Default)">4.93</Value>
+    </Setting>
+    <Setting Name="pil" Type="System.Double" Scope="Application">
+      <Value Profile="(Default)">4.2</Value>
+    </Setting>
+    <Setting Name="bar" Type="System.Double" Scope="Application">
+      <Value Profile="(Default)">1.539</Value>
+    </Setting>
+    <Setting Name="ending" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">0,0564</Value>
+    </Setting>
+    <Setting Name="btm" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">1,6956</Value>
+    </Setting>
+    <Setting Name="path" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

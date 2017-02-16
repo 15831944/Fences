@@ -68,8 +68,8 @@ namespace FencesTests
         [TestMethod]
         public void AreConfigWorks()
         {
-            string z = MyCommands.Aliz();
-            Assert.AreEqual("1", z);
+            double z = MyCommands.Aliz();
+            Assert.AreEqual(4.93, z);
         }
     }
 }

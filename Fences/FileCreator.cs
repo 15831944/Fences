@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Microsoft.Win32;
@@ -10,10 +9,6 @@ namespace Fences
 {
     public class FileCreator
     {
-        private static Database _db;
-        private static Editor _ed;
-        private Document _doc;
-
         public static void ToFile(string id, double length, int pilnum, string path, int flrnum)
             // HACK Временный вариант, нужно улучшить
         {

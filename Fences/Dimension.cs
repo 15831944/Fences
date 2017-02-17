@@ -8,8 +8,6 @@ namespace Fences
 {
     public class Dimension
     {
-        //TODO Заставить адекватно работать 
-
         public static void Dim(Point2d p1, Point2d p2)
         {
             // Get the current database
@@ -27,7 +25,7 @@ namespace Fences
 
                 using (RotatedDimension acRotDim = new RotatedDimension())
                 {
-                    int n = 200;
+                    const int n = 400;
                     acRotDim.XLine1Point = new Point3d(p1.X, p1.Y, 0);
                     acRotDim.XLine2Point = new Point3d(p2.X, p2.Y, 0);
                     acRotDim.Rotation = p1.GetVectorTo(p2).Angle;

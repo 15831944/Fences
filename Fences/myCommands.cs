@@ -57,7 +57,7 @@ namespace Fences
             FileCreator.GetFromFile(Settings.Default.path);
         }
 
-        public void MySelect()
+        private void MySelect()
         {
             if (_selAll.Status == PromptStatus.OK)
                 using (Transaction transaction = _document.TransactionManager.StartTransaction())
@@ -74,8 +74,12 @@ namespace Fences
                                 Point2d pt = pl.GetPoint2dAt(j);
                                 points.Add(pt);
                             }
+                            List<List<Point2d>> pointsDimRec = new List<List<Point2d>>();
+
                             for (int i = 0; i < points.Count - 1; i++)
                             {
+                                pointsDimRec.Add(new List<Point2d>());
+                                pointsDimRec[i].Add(points[i]);
                                 int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i,
                                     points.Count - 1);
                                 int dist = 0;
@@ -83,9 +87,18 @@ namespace Fences
                                 {
                                     dist += segments[k];
                                     Drawer(points[i], points[i + 1], dist);
+                                    pointsDimRec[i].Add(MoveDist(points[i], points[i+1], dist));
                                 }
+                                pointsDimRec[i].Add(points[i+1]);
                                 FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]),
                                     segments.Length - 1, Settings.Default.path, _guessnum);
+                            }
+                            for (int i = 0; i <= pointsDimRec.Count - 1; i++)
+                            {
+                                for (int j = 0; j <= pointsDimRec[i].Count - 2; j++)
+                                {
+                                    Dimension.Dim(pointsDimRec[i][j], pointsDimRec[i][j+1]);
+                                }
                             }
                         }
                         else

@@ -25,7 +25,7 @@ namespace Fences
 
                 using (RotatedDimension acRotDim = new RotatedDimension())
                 {
-                    const int n = 400;
+                    const int n = 800;
                     acRotDim.XLine1Point = new Point3d(p1.X, p1.Y, 0);
                     acRotDim.XLine2Point = new Point3d(p2.X, p2.Y, 0);
                     acRotDim.Rotation = p1.GetVectorTo(p2).Angle;
@@ -33,6 +33,11 @@ namespace Fences
                     acRotDim.DimLinePoint = acRotDim.XLine2Point.Add(vector.RotateBy(Math.PI / 2, new Vector3d(0, 0, 1)));
 
                     acRotDim.DimensionStyle = acCurDb.Dimstyle;
+                    acRotDim.Annotative = AnnotativeStates.True;
+
+                    ObjectContextCollection occ = acCurDb.ObjectContextManager.GetContextCollection("ACDB_ANNOTATIONSCALES");
+                    acRotDim.AddContext(occ.GetContext("1:100"));
+                    acRotDim.RemoveContext(occ.CurrentContext);
 
                     if (acBlkTblRec != null) acBlkTblRec.AppendEntity(acRotDim);
                     acTrans.AddNewlyCreatedDBObject(acRotDim, true);

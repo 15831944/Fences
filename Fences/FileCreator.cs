@@ -48,7 +48,7 @@ namespace Fences //TODO Реализовать нестандартный эта
             }
         }
 
-        public static void GetFromFile(string path) //TODO FI
+        public static void GetFromFile(string path)
         {
             string text = File.ReadAllText(path);
 
@@ -88,7 +88,7 @@ namespace Fences //TODO Реализовать нестандартный эта
             CreateTable(total60X30X4, total40X30X4, totalT10, totalT4, totalT14); //TODO Переделать для первых этажей
         }
 
-        public static void CreateTable(double t60, double t40, double t10, double t4, double t14)
+        private static void CreateTable(double t60, double t40, double t10, double t4, double t14)
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
@@ -186,12 +186,9 @@ namespace Fences //TODO Реализовать нестандартный эта
             for (int i = 0; i < tb.Rows.Count; i++)
             for (int j = 0; j < tb.Columns.Count; j++)
             {
-                //tb.SetTextHeight(i, j, 1);
                 tb.Cells[i, j].TextHeight = 1;
                 tb.Cells[i, j].TextString = str[i, j];
                 tb.Cells[i, j].Alignment = CellAlignment.MiddleCenter;
-                //tb.SetTextString(i, j, str[i, j]);
-                // tb.SetAlignment(i, j, CellAlignment.MiddleCenter);
             }
             tb.GenerateLayout();
 
@@ -199,6 +196,8 @@ namespace Fences //TODO Реализовать нестандартный эта
                 doc.TransactionManager.StartTransaction();
             using (tr)
             {
+                /* MyCommands.ChangeLayer(tr, MyCommands.CreateLayer("ТАБЛИЦА", Color.FromColorIndex(ColorMethod.ByAci, 20),
+    LineWeight.LineWeight030));*/ //TODO На этом программа крашится
                 BlockTable bt =
                     (BlockTable) tr.GetObject(
                         doc.Database.BlockTableId,

@@ -18,8 +18,9 @@ namespace Fences
 {
     public class MyCommands
     {
-        private Database _database;
+        private static Database _database;
         private Document _document;
+        //private Transaction _transaction;
         private int _guessnum = 1;
         private PromptSelectionResult _selAll;
         private SelectionSet _selectionSet;
@@ -87,19 +88,17 @@ namespace Fences
                                 {
                                     dist += segments[k];
                                     Drawer(points[i], points[i + 1], dist);
-                                    pointsDimRec[i].Add(MoveDist(points[i], points[i+1], dist));
+                                    pointsDimRec[i].Add(MoveDist(points[i], points[i + 1], dist));
                                 }
-                                pointsDimRec[i].Add(points[i+1]);
+                                pointsDimRec[i].Add(points[i + 1]);
                                 FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]),
                                     segments.Length - 1, Settings.Default.path, _guessnum);
                             }
+                            ChangeLayer(transaction, CreateLayer("КМ-РАЗМ", Color.FromColorIndex(ColorMethod.ByAci, 1),
+                                LineWeight.LineWeight020));
                             for (int i = 0; i <= pointsDimRec.Count - 1; i++)
-                            {
-                                for (int j = 0; j <= pointsDimRec[i].Count - 2; j++)
-                                {
-                                    Dimension.Dim(pointsDimRec[i][j], pointsDimRec[i][j+1]);
-                                }
-                            }
+                            for (int j = 0; j <= pointsDimRec[i].Count - 2; j++)
+                                Dimension.Dim(pointsDimRec[i][j], pointsDimRec[i][j + 1]);
                         }
                         else
                         {
@@ -112,7 +111,7 @@ namespace Fences
         private void GetNumFloor()
         {
             _document.Editor.WriteMessage("На скольких этажах встречается({0}):", _guessnum);
-                //HACK Работает не так как задумывалось
+            //HACK Работает не так как задумывалось
             PromptIntegerOptions pKeyOpts = new PromptIntegerOptions("");
 
             PromptIntegerResult pKeyRes = _document.Editor.GetInteger(pKeyOpts);
@@ -255,7 +254,8 @@ namespace Fences
             return layer;
         }
 
-        private void ChangeLayer(Transaction acTrans, LayerTableRecord ltr) //Переносим стойки и пластины на нужный слой
+        private static void ChangeLayer(Transaction acTrans, LayerTableRecord ltr)
+            //Переносим стойки и пластины на нужный слой
         {
             LayerTable lt = (LayerTable) acTrans.GetObject(_database.LayerTableId, OpenMode.ForRead);
             if (lt.Has(ltr.Name))

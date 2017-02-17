@@ -6,7 +6,7 @@ using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace Fences
 {
-    public class Dimension
+    public static class Dimension
     {
         public static void Dim(Point2d p1, Point2d p2)
         {
@@ -35,7 +35,8 @@ namespace Fences
                     acRotDim.DimensionStyle = acCurDb.Dimstyle;
                     acRotDim.Annotative = AnnotativeStates.True;
 
-                    ObjectContextCollection occ = acCurDb.ObjectContextManager.GetContextCollection("ACDB_ANNOTATIONSCALES");
+                    ObjectContextCollection occ =
+                        acCurDb.ObjectContextManager.GetContextCollection("ACDB_ANNOTATIONSCALES");
                     acRotDim.AddContext(occ.GetContext("1:100"));
                     acRotDim.RemoveContext(occ.CurrentContext);
 

@@ -98,7 +98,7 @@ namespace Fences
                                 LineWeight.LineWeight020));
                             for (int i = 0; i <= pointsDimRec.Count - 1; i++)
                             for (int j = 0; j <= pointsDimRec[i].Count - 2; j++)
-                                Dimension.Dim(pointsDimRec[i][j], pointsDimRec[i][j + 1]);
+                                Dimension.Dim(pointsDimRec[i][j], pointsDimRec[i][j + 1]); //TODO Не работает на "большом" листе
                         }
                         else
                         {
@@ -111,7 +111,7 @@ namespace Fences
         private void GetNumFloor()
         {
             _document.Editor.WriteMessage("На скольких этажах встречается({0}):", _guessnum);
-            //HACK Работает не так как задумывалось
+            //TODO Работает не так как задумывалось
             PromptIntegerOptions pKeyOpts = new PromptIntegerOptions("");
 
             PromptIntegerResult pKeyRes = _document.Editor.GetInteger(pKeyOpts);

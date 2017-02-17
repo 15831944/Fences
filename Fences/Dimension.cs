@@ -10,13 +10,16 @@ namespace Fences
     {
         public static void Dim(Point2d p1, Point2d p2)
         {
-            // Get the current database
             Document acDoc = Application.DocumentManager.MdiActiveDocument;
             Database acCurDb = acDoc.Database;
 
-            // Start a transaction
+
+            //SetDimStyle(); TODO Не работает
+
             using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
             {
+                
+
                 BlockTable acBlkTbl = acTrans.GetObject(acCurDb.BlockTableId,
                     OpenMode.ForRead) as BlockTable;
 
@@ -32,7 +35,6 @@ namespace Fences
                     Vector3d vector = acRotDim.XLine2Point.GetVectorTo(acRotDim.XLine1Point).GetNormal().MultiplyBy(n);
                     acRotDim.DimLinePoint = acRotDim.XLine2Point.Add(vector.RotateBy(Math.PI / 2, new Vector3d(0, 0, 1)));
 
-                    acRotDim.DimensionStyle = acCurDb.Dimstyle;
                     acRotDim.Annotative = AnnotativeStates.True;
 
                     ObjectContextCollection occ =
@@ -46,6 +48,39 @@ namespace Fences
 
                 acTrans.Commit();
             }
+        }
+
+        private static void SetDimStyle()
+        {
+            Database db =
+                Application.DocumentManager.MdiActiveDocument.Database;
+            using (Transaction trans =
+                db.TransactionManager.StartTransaction())
+            {
+                DimStyleTable dimTabb = (DimStyleTable)trans.GetObject(db.DimStyleTableId, OpenMode.ForRead);
+                ObjectId dimId;
+
+                if (!dimTabb.Has("Размеры"))
+                {
+                    dimTabb.UpgradeOpen();
+                    DimStyleTableRecord newRecord = new DimStyleTableRecord {Name = "Размеры"};
+                    dimId = dimTabb.Add(newRecord);
+                    trans.AddNewlyCreatedDBObject(newRecord, true);
+                }
+                else
+                {
+                    dimId = dimTabb["Размеры"];
+                }
+                DimStyleTableRecord dimTabbRecaord = (DimStyleTableRecord)trans.GetObject(dimId, OpenMode.ForRead);
+
+                if (dimTabbRecaord.ObjectId != db.Dimstyle)
+                {
+                    db.Dimstyle = dimTabbRecaord.ObjectId;
+                    db.SetDimstyleData(dimTabbRecaord);
+                }
+                trans.Commit();
+            }
+
         }
     }
 }

@@ -5,11 +5,13 @@ using System.Linq;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using Fences.Properties;
 using Microsoft.Win32;
+using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace Fences //TODO Реализовать нестандартный этаж
 {
-    public class FileCreator
+    public static class FileCreator
     {
         public static void ToFile(string id, double length, int pilnum, string path, int flrnum)
         {
@@ -19,36 +21,33 @@ namespace Fences //TODO Реализовать нестандартный эта
             pilnum = pilnum * flrnum;
             barnum = barnum * flrnum;
 
-                Editor ed = Autodesk.AutoCAD.ApplicationServices.Core.Application.DocumentManager.MdiActiveDocument.Editor;
-                if (!File.Exists(path))
+            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+            if (!File.Exists(path))
+            {
+                using (StreamWriter sw = File.CreateText(path))
                 {
-                    using (StreamWriter sw = File.CreateText(path))
-                    {
-                        sw.WriteLine("#\tID\tLength\tNumber of pillars\tNumber of bars");
-                        sw.WriteLine(1 + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
-                    }
+                    sw.WriteLine("#\tID\tLength\tNumber of pillars\tNumber of bars");
+                    sw.WriteLine(1 + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
                 }
-                else
+            }
+            else
+            {
+                string text = File.ReadLines(path).Last();
+                string[] bits = text.Split('\t');
+
+                string x = bits[0];
+                ed.WriteMessage(x);
+
+                int num = int.Parse(x);
+                if ("id" + id != bits[1])
+                    num++;
+                using (StreamWriter file = new StreamWriter(path, true))
                 {
-                    string x;
-
-                    string text = File.ReadLines(path).Last();
-                    string[] bits = text.Split('\t');
-
-
-                    x = bits[0];
-                    ed.WriteMessage(x);
-
-                    int num = int.Parse(x);
-                    if ("id" + id != bits[1])
-                        num++;
-                    using (StreamWriter file = new StreamWriter(path, true))
-                    {
-                        file.WriteLine(num + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
-                    }
+                    file.WriteLine(num + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
                 }
-           }
-        
+            }
+        }
+
         public static void GetFromFile(string path) //TODO FI
         {
             string text = File.ReadAllText(path);
@@ -60,14 +59,12 @@ namespace Fences //TODO Реализовать нестандартный эта
             double[] pls = new double[lines];
             double[] brs = new double[lines];
 
-           //MessageBox.Show(string.Join(",", bits));
-            
             for (int i = 1; i <= lines; i++)
             {
                 string[] get = bits[i].Split('\t');
-                lng[i-1] = Convert.ToDouble(get[2]);
-                pls[i-1] = Convert.ToDouble(get[3]);
-                brs[i-1] = Convert.ToDouble(get[4]);
+                lng[i - 1] = Convert.ToDouble(get[2]);
+                pls[i - 1] = Convert.ToDouble(get[3]);
+                brs[i - 1] = Convert.ToDouble(get[4]);
             }
 
             Calculator(lng, pls, brs);
@@ -75,11 +72,12 @@ namespace Fences //TODO Реализовать нестандартный эта
 
         private static void Calculator(double[] lng, double[] pls, double[] brs)
         {
-            double total60X30X4 = Math.Ceiling(lng.Sum()*Properties.Settings.Default.top * 0.001);
-            double total40X30X4 = pls.Sum()*Properties.Settings.Default.pil*Properties.Settings.Default.pilLength + (lng.Sum() * 0.001 - 0.04*pls.Sum()) * Properties.Settings.Default.pil;
-            double totalT10 = pls.Sum()*Properties.Settings.Default.btm ;
-            double totalT4 = ((lng.Length) * 2)* Properties.Settings.Default.ending;
-            double totalT14 = brs.Sum() * Properties.Settings.Default.barLength * Properties.Settings.Default.bar;
+            double total60X30X4 = Math.Ceiling(lng.Sum() * Settings.Default.top * 0.001);
+            double total40X30X4 = pls.Sum() * Settings.Default.pil * Settings.Default.pilLength +
+                                  (lng.Sum() * 0.001 - 0.04 * pls.Sum()) * Settings.Default.pil;
+            double totalT10 = pls.Sum() * Settings.Default.btm;
+            double totalT4 = lng.Length * 2 * Settings.Default.ending;
+            double totalT14 = brs.Sum() * Settings.Default.barLength * Settings.Default.bar;
 
             total60X30X4 = Math.Ceiling(total60X30X4) * 0.001;
             total40X30X4 = Math.Ceiling(total40X30X4) * 0.001;
@@ -92,7 +90,7 @@ namespace Fences //TODO Реализовать нестандартный эта
 
         public static void CreateTable(double t60, double t40, double t10, double t4, double t14)
         {
-            Document doc = Autodesk.AutoCAD.ApplicationServices.Core.Application.DocumentManager.MdiActiveDocument;
+            Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
 
@@ -104,16 +102,12 @@ namespace Fences //TODO Реализовать нестандартный эта
             tb.SetRowHeight(3);
             tb.SetColumnWidth(14);
             tb.Position = pr.Value;
-            
-            string[,] str = new string[14, 7];       
+
+            string[,] str = new string[14, 7];
             for (int i = 0; i < tb.Rows.Count; i++)
-            {
-                for (int j = 0; j < tb.Columns.Count; j++)
-                {
-                    str[i, j] = "-";
-                }
-            }
-            
+            for (int j = 0; j < tb.Columns.Count; j++)
+                str[i, j] = "-";
+
             str[0, 0] = "Техническая спецификация стали";
             str[1, 0] = "Вид профиля ГОСТ";
             str[1, 1] = "Марка металла ГОСТ";
@@ -145,7 +139,7 @@ namespace Fences //TODO Реализовать нестандартный эта
             str[7, 2] = "t 4";
             str[7, 4] = t4.ToString(CultureInfo.CurrentCulture);
             str[7, 5] = t4.ToString(CultureInfo.CurrentCulture);
-            str[8, 4] = (t4+t10).ToString(CultureInfo.CurrentCulture);
+            str[8, 4] = (t4 + t10).ToString(CultureInfo.CurrentCulture);
             str[8, 5] = (t4 + t10).ToString(CultureInfo.CurrentCulture);
             str[8, 0] = "Всего профиля";
             str[9, 0] = "Прокат стальной горячекатаный квадратный ГОСТ 2591-88";
@@ -156,7 +150,7 @@ namespace Fences //TODO Реализовать нестандартный эта
             str[10, 4] = t14.ToString(CultureInfo.CurrentCulture);
             str[10, 5] = t14.ToString(CultureInfo.CurrentCulture);
             str[10, 0] = "Всего профиля";
-            str[11, 4] = (t14+t4+t10+t40+t60).ToString(CultureInfo.CurrentCulture);
+            str[11, 4] = (t14 + t4 + t10 + t40 + t60).ToString(CultureInfo.CurrentCulture);
             str[11, 5] = (t14 + t4 + t10 + t40 + t60).ToString(CultureInfo.CurrentCulture);
             str[11, 0] = "Всего масса материала по обьекту";
             str[12, 0] = "В том числе по маркам стали";
@@ -168,9 +162,7 @@ namespace Fences //TODO Реализовать нестандартный эта
             str[13, 5] = (t14 + t4 + t10).ToString(CultureInfo.CurrentCulture);
 
             for (int i = 0; i < 12; i++)
-            {
                 str[i + 2, 3] = (i + 1).ToString();
-            }
 
             CellRange mcells1 = CellRange.Create(tb, 3, 0, 3, 2); //TODO Наверняка можно сделать проще
             tb.MergeCells(mcells1);
@@ -192,16 +184,14 @@ namespace Fences //TODO Реализовать нестандартный эта
             tb.MergeCells(mcells9);
 
             for (int i = 0; i < tb.Rows.Count; i++)
+            for (int j = 0; j < tb.Columns.Count; j++)
             {
-                for (int j = 0; j < tb.Columns.Count; j++)
-                {
-                    //tb.SetTextHeight(i, j, 1);
-                    tb.Cells[i, j].TextHeight = 1;
-                    tb.Cells[i, j].TextString = str[i, j];
-                    tb.Cells[i, j].Alignment = CellAlignment.MiddleCenter;
-                    //tb.SetTextString(i, j, str[i, j]);
-                   // tb.SetAlignment(i, j, CellAlignment.MiddleCenter);
-                }
+                //tb.SetTextHeight(i, j, 1);
+                tb.Cells[i, j].TextHeight = 1;
+                tb.Cells[i, j].TextString = str[i, j];
+                tb.Cells[i, j].Alignment = CellAlignment.MiddleCenter;
+                //tb.SetTextString(i, j, str[i, j]);
+                // tb.SetAlignment(i, j, CellAlignment.MiddleCenter);
             }
             tb.GenerateLayout();
 
@@ -225,11 +215,11 @@ namespace Fences //TODO Реализовать нестандартный эта
             }
         }
 
-        public static void EditTablestyle() //TODO Сделать метод со стилем таблицы
+        private static void EditTablestyle() //TODO Сделать метод со стилем таблицы
         {
         }
 
-        public static int TotalLines(string filePath)
+        private static int TotalLines(string filePath)
         {
             using (StreamReader r = new StreamReader(filePath))
             {
@@ -238,7 +228,7 @@ namespace Fences //TODO Реализовать нестандартный эта
                 return i;
             }
         }
-        
+
         public static string OpenFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog {Filter = "Текстовые файлы (*.txt) | *.txt"};
@@ -248,8 +238,7 @@ namespace Fences //TODO Реализовать нестандартный эта
 
         public static string CreateFile()
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog {Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"};
             saveFileDialog1.ShowDialog();
 
             return saveFileDialog1.FileName;

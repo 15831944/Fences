@@ -64,12 +64,5 @@ namespace FencesTests
             Assert.AreEqual(130, segments[0]);
             Assert.AreEqual(100, segments[1]);
         }
-
-        [TestMethod]
-        public void AreConfigWorks()
-        {
-            double z = MyCommands.Aliz();
-            Assert.AreEqual(4.93, z);
-        }
     }
 }

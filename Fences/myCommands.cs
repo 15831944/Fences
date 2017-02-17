@@ -8,6 +8,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using Fences;
+using Fences.Properties;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 using MessageBox = System.Windows.MessageBox;
 
@@ -24,45 +25,36 @@ namespace Fences
         private SelectionSet _selectionSet;
 
         [CommandMethod("CreateFenceSetting", CommandFlags.Modal)]
-        public void CreateFenceSetting()
+        private static void CreateFenceSetting()
         {
-            MessageBox.Show(Properties.Settings.Default.path);
-
             DialogBox m = new DialogBox();
             m.ShowDialog();
             if (m.DialogResult == DialogResult.OK)
-            {
-                if (DialogBox.ReturnValue)
-                    Properties.Settings.Default.path = FileCreator.CreateFile();
-                else
-                    Properties.Settings.Default.path = FileCreator.OpenFile();
-            }
-            Properties.Settings.Default.Save();
-            MessageBox.Show(Properties.Settings.Default.path);
+                Settings.Default.path = DialogBox.ReturnValue ? FileCreator.CreateFile() : FileCreator.OpenFile();
+            Settings.Default.Save();
         }
 
         [CommandMethod("CreateFence", CommandFlags.Modal)]
         public void CreateFence()
         {
-            if (Properties.Settings.Default.path == null)
+            if (Settings.Default.path == null)
                 CreateFenceSetting();
             _document = Application.DocumentManager.MdiActiveDocument;
             _database = _document.Database;
 
             Editor editor = _document.Editor;
-            
+
             editor.WriteMessage("Выберите ось ограждения:");
             _selAll = editor.GetSelection();
             _selectionSet = _selAll.Value;
 
             MySelect();
-           //FileCreator.GetFromFile(Properties.Settings.Default.path);
         }
 
         [CommandMethod("CreateFenceGet", CommandFlags.Modal)]
         public void CreateFenceGet()
         {
-            FileCreator.GetFromFile(Properties.Settings.Default.path);
+            FileCreator.GetFromFile(Settings.Default.path);
         }
 
         public void MySelect()
@@ -91,10 +83,9 @@ namespace Fences
                                 {
                                     dist += segments[k];
                                     Drawer(points[i], points[i + 1], dist);
-                
                                 }
                                 FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]),
-segments.Length - 1, Properties.Settings.Default.path, _guessnum);
+                                    segments.Length - 1, Settings.Default.path, _guessnum);
                             }
                         }
                         else
@@ -105,9 +96,10 @@ segments.Length - 1, Properties.Settings.Default.path, _guessnum);
                 }
         }
 
-        public void GetNumFloor()
+        private void GetNumFloor()
         {
-            _document.Editor.WriteMessage("На скольких этажах встречается({0}):", _guessnum); //HACK Работает не так как задумывалось
+            _document.Editor.WriteMessage("На скольких этажах встречается({0}):", _guessnum);
+                //HACK Работает не так как задумывалось
             PromptIntegerOptions pKeyOpts = new PromptIntegerOptions("");
 
             PromptIntegerResult pKeyRes = _document.Editor.GetInteger(pKeyOpts);
@@ -151,25 +143,18 @@ segments.Length - 1, Properties.Settings.Default.path, _guessnum);
             return result;
         }
 
-        public Point2d MoveDist(Point2d p1, Point2d p2, double dist)
+        private static Point2d MoveDist(Point2d p1, Point2d p2, double dist)
         {
             Vector2d p12 = p1.GetVectorTo(p2);
             return p1.Add(p12.GetNormal().MultiplyBy(dist));
         }
 
-        public void Drawer(Point2d p1, Point2d p2, double dist)
+        private void Drawer(Point2d p1, Point2d p2, double dist)
         {
             DrawBar(MoveDist(p1, p2, dist), p1.GetVectorTo(p2).Angle);
         }
 
-        public int Round(int i)
-        {
-            if (i % 10 < 5)
-                return i - i % 10;
-            return i - i % 10 + 10;
-        }
-
-        public void DrawBar(Point2d p, double ang)
+        private void DrawBar(Point2d p, double ang)
         {
             using (Transaction transaction = _document.TransactionManager.StartTransaction())
             {
@@ -246,7 +231,7 @@ segments.Length - 1, Properties.Settings.Default.path, _guessnum);
             }
         }
 
-        public LayerTableRecord CreateLayer(string name, Color color, LineWeight weight)
+        private static LayerTableRecord CreateLayer(string name, Color color, LineWeight weight)
         {
             LayerTableRecord layer = new LayerTableRecord
             {
@@ -257,7 +242,7 @@ segments.Length - 1, Properties.Settings.Default.path, _guessnum);
             return layer;
         }
 
-        public void ChangeLayer(Transaction acTrans, LayerTableRecord ltr) //Переносим стойки и пластины на нужный слой
+        private void ChangeLayer(Transaction acTrans, LayerTableRecord ltr) //Переносим стойки и пластины на нужный слой
         {
             LayerTable lt = (LayerTable) acTrans.GetObject(_database.LayerTableId, OpenMode.ForRead);
             if (lt.Has(ltr.Name))
@@ -271,11 +256,6 @@ segments.Length - 1, Properties.Settings.Default.path, _guessnum);
                 acTrans.AddNewlyCreatedDBObject(ltr, true);
                 _database.Clayer = ltId;
             }
-        }
-
-        public static double Aliz()
-        {
-            return Properties.Settings.Default.top;
         }
     }
 }

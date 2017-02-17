@@ -19,17 +19,12 @@ namespace Fences
             // Start a transaction
             using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
             {
-                // Open the Block table for read
-                BlockTable acBlkTbl;
-                acBlkTbl = acTrans.GetObject(acCurDb.BlockTableId,
-                                                OpenMode.ForRead) as BlockTable;
+                BlockTable acBlkTbl = acTrans.GetObject(acCurDb.BlockTableId,
+                    OpenMode.ForRead) as BlockTable;
 
-                // Open the Block table record Model space for write
-                BlockTableRecord acBlkTblRec;
-                acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
-                                                OpenMode.ForWrite) as BlockTableRecord;
+                BlockTableRecord acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
+                    OpenMode.ForWrite) as BlockTableRecord;
 
-                // Create the rotated dimension
                 using (RotatedDimension acRotDim = new RotatedDimension())
                 {
                     int n = 200;
@@ -39,18 +34,14 @@ namespace Fences
                     Vector3d vector = acRotDim.XLine2Point.GetVectorTo(acRotDim.XLine1Point).GetNormal().MultiplyBy(n);
                     acRotDim.DimLinePoint = acRotDim.XLine2Point.Add(vector.RotateBy(Math.PI / 2, new Vector3d(0, 0, 1)));
 
-
                     acRotDim.DimensionStyle = acCurDb.Dimstyle;
 
-                    // Add the new object to Model space and the transaction
                     if (acBlkTblRec != null) acBlkTblRec.AppendEntity(acRotDim);
                     acTrans.AddNewlyCreatedDBObject(acRotDim, true);
                 }
 
-                // Commit the changes and dispose of the transaction
                 acTrans.Commit();
             }
         }
-                
     }
 }

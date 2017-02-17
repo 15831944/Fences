@@ -20,7 +20,6 @@ namespace Fences
     {
         private static Database _database;
         private Document _document;
-        //private Transaction _transaction;
         private int _guessnum = 1;
         private PromptSelectionResult _selAll;
         private SelectionSet _selectionSet;

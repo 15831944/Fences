@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Fences.Properties;
@@ -90,6 +91,8 @@ namespace Fences //TODO Реализовать нестандартный эта
 
         private static void CreateTable(double t60, double t40, double t10, double t4, double t14)
         {
+            //EditTablestyle(); TODO Не работает 
+
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
@@ -216,6 +219,101 @@ namespace Fences //TODO Реализовать нестандартный эта
 
         private static void EditTablestyle() //TODO Сделать метод со стилем таблицы
         {
+            Document doc =
+  Application.DocumentManager.MdiActiveDocument;
+            Database db = doc.Database;
+            Editor ed = doc.Editor;
+
+            Transaction tr =
+                doc.TransactionManager.StartTransaction();
+            using (tr)
+            {
+                // First let us create our custom style,
+                //  if it doesn't exist
+
+                const string styleName = "Garish Table Style";
+                ObjectId tsId = ObjectId.Null;
+
+                DBDictionary sd =
+                    (DBDictionary) tr.GetObject(
+                        db.TableStyleDictionaryId,
+                        OpenMode.ForRead
+                    );
+
+                // Use the style if it already exists
+
+                if (sd.Contains(styleName))
+                {
+                    tsId = sd.GetAt(styleName);
+                }
+                else
+                {
+                    // Otherwise we have to create it
+
+                    TableStyle ts = new TableStyle();
+
+                    // Make the header area red
+
+                    ts.SetBackgroundColor(
+                        Color.FromColorIndex(ColorMethod.ByAci, 1),
+                        (int) (RowType.TitleRow |
+                               RowType.HeaderRow)
+                    );
+
+                    // And the data area yellow
+
+                    ts.SetBackgroundColor(
+                        Color.FromColorIndex(ColorMethod.ByAci, 2),
+                        (int) RowType.DataRow
+                    );
+
+                    // With magenta text everywhere (yeuch :-)
+
+                    ts.SetColor(
+                        Color.FromColorIndex(ColorMethod.ByAci, 6),
+                        (int) (RowType.TitleRow |
+                               RowType.HeaderRow |
+                               RowType.DataRow)
+                    );
+
+                    // And now with cyan outer grid-lines
+
+                    ts.SetGridColor(
+                        Color.FromColorIndex(ColorMethod.ByAci, 4),
+                        (int) GridLineType.OuterGridLines,
+                        (int) (RowType.TitleRow |
+                               RowType.HeaderRow |
+                               RowType.DataRow)
+                    );
+
+                    // And bright green inner grid-lines
+
+                    ts.SetGridColor(
+                        Color.FromColorIndex(ColorMethod.ByAci, 3),
+                        (int) GridLineType.InnerGridLines,
+                        (int) (RowType.TitleRow |
+                               RowType.HeaderRow |
+                               RowType.DataRow)
+                    );
+
+                    // And we'll make the grid-lines nice and chunky
+
+                    ts.SetGridLineWeight(
+                        LineWeight.LineWeight211,
+                        (int) GridLineType.AllGridLines,
+                        (int) (RowType.TitleRow |
+                               RowType.HeaderRow |
+                               RowType.DataRow)
+                    );
+
+                    // Add our table style to the dictionary
+                    //  and to the transaction
+
+                    tsId = ts.PostTableStyleToDatabase(db, styleName);
+                    tr.AddNewlyCreatedDBObject(ts, true);
+                    tr.Commit();
+                }
+            }
         }
 
         private static int TotalLines(string filePath)

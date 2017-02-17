@@ -2,14 +2,14 @@
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
+using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace Fences
 {
     public class Dimension
     {
         //TODO Заставить адекватно работать 
-        private static Database _database;
- 
+
         public static void Dim(Point2d p1, Point2d p2)
         {
             // Get the current database
@@ -43,7 +43,7 @@ namespace Fences
                     acRotDim.DimensionStyle = acCurDb.Dimstyle;
 
                     // Add the new object to Model space and the transaction
-                    acBlkTblRec.AppendEntity(acRotDim);
+                    if (acBlkTblRec != null) acBlkTblRec.AppendEntity(acRotDim);
                     acTrans.AddNewlyCreatedDBObject(acRotDim, true);
                 }
 

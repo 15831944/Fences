@@ -91,10 +91,10 @@ namespace Fences
                                 {
                                     dist += segments[k];
                                     Drawer(points[i], points[i + 1], dist);
+                
                                 }
                                 FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]),
 segments.Length - 1, Properties.Settings.Default.path, _guessnum);
-                                Dimension.Dim(points[i], points[i + 1]);
                             }
                         }
                         else

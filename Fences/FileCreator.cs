@@ -1,21 +1,16 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Microsoft.Win32;
-using Application = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace Fences //TODO Реализовать нестандартный этаж
 {
     public class FileCreator
     {
-        //private static Database _db;
-        //private static Document _doc;
-        //private static Editor _ed;
-
         public static void ToFile(string id, double length, int pilnum, string path, int flrnum)
         {
             int barnum = (int) Math.Ceiling(length / 100 - pilnum);
@@ -24,7 +19,7 @@ namespace Fences //TODO Реализовать нестандартный эта
             pilnum = pilnum * flrnum;
             barnum = barnum * flrnum;
 
-                Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
+                Editor ed = Autodesk.AutoCAD.ApplicationServices.Core.Application.DocumentManager.MdiActiveDocument.Editor;
                 if (!File.Exists(path))
                 {
                     using (StreamWriter sw = File.CreateText(path))
@@ -80,18 +75,24 @@ namespace Fences //TODO Реализовать нестандартный эта
 
         private static void Calculator(double[] lng, double[] pls, double[] brs)
         {
-            double total60X30X4 = lng.Sum()*Properties.Settings.Default.top * 0.000001;
-            double total40X30X4 = pls.Sum()*Properties.Settings.Default.pil*Properties.Settings.Default.pilLength * 0.000001 + (lng.Sum() - 0.04*pls.Sum()) * Properties.Settings.Default.pil * 0.000001;
-            double totalT10 = pls.Sum()*Properties.Settings.Default.btm * 0.000001;
-            double totalT4 = ((lng.Length) * 2)* Properties.Settings.Default.ending * 0.000001;
-            double totalt14 = brs.Sum() * Properties.Settings.Default.barLength * Properties.Settings.Default.bar * 0.000001;
+            double total60X30X4 = Math.Ceiling(lng.Sum()*Properties.Settings.Default.top * 0.001);
+            double total40X30X4 = pls.Sum()*Properties.Settings.Default.pil*Properties.Settings.Default.pilLength + (lng.Sum() * 0.001 - 0.04*pls.Sum()) * Properties.Settings.Default.pil;
+            double totalT10 = pls.Sum()*Properties.Settings.Default.btm ;
+            double totalT4 = ((lng.Length) * 2)* Properties.Settings.Default.ending;
+            double totalT14 = brs.Sum() * Properties.Settings.Default.barLength * Properties.Settings.Default.bar;
 
-            CreateTable(total60X30X4, total40X30X4, totalT10, totalT4, totalt14); //TODO Переделать для первых этажей
+            total60X30X4 = Math.Ceiling(total60X30X4) * 0.001;
+            total40X30X4 = Math.Ceiling(total40X30X4) * 0.001;
+            totalT10 = Math.Ceiling(totalT10) * 0.001;
+            totalT4 = Math.Ceiling(totalT4) * 0.001;
+            totalT14 = Math.Ceiling(totalT14) * 0.001;
+
+            CreateTable(total60X30X4, total40X30X4, totalT10, totalT4, totalT14); //TODO Переделать для первых этажей
         }
 
         public static void CreateTable(double t60, double t40, double t10, double t4, double t14)
         {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
+            Document doc = Autodesk.AutoCAD.ApplicationServices.Core.Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
 
@@ -99,16 +100,15 @@ namespace Fences //TODO Реализовать нестандартный эта
             Table tb = new Table();
             EditTablestyle();
             tb.TableStyle = db.Tablestyle;
-            tb.NumRows = 14;
-            tb.NumColumns = 6;
+            tb.SetSize(14, 6);
             tb.SetRowHeight(3);
             tb.SetColumnWidth(14);
             tb.Position = pr.Value;
             
             string[,] str = new string[14, 7];       
-            for (int i = 0; i < tb.NumRows; i++)
+            for (int i = 0; i < tb.Rows.Count; i++)
             {
-                for (int j = 0; j < tb.NumColumns; j++)
+                for (int j = 0; j < tb.Columns.Count; j++)
                 {
                     str[i, j] = "-";
                 }
@@ -124,48 +124,48 @@ namespace Fences //TODO Реализовать нестандартный эта
             str[2, 0] = "Трубы стальные прямоугольные по ГОСТ 8645-68";
             str[2, 1] = "C255 ГОСТ 27772-2015";
             str[2, 2] = "Гн □ 60х30х4";
-            str[2, 4] = t60.ToString();
-            str[2, 5] = t60.ToString();
-            str[3, 4] = t60.ToString();
-            str[3, 5] = t60.ToString();
+            str[2, 4] = t60.ToString(CultureInfo.CurrentCulture);
+            str[2, 5] = t60.ToString(CultureInfo.CurrentCulture);
+            str[3, 4] = t60.ToString(CultureInfo.CurrentCulture);
+            str[3, 5] = t60.ToString(CultureInfo.CurrentCulture);
             str[3, 0] = "Всего профиля";
             str[4, 0] = "Стальные гнутые замкнутые сварные квадратные профили по ГОСТ 30245 - 2003";
             str[4, 1] = "C255 ГОСТ 27772-2015";
             str[4, 2] = "Гн □ 40х4";
-            str[4, 4] = t40.ToString();
-            str[4, 5] = t40.ToString();
-            str[5, 4] = t40.ToString();
-            str[5, 5] = t40.ToString();
+            str[4, 4] = t40.ToString(CultureInfo.CurrentCulture);
+            str[4, 5] = t40.ToString(CultureInfo.CurrentCulture);
+            str[5, 4] = t40.ToString(CultureInfo.CurrentCulture);
+            str[5, 5] = t40.ToString(CultureInfo.CurrentCulture);
             str[5, 0] = "Всего профиля";
             str[6, 0] = "Прокат листовой Горячекатаный ГОСТ 19903-74*";
             str[6, 1] = "C245 ГОСТ 27772-2015";
             str[6, 2] = "t 10";
-            str[6, 4] = t10.ToString();
-            str[6, 5] = t10.ToString();
+            str[6, 4] = t10.ToString(CultureInfo.CurrentCulture);
+            str[6, 5] = t10.ToString(CultureInfo.CurrentCulture);
             str[7, 2] = "t 4";
-            str[7, 4] = t4.ToString();
-            str[7, 5] = t4.ToString();
-            str[8, 4] = (t4+t10).ToString();
-            str[8, 5] = (t4 + t10).ToString();
+            str[7, 4] = t4.ToString(CultureInfo.CurrentCulture);
+            str[7, 5] = t4.ToString(CultureInfo.CurrentCulture);
+            str[8, 4] = (t4+t10).ToString(CultureInfo.CurrentCulture);
+            str[8, 5] = (t4 + t10).ToString(CultureInfo.CurrentCulture);
             str[8, 0] = "Всего профиля";
             str[9, 0] = "Прокат стальной горячекатаный квадратный ГОСТ 2591-88";
             str[9, 1] = "C245 ГОСТ 27772-2015";
             str[9, 2] = "■ 14";
-            str[9, 4] = t14.ToString();
-            str[9, 5] = t14.ToString();
-            str[10, 4] = t14.ToString();
-            str[10, 5] = t14.ToString();
+            str[9, 4] = t14.ToString(CultureInfo.CurrentCulture);
+            str[9, 5] = t14.ToString(CultureInfo.CurrentCulture);
+            str[10, 4] = t14.ToString(CultureInfo.CurrentCulture);
+            str[10, 5] = t14.ToString(CultureInfo.CurrentCulture);
             str[10, 0] = "Всего профиля";
-            str[11, 4] = (t14+t4+t10+t40+t60).ToString();
-            str[11, 5] = (t14 + t4 + t10 + t40 + t60).ToString();
+            str[11, 4] = (t14+t4+t10+t40+t60).ToString(CultureInfo.CurrentCulture);
+            str[11, 5] = (t14 + t4 + t10 + t40 + t60).ToString(CultureInfo.CurrentCulture);
             str[11, 0] = "Всего масса материала по обьекту";
             str[12, 0] = "В том числе по маркам стали";
             str[12, 2] = "С255";
-            str[12, 4] = (t40 + t60).ToString();
-            str[12, 5] = (t40 + t60).ToString();
+            str[12, 4] = (t40 + t60).ToString(CultureInfo.CurrentCulture);
+            str[12, 5] = (t40 + t60).ToString(CultureInfo.CurrentCulture);
             str[13, 2] = "С245";
-            str[13, 4] = (t14 + t4 + t10).ToString();
-            str[13, 5] = (t14 + t4 + t10).ToString();
+            str[13, 4] = (t14 + t4 + t10).ToString(CultureInfo.CurrentCulture);
+            str[13, 5] = (t14 + t4 + t10).ToString(CultureInfo.CurrentCulture);
 
             for (int i = 0; i < 12; i++)
             {
@@ -191,13 +191,16 @@ namespace Fences //TODO Реализовать нестандартный эта
             CellRange mcells9 = CellRange.Create(tb, 6, 1, 7, 1);
             tb.MergeCells(mcells9);
 
-            for (int i = 0; i < 14; i++)
+            for (int i = 0; i < tb.Rows.Count; i++)
             {
-                for (int j = 0; j < 6; j++)
+                for (int j = 0; j < tb.Columns.Count; j++)
                 {
-                    tb.SetTextHeight(i, j, 1);
-                    tb.SetTextString(i, j, str[i, j]);
-                    tb.SetAlignment(i, j, CellAlignment.MiddleCenter);
+                    //tb.SetTextHeight(i, j, 1);
+                    tb.Cells[i, j].TextHeight = 1;
+                    tb.Cells[i, j].TextString = str[i, j];
+                    tb.Cells[i, j].Alignment = CellAlignment.MiddleCenter;
+                    //tb.SetTextString(i, j, str[i, j]);
+                   // tb.SetAlignment(i, j, CellAlignment.MiddleCenter);
                 }
             }
             tb.GenerateLayout();

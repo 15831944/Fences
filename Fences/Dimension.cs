@@ -6,13 +6,16 @@ using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace Fences
 {
-    public static class Dimension
+    public class Dimension
     {
-        public static void Dim(Point2d p1, Point2d p2)
+
+        public static void Dim(LineSegment2d segment)
         {
             Document acDoc = Application.DocumentManager.MdiActiveDocument;
             Database acCurDb = acDoc.Database;
 
+            Point2d p1 = segment.StartPoint;
+            Point2d p2 = segment.EndPoint;
 
             //SetDimStyle(); TODO Не работает
 

@@ -25,7 +25,7 @@ namespace Fences
         private SelectionSet _selectionSet;
 
         [CommandMethod("CreateFenceSetting", CommandFlags.Modal)]
-        private static void CreateFenceSetting()
+        public static void CreateFenceSetting()
         {
             DialogBox m = new DialogBox();
             m.ShowDialog();

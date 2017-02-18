@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
+using Autodesk.AutoCAD.Runtime;
+using Fences;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace Fences
 {
-    public static class Dimension
+    public class Dimension
     {
+
         public static void Dim(Point2d p1, Point2d p2)
         {
             Document acDoc = Application.DocumentManager.MdiActiveDocument;

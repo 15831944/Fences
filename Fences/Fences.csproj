@@ -126,6 +126,9 @@
     <Compile Include="DialogBox.Designer.cs">
       <DependentUpon>DialogBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Fence.cs" />
+    <Compile Include="FenceEntry.cs" />
+    <Compile Include="MetaInfoManager.cs" />
     <Compile Include="myCommands.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -138,6 +141,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="SteelMassStat.cs" />
+    <Compile Include="SteelType.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DialogBox.resx">

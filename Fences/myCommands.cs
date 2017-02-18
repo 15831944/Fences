@@ -23,22 +23,19 @@ namespace Fences
         private int _guessnum = 1;
         private PromptSelectionResult _selAll;
         private SelectionSet _selectionSet;
+        private MetaInfoManager _metaInfoManager = new MetaInfoManager();
+
 
         [CommandMethod("CreateFenceSetting", CommandFlags.Modal)]
-        private static void CreateFenceSetting()
+        public void CreateFenceSetting()
         {
-            DialogBox m = new DialogBox();
-            m.ShowDialog();
-            if (m.DialogResult == DialogResult.OK)
-                Settings.Default.path = DialogBox.ReturnValue ? FileCreator.CreateFile() : FileCreator.OpenFile();
-            Settings.Default.Save();
+            _metaInfoManager.CreateFenceSettings();
         }
 
         [CommandMethod("CreateFence", CommandFlags.Modal)]
         public void CreateFence()
         {
-            if (Settings.Default.path == null)
-                CreateFenceSetting();
+            _metaInfoManager.InitializeIfNeeded();
             _document = Application.DocumentManager.MdiActiveDocument;
             _database = _document.Database;
 
@@ -74,30 +71,38 @@ namespace Fences
                                 Point2d pt = pl.GetPoint2dAt(j);
                                 points.Add(pt);
                             }
-                            List<List<Point2d>> pointsDimRec = new List<List<Point2d>>();
+                            //List<List<Point2d>> pointsDimRec = new List<List<Point2d>>();
+                            Fence fence = new Fence();
 
                             for (int i = 0; i < points.Count - 1; i++)
                             {
-                                pointsDimRec.Add(new List<Point2d>());
-                                pointsDimRec[i].Add(points[i]);
+                                //pointsDimRec.Add(new List<Point2d>());
+                                //pointsDimRec[i].Add(points[i]);
                                 int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i,
                                     points.Count - 1);
                                 int dist = 0;
+                                Point2d[] pills = new Point2d[segments.Length-1];
                                 for (int k = 0; k < segments.Length - 1; k++)
                                 {
                                     dist += segments[k];
+                                    pills[k] = MoveDist(points[i], points[i + 1], dist);
                                     Drawer(points[i], points[i + 1], dist);
-                                    pointsDimRec[i].Add(MoveDist(points[i], points[i + 1], dist));
+                                    //pointsDimRec[i].Add(MoveDist(points[i], points[i + 1], dist));
                                 }
-                                pointsDimRec[i].Add(points[i + 1]);
+                                FenceEntry entry = new FenceEntry(new LineSegment2d(points[i], points[i + 1]), pills);
+                                fence.AddEntry(entry);
                                 FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]),
                                     segments.Length - 1, Settings.Default.path, _guessnum);
                             }
                             ChangeLayer(transaction, CreateLayer("КМ-РАЗМ", Color.FromColorIndex(ColorMethod.ByAci, 1),
                                 LineWeight.LineWeight020));
-                            for (int i = 0; i <= pointsDimRec.Count - 1; i++)
-                            for (int j = 0; j <= pointsDimRec[i].Count - 2; j++)
-                                Dimension.Dim(pointsDimRec[i][j], pointsDimRec[i][j + 1]); //TODO Не работает на "большом" листе
+                            foreach (FenceEntry entry in fence.GetEntries())
+                            {
+                                foreach (LineSegment2d segment in entry.SplitByPills())
+                                {
+                                    Dimension.Dim(segment);
+                                }
+                            }
                         }
                         else
                         {

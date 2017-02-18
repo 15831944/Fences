@@ -126,12 +126,12 @@
     <Compile Include="DialogBox.Designer.cs">
       <DependentUpon>DialogBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Commands.Designer.cs">
+    <Compile Include="myCommands.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Commands.resx</DependentUpon>
+      <DependentUpon>myCommands.resx</DependentUpon>
     </Compile>
-    <Compile Include="Commands.cs" />
+    <Compile Include="myCommands.cs" />
     <Compile Include="FileCreator.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -143,10 +143,10 @@
     <EmbeddedResource Include="DialogBox.resx">
       <DependentUpon>DialogBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Commands.resx">
-      <DependentUpon>Commands.cs</DependentUpon>
+    <EmbeddedResource Include="myCommands.resx">
+      <DependentUpon>myCommands.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Commands.Designer.cs</LastGenOutput>
+      <LastGenOutput>myCommands.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -9,7 +9,7 @@ namespace FencesTests
         [TestMethod]
         public void LengthOfAllSegmentsMustBeDivisibleByTen()
         {
-            int[] segments = Commands.Divide(5000, 0, 3);
+            int[] segments = MyCommands.Divide(5000, 0, 3);
             Assert.AreEqual(8, segments.Length);
             Assert.AreEqual(100, segments[0]);
             Assert.AreEqual(800, segments[1]);
@@ -24,7 +24,7 @@ namespace FencesTests
         [TestMethod]
         public void Test()
         {
-            int[] segments = Commands.Divide(5000, 0, 1);
+            int[] segments = MyCommands.Divide(5000, 0, 1);
             Assert.AreEqual(8, segments.Length);
             Assert.AreEqual(100, segments[0]);
             Assert.AreEqual(800, segments[1]);
@@ -39,7 +39,7 @@ namespace FencesTests
         [TestMethod]
         public void DivisionWithoutRest()
         {
-            int[] segments = Commands.Divide(2100, 2, 5);
+            int[] segments = MyCommands.Divide(2100, 2, 5);
             Assert.AreEqual(4, segments.Length);
             Assert.AreEqual(150, segments[0]);
             Assert.AreEqual(900, segments[1]);
@@ -50,7 +50,7 @@ namespace FencesTests
         [TestMethod]
         public void IfLineIsTooSmallThereMustBeOneBar()
         {
-            int[] segments = Commands.Divide(200, 0, 3);
+            int[] segments = MyCommands.Divide(200, 0, 3);
             Assert.AreEqual(2, segments.Length);
             Assert.AreEqual(100, segments[0]);
             Assert.AreEqual(100, segments[1]);
@@ -59,7 +59,7 @@ namespace FencesTests
         [TestMethod]
         public void IfLastOneIsTooSmallThereMustBeOneBar()
         {
-            int[] segments = Commands.Divide(230, 2, 3);
+            int[] segments = MyCommands.Divide(230, 2, 3);
             Assert.AreEqual(2, segments.Length);
             Assert.AreEqual(130, segments[0]);
             Assert.AreEqual(100, segments[1]);

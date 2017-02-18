@@ -57,14 +57,20 @@
     <Reference Include="AcCoreMgd">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\Autodesk\Autodesk_ObjectARX_2017_Win_64_and_32_Bit\inc\AcCoreMgd.dll</HintPath>
+    </Reference>
+    <Reference Include="AcCui">
+      <HintPath>..\..\..\..\..\..\Autodesk\Autodesk_ObjectARX_2017_Win_64_and_32_Bit\inc\AcCui.dll</HintPath>
     </Reference>
     <Reference Include="AcDbMgd">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\Autodesk\Autodesk_ObjectARX_2017_Win_64_and_32_Bit\inc\AcDbMgd.dll</HintPath>
     </Reference>
     <Reference Include="AcMgd">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\Autodesk\Autodesk_ObjectARX_2017_Win_64_and_32_Bit\inc\AcMgd.dll</HintPath>
     </Reference>
     <!--ACA References Begin-->
     <!--ACA Refences End-->
@@ -90,6 +96,15 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <COMReference Include="AXDBLib">
+      <Guid>{AE7B2C8A-2E97-4406-8160-E8D32EB0B56D}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
     <COMReference Include="Microsoft.Office.Core">
       <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
       <VersionMajor>2</VersionMajor>

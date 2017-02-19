@@ -337,6 +337,7 @@ namespace Fences //TODO Реализовать нестандартный эта
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog {Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"};
             saveFileDialog1.ShowDialog();
+            File.Create(Settings.Default.path);
 
             return saveFileDialog1.FileName;
         }

@@ -39,12 +39,12 @@ namespace Fences
                     acRotDim.DimLinePoint = acRotDim.XLine2Point.Add(vector.RotateBy(Math.PI / 2, new Vector3d(0, 0, 1)));
 
                     acRotDim.Annotative = AnnotativeStates.True;
-
+                    /*
                     ObjectContextCollection occ =
                         acCurDb.ObjectContextManager.GetContextCollection("ACDB_ANNOTATIONSCALES");
                     acRotDim.AddContext(occ.GetContext("1:100"));
                     acRotDim.RemoveContext(occ.CurrentContext);
-
+                    */
                     if (acBlkTblRec != null) acBlkTblRec.AppendEntity(acRotDim);
                     acTrans.AddNewlyCreatedDBObject(acRotDim, true);
                 }

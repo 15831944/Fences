@@ -325,21 +325,5 @@ namespace Fences //TODO Реализовать нестандартный эта
                 return i;
             }
         }
-
-        public static string OpenFile()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog {Filter = "Текстовые файлы (*.txt) | *.txt"};
-            openFileDialog.ShowDialog();
-            return openFileDialog.FileName;
-        }
-
-        public static string CreateFile()
-        {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog {Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"};
-            saveFileDialog1.ShowDialog();
-            File.Create(Settings.Default.path);
-
-            return saveFileDialog1.FileName;
-        }
     }
 }

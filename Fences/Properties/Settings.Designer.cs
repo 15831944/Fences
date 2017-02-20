@@ -103,5 +103,65 @@ namespace Fences.Properties {
                 this["barLength"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double total60X30X4 {
+            get {
+                return ((double)(this["total60X30X4"]));
+            }
+            set {
+                this["total60X30X4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double total40X4 {
+            get {
+                return ((double)(this["total40X4"]));
+            }
+            set {
+                this["total40X4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double totalT10 {
+            get {
+                return ((double)(this["totalT10"]));
+            }
+            set {
+                this["totalT10"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double totalT4 {
+            get {
+                return ((double)(this["totalT4"]));
+            }
+            set {
+                this["totalT4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double totalT14 {
+            get {
+                return ((double)(this["totalT14"]));
+            }
+            set {
+                this["totalT14"] = value;
+            }
+        }
     }
 }

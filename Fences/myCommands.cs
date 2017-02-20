@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
@@ -17,13 +18,12 @@ namespace Fences
 {
     public class MyCommands
     {
-        private static Database _database;
+        private Database _database;
         private Document _document;
         private int _guessnum = 1;
         private PromptSelectionResult _selAll;
         private SelectionSet _selectionSet;
         private MetaInfoManager _metaInfoManager = new MetaInfoManager();
-
 
         [CommandMethod("CreateFenceSetting", CommandFlags.Modal)]
         public void CreateFenceSetting()
@@ -51,12 +51,28 @@ namespace Fences
         public void CreateFenceGet()
         {
             FileCreator.GetFromFile(Settings.Default.path);
+            File.WriteAllText(Settings.Default.path, string.Empty);
+        }
+
+        [CommandMethod("CreateFenceGetFirstFloor", CommandFlags.Modal)] //TODO Неадекватное и некрасивое решение
+        public void CreateFenceGetFirstFloor()
+        {
+            Settings.Default.pilLength = 1.41;
+            FileCreator.GetFromFile(Settings.Default.path);
+            File.WriteAllText(Settings.Default.path, string.Empty);
+            Settings.Default.pilLength = 1.21;
+        }
+
+        [CommandMethod("CreateFenceTable", CommandFlags.Modal)]
+        public void CreateFenceTable()
+        {
+            FileCreator.CreateTable(Settings.Default.total60X30X4, Settings.Default.total40X4, Settings.Default.totalT10, Settings.Default.totalT4, Settings.Default.totalT14);
         }
 
         private void MySelect()
         {
             if (_selAll.Status == PromptStatus.OK)
-                using (Transaction transaction = _document.TransactionManager.StartTransaction())
+                using (Transaction transaction = _document.TransactionManager.StartTransaction()) //TODO Нужно делать current layer первоначальным
                 {
                     foreach (ObjectId id in _selectionSet.GetObjectIds())
                         if (id.ObjectClass == RXObject.GetClass(typeof(Polyline)))
@@ -93,8 +109,8 @@ namespace Fences
                                 FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]),
                                     segments.Length - 1, Settings.Default.path, _guessnum);
                             }
-                            ChangeLayer(transaction, CreateLayer("КМ-РАЗМ", Color.FromColorIndex(ColorMethod.ByAci, 1),
-                                LineWeight.LineWeight020));
+                            Layer.ChangeLayer(transaction, Layer.CreateLayer("КМ-РАЗМ", Color.FromColorIndex(ColorMethod.ByAci, 1),
+                                LineWeight.LineWeight020), _database);
                             foreach (FenceEntry entry in fence.GetEntries())
                             {
                                 foreach (LineSegment2d segment in entry.SplitByPills())
@@ -178,9 +194,9 @@ namespace Fences
                 BlockTableRecord acBlkTblRec =
                     transaction.GetObject(acBlkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
 
-                ChangeLayer(transaction,
-                    CreateLayer("Опорная плита стойки", Color.FromColorIndex(ColorMethod.ByAci, 50),
-                        LineWeight.LineWeight018));
+                Layer.ChangeLayer(transaction,
+                    Layer.CreateLayer("Опорная плита стойки", Color.FromColorIndex(ColorMethod.ByAci, 50),
+                        LineWeight.LineWeight018), _database);
 
                 const double w = 180;
                 const double h = 120;
@@ -206,9 +222,9 @@ namespace Fences
                     transaction.AddNewlyCreatedDBObject(bar, true);
                 }
 
-                ChangeLayer(transaction,
-                    CreateLayer("Стойки ограждений", Color.FromColorIndex(ColorMethod.ByAci, 70),
-                        LineWeight.LineWeight040));
+               Layer.ChangeLayer(transaction,
+                    Layer.CreateLayer("Стойки ограждений", Color.FromColorIndex(ColorMethod.ByAci, 70),
+                        LineWeight.LineWeight040), _database);
 
                 const double wr = 32;
                 const double hr = 20.8;
@@ -243,34 +259,6 @@ namespace Fences
                     }
                 }
                 transaction.Commit();
-            }
-        }
-
-        private static LayerTableRecord CreateLayer(string name, Color color, LineWeight weight)
-        {
-            LayerTableRecord layer = new LayerTableRecord
-            {
-                Name = name,
-                Color = color,
-                LineWeight = weight
-            };
-            return layer;
-        }
-
-        private static void ChangeLayer(Transaction acTrans, LayerTableRecord ltr)
-            //Переносим стойки и пластины на нужный слой
-        {
-            LayerTable lt = (LayerTable) acTrans.GetObject(_database.LayerTableId, OpenMode.ForRead);
-            if (lt.Has(ltr.Name))
-            {
-                _database.Clayer = lt[ltr.Name];
-            }
-            else
-            {
-                lt.UpgradeOpen();
-                ObjectId ltId = lt.Add(ltr);
-                acTrans.AddNewlyCreatedDBObject(ltr, true);
-                _database.Clayer = ltId;
             }
         }
     }

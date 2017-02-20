@@ -12,8 +12,30 @@ using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace Fences //TODO Реализовать нестандартный этаж
 {
-    public static class FileCreator
+    public static class FileCreator //TODO Fix static
     {
+        public static void GetFromFile(string path) // TODO Нужно переписать реализацию нестандартного этажа
+        {
+            string text = File.ReadAllText(path);
+
+            int lines = TotalLines(path);
+            lines--;
+            string[] bits = text.Split('\n');
+            double[] lng = new double[lines];
+            double[] pls = new double[lines];
+            double[] brs = new double[lines];
+
+            for (int i = 1; i <= lines; i++)
+            {
+                string[] get = bits[i].Split('\t');
+                lng[i - 1] = Convert.ToDouble(get[2]);
+                pls[i - 1] = Convert.ToDouble(get[3]);
+                brs[i - 1] = Convert.ToDouble(get[4]);
+            }
+
+            Calculator(lng, pls, brs);
+        }
+
         public static void ToFile(string id, double length, int pilnum, string path, int flrnum)
         {
             int barnum = (int) Math.Ceiling(length / 100 - pilnum);
@@ -49,47 +71,23 @@ namespace Fences //TODO Реализовать нестандартный эта
             }
         }
 
-        public static void GetFromFile(string path)
-        {
-            string text = File.ReadAllText(path);
-
-            int lines = TotalLines(path);
-            lines--;
-            string[] bits = text.Split('\n');
-            double[] lng = new double[lines];
-            double[] pls = new double[lines];
-            double[] brs = new double[lines];
-
-            for (int i = 1; i <= lines; i++)
-            {
-                string[] get = bits[i].Split('\t');
-                lng[i - 1] = Convert.ToDouble(get[2]);
-                pls[i - 1] = Convert.ToDouble(get[3]);
-                brs[i - 1] = Convert.ToDouble(get[4]);
-            }
-
-            Calculator(lng, pls, brs);
-        }
-
         private static void Calculator(double[] lng, double[] pls, double[] brs)
         {
             double total60X30X4 = Math.Ceiling(lng.Sum() * Settings.Default.top * 0.001);
-            double total40X30X4 = pls.Sum() * Settings.Default.pil * Settings.Default.pilLength +
+            double total40X4 = pls.Sum() * Settings.Default.pil * Settings.Default.pilLength +
                                   (lng.Sum() * 0.001 - 0.04 * pls.Sum()) * Settings.Default.pil;
             double totalT10 = pls.Sum() * Settings.Default.btm;
             double totalT4 = lng.Length * 2 * Settings.Default.ending;
             double totalT14 = brs.Sum() * Settings.Default.barLength * Settings.Default.bar;
 
-            total60X30X4 = Math.Ceiling(total60X30X4) * 0.001;
-            total40X30X4 = Math.Ceiling(total40X30X4) * 0.001;
-            totalT10 = Math.Ceiling(totalT10) * 0.001;
-            totalT4 = Math.Ceiling(totalT4) * 0.001;
-            totalT14 = Math.Ceiling(totalT14) * 0.001;
-
-            CreateTable(total60X30X4, total40X30X4, totalT10, totalT4, totalT14); //TODO Переделать для первых этажей
+            Settings.Default.total60X30X4 += Math.Ceiling(total60X30X4) * 0.001;
+            Settings.Default.total40X4 += Math.Ceiling(total40X4) * 0.001;
+            Settings.Default.totalT10 += Math.Ceiling(totalT10) * 0.001;
+            Settings.Default.totalT4 += Math.Ceiling(totalT4) * 0.001;
+            Settings.Default.totalT14 += Math.Ceiling(totalT14) * 0.001;
         }
 
-        private static void CreateTable(double t60, double t40, double t10, double t4, double t14)
+        public static void CreateTable(double t60, double t40, double t10, double t4, double t14)
         {
             //EditTablestyle(); TODO Не работает 
 

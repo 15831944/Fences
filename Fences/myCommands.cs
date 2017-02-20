@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
@@ -10,7 +11,6 @@ using Autodesk.AutoCAD.Runtime;
 using Fences;
 using Fences.Properties;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
-using MessageBox = System.Windows.MessageBox;
 
 [assembly: CommandClass(typeof(MyCommands))]
 
@@ -18,12 +18,17 @@ namespace Fences
 {
     public class MyCommands
     {
+        /*
+         * TODO Пересмотреть логику работы - добавить в ДиалогБокс возможность править высоты
+         * TODO Перенести функционал FirstFloor в обычную программу
+         * TODO Добавить поворот наружу и внутрь размеров
+         */
         private Database _database;
         private Document _document;
         private int _guessnum = 1;
+        private readonly MetaInfoManager _metaInfoManager = new MetaInfoManager();
         private PromptSelectionResult _selAll;
         private SelectionSet _selectionSet;
-        private MetaInfoManager _metaInfoManager = new MetaInfoManager();
 
         [CommandMethod("CreateFenceSetting", CommandFlags.Modal)]
         public void CreateFenceSetting()
@@ -66,13 +71,15 @@ namespace Fences
         [CommandMethod("CreateFenceTable", CommandFlags.Modal)]
         public void CreateFenceTable()
         {
-            FileCreator.CreateTable(Settings.Default.total60X30X4, Settings.Default.total40X4, Settings.Default.totalT10, Settings.Default.totalT4, Settings.Default.totalT14);
+            FileCreator.CreateTable(Settings.Default.total60X30X4, Settings.Default.total40X4, Settings.Default.totalT10,
+                Settings.Default.totalT4, Settings.Default.totalT14);
         }
 
         private void MySelect()
         {
             if (_selAll.Status == PromptStatus.OK)
-                using (Transaction transaction = _document.TransactionManager.StartTransaction()) //TODO Нужно делать current layer первоначальным
+                using (Transaction transaction = _document.TransactionManager.StartTransaction())
+                    //TODO Нужно делать current layer первоначальным
                 {
                     foreach (ObjectId id in _selectionSet.GetObjectIds())
                         if (id.ObjectClass == RXObject.GetClass(typeof(Polyline)))
@@ -86,38 +93,31 @@ namespace Fences
                                 Point2d pt = pl.GetPoint2dAt(j);
                                 points.Add(pt);
                             }
-                            //List<List<Point2d>> pointsDimRec = new List<List<Point2d>>();
                             Fence fence = new Fence();
 
                             for (int i = 0; i < points.Count - 1; i++)
                             {
-                                //pointsDimRec.Add(new List<Point2d>());
-                                //pointsDimRec[i].Add(points[i]);
                                 int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i,
                                     points.Count - 1);
                                 int dist = 0;
-                                Point2d[] pills = new Point2d[segments.Length-1];
+                                Point2d[] pills = new Point2d[segments.Length - 1];
                                 for (int k = 0; k < segments.Length - 1; k++)
                                 {
                                     dist += segments[k];
                                     pills[k] = MoveDist(points[i], points[i + 1], dist);
-                                    Drawer(points[i], points[i + 1], dist);
-                                    //pointsDimRec[i].Add(MoveDist(points[i], points[i + 1], dist));
+                                    DrawBar(pills[k], points[i].GetVectorTo(points[i + 1]).Angle);
                                 }
                                 FenceEntry entry = new FenceEntry(new LineSegment2d(points[i], points[i + 1]), pills);
                                 fence.AddEntry(entry);
                                 FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]),
                                     segments.Length - 1, Settings.Default.path, _guessnum);
                             }
-                            Layer.ChangeLayer(transaction, Layer.CreateLayer("КМ-РАЗМ", Color.FromColorIndex(ColorMethod.ByAci, 1),
-                                LineWeight.LineWeight020), _database);
+                            Layer.ChangeLayer(transaction,
+                                Layer.CreateLayer("КМ-РАЗМ", Color.FromColorIndex(ColorMethod.ByAci, 1),
+                                    LineWeight.LineWeight020), _database);
                             foreach (FenceEntry entry in fence.GetEntries())
-                            {
-                                foreach (LineSegment2d segment in entry.SplitByPills())
-                                {
-                                    Dimension.Dim(segment);
-                                }
-                            }
+                            foreach (LineSegment2d segment in entry.SplitByPills())
+                                Dimension.Dim(segment);
                         }
                         else
                         {
@@ -180,11 +180,6 @@ namespace Fences
             return p1.Add(p12.GetNormal().MultiplyBy(dist));
         }
 
-        private void Drawer(Point2d p1, Point2d p2, double dist)
-        {
-            DrawBar(MoveDist(p1, p2, dist), p1.GetVectorTo(p2).Angle);
-        }
-
         private void DrawBar(Point2d p, double ang)
         {
             using (Transaction transaction = _document.TransactionManager.StartTransaction())
@@ -222,7 +217,7 @@ namespace Fences
                     transaction.AddNewlyCreatedDBObject(bar, true);
                 }
 
-               Layer.ChangeLayer(transaction,
+                Layer.ChangeLayer(transaction,
                     Layer.CreateLayer("Стойки ограждений", Color.FromColorIndex(ColorMethod.ByAci, 70),
                         LineWeight.LineWeight040), _database);
 

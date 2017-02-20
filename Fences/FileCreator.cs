@@ -71,7 +71,7 @@ namespace Fences //TODO Реализовать нестандартный эта
             }
         }
 
-        private static void Calculator(double[] lng, double[] pls, double[] brs)
+        private static void Calculator(double[] lng, double[] pls, double[] brs) //TODO Проверить вычисление barnum
         {
             double total60X30X4 = Math.Ceiling(lng.Sum() * Settings.Default.top * 0.001);
             double total40X4 = pls.Sum() * Settings.Default.pil * Settings.Default.pilLength +

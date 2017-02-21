@@ -12,8 +12,6 @@ namespace Fences
         {
             DialogBox m = new DialogBox();
             m.ShowDialog();
-            if (m.DialogResult == DialogResult.OK)
-                Settings.Default.path = DialogBox.ReturnValue ? CreateFile() : OpenFile();
             Settings.Default.Save();
         }
 
@@ -28,20 +26,6 @@ namespace Fences
             {
                 CreateFenceSettings();
             }
-        }
-
-        private string OpenFile()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog { Filter = "Текстовые файлы (*.txt) | *.txt" };
-            openFileDialog.ShowDialog();
-            return openFileDialog.FileName;
-        }
-
-        private string CreateFile()
-        {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog { Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*" };
-            saveFileDialog1.ShowDialog();
-            return saveFileDialog1.FileName;
         }
     }
 }

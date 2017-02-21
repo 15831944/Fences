@@ -2,19 +2,19 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Fences.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="top" Type="System.Double" Scope="Application">
+    <Setting Name="top" Type="System.Double" Scope="User">
       <Value Profile="(Default)">4.93</Value>
     </Setting>
-    <Setting Name="pil" Type="System.Double" Scope="Application">
+    <Setting Name="pil" Type="System.Double" Scope="User">
       <Value Profile="(Default)">4.2</Value>
     </Setting>
-    <Setting Name="bar" Type="System.Double" Scope="Application">
+    <Setting Name="bar" Type="System.Double" Scope="User">
       <Value Profile="(Default)">1.539</Value>
     </Setting>
-    <Setting Name="ending" Type="System.Double" Scope="Application">
+    <Setting Name="ending" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.0564</Value>
     </Setting>
-    <Setting Name="btm" Type="System.Double" Scope="Application">
+    <Setting Name="btm" Type="System.Double" Scope="User">
       <Value Profile="(Default)">1.6956</Value>
     </Setting>
     <Setting Name="path" Type="System.String" Scope="User">
@@ -39,6 +39,9 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="totalT14" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="Counter" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>

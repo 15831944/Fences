@@ -23,48 +23,63 @@ namespace Fences.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("4.93")]
         public double top {
             get {
                 return ((double)(this["top"]));
             }
+            set {
+                this["top"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("4.2")]
         public double pil {
             get {
                 return ((double)(this["pil"]));
             }
+            set {
+                this["pil"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1.539")]
         public double bar {
             get {
                 return ((double)(this["bar"]));
             }
+            set {
+                this["bar"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0.0564")]
         public double ending {
             get {
                 return ((double)(this["ending"]));
             }
+            set {
+                this["ending"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1.6956")]
         public double btm {
             get {
                 return ((double)(this["btm"]));
+            }
+            set {
+                this["btm"] = value;
             }
         }
         
@@ -161,6 +176,18 @@ namespace Fences.Properties {
             }
             set {
                 this["totalT14"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double Counter {
+            get {
+                return ((double)(this["Counter"]));
+            }
+            set {
+                this["Counter"] = value;
             }
         }
     }

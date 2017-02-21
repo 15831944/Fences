@@ -73,6 +73,7 @@ namespace Fences
         {
             FileCreator.CreateTable(Settings.Default.total60X30X4, Settings.Default.total40X4, Settings.Default.totalT10,
                 Settings.Default.totalT4, Settings.Default.totalT14);
+            Settings.Default.Counter = 0;
         }
 
         private void MySelect()
@@ -81,6 +82,7 @@ namespace Fences
                 using (Transaction transaction = _document.TransactionManager.StartTransaction())
                     //TODO Нужно делать current layer первоначальным
                 {
+                    Settings.Default.Counter += _selectionSet.GetObjectIds().Length;
                     foreach (ObjectId id in _selectionSet.GetObjectIds())
                         if (id.ObjectClass == RXObject.GetClass(typeof(Polyline)))
                         {

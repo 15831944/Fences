@@ -7,7 +7,6 @@ using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Fences.Properties;
-using Microsoft.Win32;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace Fences //TODO Реализовать нестандартный этаж
@@ -220,7 +219,6 @@ namespace Fences //TODO Реализовать нестандартный эта
             Document doc =
   Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
-            Editor ed = doc.Editor;
 
             Transaction tr =
                 doc.TransactionManager.StartTransaction();
@@ -230,7 +228,6 @@ namespace Fences //TODO Реализовать нестандартный эта
                 //  if it doesn't exist
 
                 const string styleName = "Garish Table Style";
-                ObjectId tsId = ObjectId.Null;
 
                 DBDictionary sd =
                     (DBDictionary) tr.GetObject(
@@ -242,7 +239,7 @@ namespace Fences //TODO Реализовать нестандартный эта
 
                 if (sd.Contains(styleName))
                 {
-                    tsId = sd.GetAt(styleName);
+                    sd.GetAt(styleName);
                 }
                 else
                 {
@@ -307,7 +304,7 @@ namespace Fences //TODO Реализовать нестандартный эта
                     // Add our table style to the dictionary
                     //  and to the transaction
 
-                    tsId = ts.PostTableStyleToDatabase(db, styleName);
+                    ts.PostTableStyleToDatabase(db, styleName);
                     tr.AddNewlyCreatedDBObject(ts, true);
                     tr.Commit();
                 }

@@ -138,12 +138,12 @@
     <Compile Include="FenceEntry.cs" />
     <Compile Include="Layer.cs" />
     <Compile Include="MetaInfoManager.cs" />
-    <Compile Include="myCommands.Designer.cs">
+    <Compile Include="SimpleFences.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>myCommands.resx</DependentUpon>
+      <DependentUpon>SimpleFences.resx</DependentUpon>
     </Compile>
-    <Compile Include="myCommands.cs" />
+    <Compile Include="SimpleFences.cs" />
     <Compile Include="FileCreator.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -162,10 +162,10 @@
     <EmbeddedResource Include="DialogBox.resx">
       <DependentUpon>DialogBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="myCommands.resx">
-      <DependentUpon>myCommands.cs</DependentUpon>
+    <EmbeddedResource Include="SimpleFences.resx">
+      <DependentUpon>SimpleFences.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>myCommands.Designer.cs</LastGenOutput>
+      <LastGenOutput>SimpleFences.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

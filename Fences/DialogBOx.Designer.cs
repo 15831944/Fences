@@ -109,7 +109,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::Fences.Properties.Resources.КМ_У7_Ограждения_балконов_1_Model1;
+            this.pictureBox1.Image = global::Fences.Properties.Resources.Scheme;
             this.pictureBox1.Location = new System.Drawing.Point(197, 17);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(234, 193);

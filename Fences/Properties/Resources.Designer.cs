@@ -63,9 +63,9 @@ namespace Fences.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap КМ_У7_Ограждения_балконов_1_Model1 {
+        internal static System.Drawing.Bitmap Scheme {
             get {
-                object obj = ResourceManager.GetObject("КМ_У7_Ограждения балконов_1-Model1", resourceCulture);
+                object obj = ResourceManager.GetObject("Scheme", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

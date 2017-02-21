@@ -12,11 +12,11 @@ using Fences;
 using Fences.Properties;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
-[assembly: CommandClass(typeof(MyCommands))]
+[assembly: CommandClass(typeof(SimpleFences))]
 
 namespace Fences
 {
-    public class MyCommands
+    public class SimpleFences
     {
         /*
          * TODO Пересмотреть логику работы - добавить в ДиалогБокс возможность править высоты

@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fences", "Fences\Fences.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FencesTests", "FencesTests\FencesTests.csproj", "{A2DC053F-5677-4778-BDD0-196444B7D21D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewports PlugIn", "..\Viewports PlugIn\Viewports PlugIn\Viewports PlugIn.csproj", "{12C2C789-03A0-46FF-93A7-F3B03F162454}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewports", "Viewports\Viewports.csproj", "{4F3B1D94-3C29-45F1-A4E2-5256223043AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{A2DC053F-5677-4778-BDD0-196444B7D21D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2DC053F-5677-4778-BDD0-196444B7D21D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2DC053F-5677-4778-BDD0-196444B7D21D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{12C2C789-03A0-46FF-93A7-F3B03F162454}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{12C2C789-03A0-46FF-93A7-F3B03F162454}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{12C2C789-03A0-46FF-93A7-F3B03F162454}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{12C2C789-03A0-46FF-93A7-F3B03F162454}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F3B1D94-3C29-45F1-A4E2-5256223043AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F3B1D94-3C29-45F1-A4E2-5256223043AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F3B1D94-3C29-45F1-A4E2-5256223043AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F3B1D94-3C29-45F1-A4E2-5256223043AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

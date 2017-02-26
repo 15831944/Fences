@@ -57,14 +57,20 @@
     <Reference Include="AcCoreMgd">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\Autodesk\Autodesk_ObjectARX_2017_Win_64_and_32_Bit\inc\AcCoreMgd.dll</HintPath>
+    </Reference>
+    <Reference Include="AcCui">
+      <HintPath>..\..\..\..\..\..\Autodesk\Autodesk_ObjectARX_2017_Win_64_and_32_Bit\inc\AcCui.dll</HintPath>
     </Reference>
     <Reference Include="AcDbMgd">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\Autodesk\Autodesk_ObjectARX_2017_Win_64_and_32_Bit\inc\AcDbMgd.dll</HintPath>
     </Reference>
     <Reference Include="AcMgd">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\Autodesk\Autodesk_ObjectARX_2017_Win_64_and_32_Bit\inc\AcMgd.dll</HintPath>
     </Reference>
     <!--ACA References Begin-->
     <!--ACA Refences End-->

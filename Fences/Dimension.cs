@@ -8,7 +8,6 @@ namespace Fences
 {
     public class Dimension
     {
-
         public static void Dim(LineSegment2d segment)
         {
             Document acDoc = Application.DocumentManager.MdiActiveDocument;

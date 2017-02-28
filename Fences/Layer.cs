@@ -18,7 +18,7 @@ namespace Fences
 
         public static void ChangeLayer(Transaction acTrans, LayerTableRecord ltr, Database database)
         {
-            LayerTable lt = (LayerTable)acTrans.GetObject(database.LayerTableId, OpenMode.ForRead);
+            LayerTable lt = (LayerTable) acTrans.GetObject(database.LayerTableId, OpenMode.ForRead);
             if (lt.Has(ltr.Name))
             {
                 database.Clayer = lt[ltr.Name];

@@ -74,7 +74,7 @@ namespace Fences //TODO Реализовать нестандартный эта
         {
             double total60X30X4 = Math.Ceiling(lng.Sum() * Settings.Default.top * 0.001);
             double total40X4 = pls.Sum() * Settings.Default.pil * Settings.Default.pilLength +
-                                  (lng.Sum() * 0.001 - 0.04 * pls.Sum()) * Settings.Default.pil;
+                               (lng.Sum() * 0.001 - 0.04 * pls.Sum()) * Settings.Default.pil;
             double totalT10 = pls.Sum() * Settings.Default.btm;
             double totalT4 = lng.Length * 2 * Settings.Default.ending;
             double totalT14 = brs.Sum() * Settings.Default.barLength * Settings.Default.bar;
@@ -217,7 +217,7 @@ namespace Fences //TODO Реализовать нестандартный эта
         private static void EditTablestyle() //TODO Сделать метод со стилем таблицы
         {
             Document doc =
-  Application.DocumentManager.MdiActiveDocument;
+                Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
 
             Transaction tr =

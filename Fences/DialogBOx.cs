@@ -13,40 +13,40 @@ namespace Fences
         public DialogBox()
         {
             InitializeComponent();
-            radioButton1.Checked = true;
+            createFileRadioButton.Checked = true;
         }
         private void DialogBox_Load(object sender, EventArgs e)
         {
-            textBox7.Text = CountFences();
+            counter.Text = CountFences();
 
-            textBox1.Text = Settings.Default.pil.ToString(CultureInfo.CurrentCulture);
-            textBox2.Text = Settings.Default.btm.ToString(CultureInfo.CurrentCulture);
-            textBox3.Text = Settings.Default.top.ToString(CultureInfo.CurrentCulture);
-            textBox4.Text = Settings.Default.pil.ToString(CultureInfo.CurrentCulture);
-            textBox5.Text = Settings.Default.bar.ToString(CultureInfo.CurrentCulture);
-            textBox6.Text = Settings.Default.ending.ToString(CultureInfo.CurrentCulture);
+            pilBox.Text = Settings.Default.pil.ToString(CultureInfo.CurrentCulture);
+            btmBox.Text = Settings.Default.btm.ToString(CultureInfo.CurrentCulture);
+            topBox.Text = Settings.Default.top.ToString(CultureInfo.CurrentCulture);
+            dwnPilBox.Text = Settings.Default.pil.ToString(CultureInfo.CurrentCulture);
+            barBox.Text = Settings.Default.bar.ToString(CultureInfo.CurrentCulture);
+            endBox.Text = Settings.Default.ending.ToString(CultureInfo.CurrentCulture);
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private void okButton_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void chooseFileButton_click(object sender, EventArgs e)
         {
-            Settings.Default.path = radioButton1.Checked ? CreateFile() : OpenFile();
+            Settings.Default.path = createFileRadioButton.Checked ? CreateFile() : OpenFile();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Settings.Default.pil = double.Parse(textBox1.Text);
-            Settings.Default.btm = double.Parse(textBox2.Text);
-            Settings.Default.top = double.Parse(textBox3.Text);
-            Settings.Default.pil = double.Parse(textBox4.Text);
-            Settings.Default.bar = double.Parse(textBox5.Text);
-            Settings.Default.ending = double.Parse(textBox6.Text);
+            Settings.Default.pil = double.Parse(pilBox.Text);
+            Settings.Default.btm = double.Parse(btmBox.Text);
+            Settings.Default.top = double.Parse(topBox.Text);
+            Settings.Default.pil = double.Parse(dwnPilBox.Text);
+            Settings.Default.bar = double.Parse(barBox.Text);
+            Settings.Default.ending = double.Parse(endBox.Text);
         }
 
         private string OpenFile()

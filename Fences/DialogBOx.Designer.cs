@@ -29,237 +29,237 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DialogBox));
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.button1 = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
-            this.textBox7 = new System.Windows.Forms.TextBox();
-            this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.openCreateRadioBox = new System.Windows.Forms.GroupBox();
+            this.chooseFileButton = new System.Windows.Forms.Button();
+            this.openFileRadioButton = new System.Windows.Forms.RadioButton();
+            this.createFileRadioButton = new System.Windows.Forms.RadioButton();
+            this.okButton = new System.Windows.Forms.Button();
+            this.picture = new System.Windows.Forms.PictureBox();
+            this.pilBox = new System.Windows.Forms.TextBox();
+            this.btmBox = new System.Windows.Forms.TextBox();
+            this.topBox = new System.Windows.Forms.TextBox();
+            this.dwnPilBox = new System.Windows.Forms.TextBox();
+            this.barBox = new System.Windows.Forms.TextBox();
+            this.piLabel = new System.Windows.Forms.Label();
+            this.btmLabel = new System.Windows.Forms.Label();
+            this.topLabel = new System.Windows.Forms.Label();
+            this.dwnPilLabel = new System.Windows.Forms.Label();
+            this.barLabel = new System.Windows.Forms.Label();
+            this.endBox = new System.Windows.Forms.TextBox();
+            this.endLabel = new System.Windows.Forms.Label();
+            this.changeMassButton = new System.Windows.Forms.Button();
+            this.counter = new System.Windows.Forms.TextBox();
+            this.openCreateRadioBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picture)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.button2);
-            this.groupBox1.Controls.Add(this.radioButton2);
-            this.groupBox1.Controls.Add(this.radioButton1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(179, 68);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Файл расчетов";
+            this.openCreateRadioBox.Controls.Add(this.chooseFileButton);
+            this.openCreateRadioBox.Controls.Add(this.openFileRadioButton);
+            this.openCreateRadioBox.Controls.Add(this.createFileRadioButton);
+            this.openCreateRadioBox.Location = new System.Drawing.Point(12, 12);
+            this.openCreateRadioBox.Name = "openCreateRadioBox";
+            this.openCreateRadioBox.Size = new System.Drawing.Size(179, 68);
+            this.openCreateRadioBox.TabIndex = 0;
+            this.openCreateRadioBox.TabStop = false;
+            this.openCreateRadioBox.Text = "Файл расчетов";
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(98, 36);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 15;
-            this.button2.Text = "ОК";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.chooseFileButton.Location = new System.Drawing.Point(98, 36);
+            this.chooseFileButton.Name = "chooseFileButton";
+            this.chooseFileButton.Size = new System.Drawing.Size(75, 23);
+            this.chooseFileButton.TabIndex = 15;
+            this.chooseFileButton.Text = "ОК";
+            this.chooseFileButton.UseVisualStyleBackColor = true;
+            this.chooseFileButton.Click += new System.EventHandler(this.chooseFileButton_click);
             // 
             // radioButton2
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(6, 42);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(69, 17);
-            this.radioButton2.TabIndex = 1;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Открыть";
-            this.radioButton2.UseVisualStyleBackColor = true;
+            this.openFileRadioButton.AutoSize = true;
+            this.openFileRadioButton.Location = new System.Drawing.Point(6, 42);
+            this.openFileRadioButton.Name = "openFileRadioButton";
+            this.openFileRadioButton.Size = new System.Drawing.Size(69, 17);
+            this.openFileRadioButton.TabIndex = 1;
+            this.openFileRadioButton.TabStop = true;
+            this.openFileRadioButton.Text = "Открыть";
+            this.openFileRadioButton.UseVisualStyleBackColor = true;
             // 
             // radioButton1
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(6, 19);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(67, 17);
-            this.radioButton1.TabIndex = 0;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Создать";
-            this.radioButton1.UseVisualStyleBackColor = true;
+            this.createFileRadioButton.AutoSize = true;
+            this.createFileRadioButton.Location = new System.Drawing.Point(6, 19);
+            this.createFileRadioButton.Name = "createFileRadioButton";
+            this.createFileRadioButton.Size = new System.Drawing.Size(67, 17);
+            this.createFileRadioButton.TabIndex = 0;
+            this.createFileRadioButton.TabStop = true;
+            this.createFileRadioButton.Text = "Создать";
+            this.createFileRadioButton.UseVisualStyleBackColor = true;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(356, 242);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "ОК";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.okButton.Location = new System.Drawing.Point(356, 242);
+            this.okButton.Name = "okButton";
+            this.okButton.Size = new System.Drawing.Size(75, 23);
+            this.okButton.TabIndex = 1;
+            this.okButton.Text = "ОК";
+            this.okButton.UseVisualStyleBackColor = true;
+            this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::Fences.Properties.Resources.Scheme;
-            this.pictureBox1.Location = new System.Drawing.Point(197, 17);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(234, 193);
-            this.pictureBox1.TabIndex = 2;
-            this.pictureBox1.TabStop = false;
+            this.picture.Image = global::Fences.Properties.Resources.Scheme;
+            this.picture.Location = new System.Drawing.Point(197, 17);
+            this.picture.Name = "picture";
+            this.picture.Size = new System.Drawing.Size(234, 193);
+            this.picture.TabIndex = 2;
+            this.picture.TabStop = false;
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(91, 86);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 3;
+            this.pilBox.Location = new System.Drawing.Point(91, 86);
+            this.pilBox.Name = "pilBox";
+            this.pilBox.Size = new System.Drawing.Size(100, 20);
+            this.pilBox.TabIndex = 3;
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(91, 112);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 4;
+            this.btmBox.Location = new System.Drawing.Point(91, 112);
+            this.btmBox.Name = "btmBox";
+            this.btmBox.Size = new System.Drawing.Size(100, 20);
+            this.btmBox.TabIndex = 4;
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(91, 138);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(100, 20);
-            this.textBox3.TabIndex = 5;
+            this.topBox.Location = new System.Drawing.Point(91, 138);
+            this.topBox.Name = "topBox";
+            this.topBox.Size = new System.Drawing.Size(100, 20);
+            this.topBox.TabIndex = 5;
             // 
             // textBox4
             // 
-            this.textBox4.Location = new System.Drawing.Point(91, 164);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(100, 20);
-            this.textBox4.TabIndex = 6;
+            this.dwnPilBox.Location = new System.Drawing.Point(91, 164);
+            this.dwnPilBox.Name = "dwnPilBox";
+            this.dwnPilBox.Size = new System.Drawing.Size(100, 20);
+            this.dwnPilBox.TabIndex = 6;
             // 
             // textBox5
             // 
-            this.textBox5.Location = new System.Drawing.Point(91, 190);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(100, 20);
-            this.textBox5.TabIndex = 7;
+            this.barBox.Location = new System.Drawing.Point(91, 190);
+            this.barBox.Name = "barBox";
+            this.barBox.Size = new System.Drawing.Size(100, 20);
+            this.barBox.TabIndex = 7;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(26, 86);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(39, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Поз. 1";
+            this.piLabel.AutoSize = true;
+            this.piLabel.Location = new System.Drawing.Point(26, 86);
+            this.piLabel.Name = "label1";
+            this.piLabel.Size = new System.Drawing.Size(39, 13);
+            this.piLabel.TabIndex = 8;
+            this.piLabel.Text = "Поз. 1";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(26, 112);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(39, 13);
-            this.label2.TabIndex = 9;
-            this.label2.Text = "Поз. 2";
+            this.btmLabel.AutoSize = true;
+            this.btmLabel.Location = new System.Drawing.Point(26, 112);
+            this.btmLabel.Name = "btmLabel";
+            this.btmLabel.Size = new System.Drawing.Size(39, 13);
+            this.btmLabel.TabIndex = 9;
+            this.btmLabel.Text = "Поз. 2";
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(26, 138);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(39, 13);
-            this.label3.TabIndex = 10;
-            this.label3.Text = "Поз. 3";
+            this.topLabel.AutoSize = true;
+            this.topLabel.Location = new System.Drawing.Point(26, 138);
+            this.topLabel.Name = "topLabel";
+            this.topLabel.Size = new System.Drawing.Size(39, 13);
+            this.topLabel.TabIndex = 10;
+            this.topLabel.Text = "Поз. 3";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(26, 164);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(39, 13);
-            this.label4.TabIndex = 11;
-            this.label4.Text = "Поз. 4";
+            this.dwnPilLabel.AutoSize = true;
+            this.dwnPilLabel.Location = new System.Drawing.Point(26, 164);
+            this.dwnPilLabel.Name = "dwnPilLabel";
+            this.dwnPilLabel.Size = new System.Drawing.Size(39, 13);
+            this.dwnPilLabel.TabIndex = 11;
+            this.dwnPilLabel.Text = "Поз. 4";
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(26, 190);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(39, 13);
-            this.label5.TabIndex = 12;
-            this.label5.Text = "Поз. 5";
+            this.barLabel.AutoSize = true;
+            this.barLabel.Location = new System.Drawing.Point(26, 190);
+            this.barLabel.Name = "barLabel";
+            this.barLabel.Size = new System.Drawing.Size(39, 13);
+            this.barLabel.TabIndex = 12;
+            this.barLabel.Text = "Поз. 5";
             // 
             // textBox6
             // 
-            this.textBox6.Location = new System.Drawing.Point(91, 216);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(100, 20);
-            this.textBox6.TabIndex = 13;
+            this.endBox.Location = new System.Drawing.Point(91, 216);
+            this.endBox.Name = "endBox";
+            this.endBox.Size = new System.Drawing.Size(100, 20);
+            this.endBox.TabIndex = 13;
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(26, 216);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(56, 13);
-            this.label6.TabIndex = 14;
-            this.label6.Text = "Заглушки";
+            this.endLabel.AutoSize = true;
+            this.endLabel.Location = new System.Drawing.Point(26, 216);
+            this.endLabel.Name = "endLabel";
+            this.endLabel.Size = new System.Drawing.Size(56, 13);
+            this.endLabel.TabIndex = 14;
+            this.endLabel.Text = "Заглушки";
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(101, 242);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 16;
-            this.button3.Text = "Сохранить";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.changeMassButton.Location = new System.Drawing.Point(101, 242);
+            this.changeMassButton.Name = "changeMassButton";
+            this.changeMassButton.Size = new System.Drawing.Size(75, 23);
+            this.changeMassButton.TabIndex = 16;
+            this.changeMassButton.Text = "Сохранить";
+            this.changeMassButton.UseVisualStyleBackColor = true;
+            this.changeMassButton.Click += new System.EventHandler(this.button3_Click);
             // 
             // textBox7
             // 
-            this.textBox7.Location = new System.Drawing.Point(197, 216);
-            this.textBox7.Name = "textBox7";
-            this.textBox7.ReadOnly = true;
-            this.textBox7.Size = new System.Drawing.Size(234, 20);
-            this.textBox7.TabIndex = 17;
+            this.counter.Location = new System.Drawing.Point(197, 216);
+            this.counter.Name = "counter";
+            this.counter.ReadOnly = true;
+            this.counter.Size = new System.Drawing.Size(234, 20);
+            this.counter.TabIndex = 17;
             // 
             // DialogBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(447, 280);
-            this.Controls.Add(this.textBox7);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.textBox6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox5);
-            this.Controls.Add(this.textBox4);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.counter);
+            this.Controls.Add(this.changeMassButton);
+            this.Controls.Add(this.endLabel);
+            this.Controls.Add(this.endBox);
+            this.Controls.Add(this.barLabel);
+            this.Controls.Add(this.dwnPilLabel);
+            this.Controls.Add(this.topLabel);
+            this.Controls.Add(this.btmLabel);
+            this.Controls.Add(this.piLabel);
+            this.Controls.Add(this.barBox);
+            this.Controls.Add(this.dwnPilBox);
+            this.Controls.Add(this.topBox);
+            this.Controls.Add(this.btmBox);
+            this.Controls.Add(this.pilBox);
+            this.Controls.Add(this.picture);
+            this.Controls.Add(this.okButton);
+            this.Controls.Add(this.openCreateRadioBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "DialogBox";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SimpleFences";
             this.Load += new System.EventHandler(this.DialogBox_Load);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.openCreateRadioBox.ResumeLayout(false);
+            this.openCreateRadioBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picture)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -267,25 +267,25 @@
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.GroupBox openCreateRadioBox;
+        private System.Windows.Forms.RadioButton openFileRadioButton;
+        private System.Windows.Forms.RadioButton createFileRadioButton;
+        private System.Windows.Forms.Button okButton;
+        private System.Windows.Forms.PictureBox picture;
+        private System.Windows.Forms.TextBox pilBox;
+        private System.Windows.Forms.TextBox btmBox;
+        private System.Windows.Forms.TextBox topBox;
+        private System.Windows.Forms.TextBox dwnPilBox;
+        private System.Windows.Forms.TextBox barBox;
+        private System.Windows.Forms.Label piLabel;
+        private System.Windows.Forms.Label btmLabel;
+        private System.Windows.Forms.Label topLabel;
+        private System.Windows.Forms.Label dwnPilLabel;
+        private System.Windows.Forms.Label barLabel;
+        private System.Windows.Forms.TextBox endBox;
+        private System.Windows.Forms.Label endLabel;
+        private System.Windows.Forms.Button chooseFileButton;
+        private System.Windows.Forms.Button changeMassButton;
+        private System.Windows.Forms.TextBox counter;
     }
 }

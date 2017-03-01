@@ -20,15 +20,16 @@ namespace Fences
     {
         private readonly MetaInfoManager _metaInfoManager = new MetaInfoManager();
         /*
-         * TODO Пересмотреть логику работы - добавить в ДиалогБокс возможность править высоты
-         * TODO Перенести функционал FirstFloor в обычную программу
-         * TODO Добавить поворот наружу и внутрь размеров
+         * TODO Add the ability to change the unit height to DialogBox
+         * TODO Move FirstFloor to basic class
+         * TODO Add the ability to miror dimension lines 
          */
         private Database _database;
         private Document _document;
         private int _guessnum = 1;
         private PromptSelectionResult _selAll;
         private SelectionSet _selectionSet;
+        private FileDatabase _fileDatabase = new FileDatabase();
 
         [CommandMethod("CreateFenceSetting", CommandFlags.Modal)]
         public void CreateFenceSetting()
@@ -53,15 +54,15 @@ namespace Fences
         }
 
         [CommandMethod("GetFromDB", CommandFlags.Modal)]
-        public void GetFromDB()
+        public void GetFromDb()
         {
-            FileDatabase.GetFromDB();
+            _fileDatabase.GetFromDB();
         }
 
         [CommandMethod("SaveToDB", CommandFlags.Modal)]
-        public void SaveToDB()
+        public void SaveToDb()
         {
-            FileDatabase.SaveToDB();
+            _fileDatabase.SaveToDB();
         }
 
         [CommandMethod("CreateFenceGet", CommandFlags.Modal)]
@@ -71,7 +72,7 @@ namespace Fences
             File.WriteAllText(Settings.Default.path, string.Empty);
         }
 
-        [CommandMethod("CreateFenceGetFirstFloor", CommandFlags.Modal)] //TODO Неадекватное и некрасивое решение
+        [CommandMethod("CreateFenceGetFirstFloor", CommandFlags.Modal)] //TODO Kinda worst solution
         public void CreateFenceGetFirstFloor()
         {
             Settings.Default.pilLength = 1.41;
@@ -92,7 +93,7 @@ namespace Fences
         {
             if (_selAll.Status == PromptStatus.OK)
                 using (Transaction transaction = _document.TransactionManager.StartTransaction())
-                    //TODO Нужно делать current layer первоначальным
+                    //TODO Have to make first layer current
                 {
                     Settings.Default.Counter += _selectionSet.GetObjectIds().Length;
                     foreach (ObjectId id in _selectionSet.GetObjectIds())
@@ -144,7 +145,7 @@ namespace Fences
         private void GetNumFloor()
         {
             _document.Editor.WriteMessage("На скольких этажах встречается({0}):", _guessnum);
-            //TODO Работает не так как задумывалось
+            //TODO Doesn't work as should
             PromptIntegerOptions pKeyOpts = new PromptIntegerOptions("");
 
             PromptIntegerResult pKeyRes = _document.Editor.GetInteger(pKeyOpts);

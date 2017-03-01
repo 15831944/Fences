@@ -9,11 +9,11 @@ using Autodesk.AutoCAD.EditorInput;
 using Fences.Properties;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
-namespace Fences //TODO Реализовать нестандартный этаж
+namespace Fences
 {
     public static class FileCreator //TODO Fix static
     {
-        public static void GetFromFile(string path) // TODO Нужно переписать реализацию нестандартного этажа
+        public static void GetFromFile(string path) // TODO Remake a nonstandard flor with inheritance
         {
             string text = File.ReadAllText(path);
 
@@ -70,7 +70,7 @@ namespace Fences //TODO Реализовать нестандартный эта
             }
         }
 
-        private static void Calculator(double[] lng, double[] pls, double[] brs) //TODO Проверить вычисление barnum
+        private static void Calculator(double[] lng, double[] pls, double[] brs) //TODO Check barnum calculation
         {
             double total60X30X4 = Math.Ceiling(lng.Sum() * Settings.Default.top * 0.001);
             double total40X4 = pls.Sum() * Settings.Default.pil * Settings.Default.pilLength +
@@ -88,7 +88,7 @@ namespace Fences //TODO Реализовать нестандартный эта
 
         public static void CreateTable(double t60, double t40, double t10, double t4, double t14)
         {
-            //EditTablestyle(); TODO Не работает 
+            //EditTablestyle(); TODO Doesn't work
 
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
@@ -164,7 +164,7 @@ namespace Fences //TODO Реализовать нестандартный эта
             for (int i = 0; i < 12; i++)
                 str[i + 2, 3] = (i + 1).ToString();
 
-            CellRange mcells1 = CellRange.Create(tb, 3, 0, 3, 2); //TODO Наверняка можно сделать проще
+            CellRange mcells1 = CellRange.Create(tb, 3, 0, 3, 2); //TODO Probably, not the best solution
             tb.MergeCells(mcells1);
             CellRange mcells2 = CellRange.Create(tb, 5, 0, 5, 2);
             tb.MergeCells(mcells2);
@@ -197,7 +197,7 @@ namespace Fences //TODO Реализовать нестандартный эта
             using (tr)
             {
                 /* MyCommands.ChangeLayer(tr, MyCommands.CreateLayer("ТАБЛИЦА", Color.FromColorIndex(ColorMethod.ByAci, 20),
-    LineWeight.LineWeight030));*/ //TODO На этом программа крашится
+    LineWeight.LineWeight030));*/ //TODO Program crushes for unknown reasson
                 BlockTable bt =
                     (BlockTable) tr.GetObject(
                         doc.Database.BlockTableId,
@@ -214,7 +214,7 @@ namespace Fences //TODO Реализовать нестандартный эта
             }
         }
 
-        private static void EditTablestyle() //TODO Сделать метод со стилем таблицы
+        private static void EditTablestyle() //TODO Add method for TableStyle
         {
             Document doc =
                 Application.DocumentManager.MdiActiveDocument;

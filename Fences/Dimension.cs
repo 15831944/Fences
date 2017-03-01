@@ -16,7 +16,7 @@ namespace Fences
             Point2d p1 = segment.StartPoint;
             Point2d p2 = segment.EndPoint;
 
-            //SetDimStyle(); TODO Разобраться со стилями
+            //SetDimStyle(); TODO Fix Styles
 
             using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
             {

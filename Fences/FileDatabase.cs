@@ -8,7 +8,7 @@ namespace Fences
 {
     public class FileDatabase
     {
-        public static void SaveToDB()
+        public void SaveToDB()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
@@ -33,21 +33,20 @@ namespace Fences
                     extId = dbObj.ExtensionDictionary;
                 }
 
-                //now we will have extId...
                 DBDictionary dbExt =
                     (DBDictionary) tr.GetObject(extId, OpenMode.ForRead);
 
-                //if not present add the data
                 if (!dbExt.Contains("TEST"))
                 {
                     dbExt.UpgradeOpen();
                     Xrecord xRec = new Xrecord();
-                    ResultBuffer rb = new ResultBuffer();
-                    rb.Add(new TypedValue(
-                        (int) DxfCode.ExtendedDataAsciiString, "Data"));
-                    rb.Add(new TypedValue((int) DxfCode.ExtendedDataReal, new double[] {1, 2, 3}));
+                    ResultBuffer rb = new ResultBuffer
+                    {
+                        new TypedValue(
+                            (int) DxfCode.ExtendedDataAsciiString, "Data"),
+                        new TypedValue((int) DxfCode.ExtendedDataReal, new double[] {1, 2, 3})
+                    };
 
-                    //set the data
                     xRec.Data = rb;
 
                     dbExt.SetAt("TEST", xRec);
@@ -62,8 +61,8 @@ namespace Fences
                 tr.Commit();
             }
         }
-
-        public static void GetFromDB()
+        
+        public void GetFromDB()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
@@ -85,10 +84,10 @@ namespace Fences
                     ed.WriteMessage("У этого объекта нет сохраненных данных");
 
                 DBDictionary dbExt = (DBDictionary) tr.GetObject(extId, OpenMode.ForRead);
-                ObjectId recID = dbExt.GetAt("TEST");
+                ObjectId recId = dbExt.GetAt("TEST");
 
                 Xrecord readBack = (Xrecord) tr.GetObject(
-                    recID, OpenMode.ForRead);
+                    recId, OpenMode.ForRead);
                 foreach (TypedValue value in readBack.Data)
                     Debug.Print("===== OUR DATA: " + value.TypeCode + ". " + value.Value);
             }

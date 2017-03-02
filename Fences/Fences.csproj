@@ -202,7 +202,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="TODO.txt" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Resources\КМ_У7_Ограждения балконов_1-Model1.jpg" />
   </ItemGroup>

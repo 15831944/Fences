@@ -9,12 +9,19 @@ namespace Fences
 {
     public class FileDatabase
     {
-        private const string ExtDbPos = "TEST";
+        //private const string ExtDbPos = "TEST";
         public void SaveToDB(ObjectId objectId, int floorNum, int numBars, int numLine)
         {
+            //MessageBox.Show(numLine.ToString());
             Document document = Application.DocumentManager.MdiActiveDocument;
             Database database = document.Database;
             //Editor editor = document.Editor;
+
+            string[] numLineNames = new string[numLine - 1];
+            for (int i = 0; i < numLine; i++)
+            {
+                numLineNames[i] = (i + 1).ToString();
+            }
 
             using (Transaction transaction = database.TransactionManager.StartTransaction())
             {
@@ -33,34 +40,35 @@ namespace Fences
 
                 //int floornum = SimpleFences.GetFloorNum(ObjectId);
                 //int pilnum = SimpleFences.GetPilNum(ObjectId);
-
-                if (!dbExt.Contains(ExtDbPos)) //TODO Add here calculation of bar/pil numbers
+                for (int i = 0; i < numLine; i++)
                 {
-                    dbExt.UpgradeOpen();
-                    Xrecord xRec = new Xrecord();
-                    ResultBuffer rb = new ResultBuffer
+                    if (!dbExt.Contains(numLineNames[i])) //TODO Add here calculation of bar/pil numbers
+                    {
+                        dbExt.UpgradeOpen();
+                        Xrecord xRec = new Xrecord();
+                        ResultBuffer rb = new ResultBuffer
                     {
                         new TypedValue((int) DxfCode.ExtendedDataAsciiString, floorNum.ToString()),
                         new TypedValue((int) DxfCode.ExtendedDataAsciiString, numBars.ToString())
                     };
 
-                    xRec.Data = rb;
+                        xRec.Data = rb;
 
-                    dbExt.SetAt(ExtDbPos, xRec);
+                        dbExt.SetAt(numLineNames[i], xRec);
 
-                    transaction.AddNewlyCreatedDBObject(xRec, true);
-                    
-                    ObjectId recID = dbExt.GetAt(ExtDbPos);
-                    
-                    Xrecord readBack = (Xrecord)transaction.GetObject(recID, OpenMode.ForRead);
-                    foreach (TypedValue value in readBack.Data)
-                    {
-                        //System.Diagnostics.Debug.Print("===== OUR DATA: " + value.TypeCode.ToString() + ". " + value.Value.ToString());
-                        MessageBox.Show(value.TypeCode + @"." + value.Value);
+                        transaction.AddNewlyCreatedDBObject(xRec, true);
+
+                        ObjectId recID = dbExt.GetAt(numLineNames[i]);
+
+                        Xrecord readBack = (Xrecord)transaction.GetObject(recID, OpenMode.ForRead);
+                        foreach (TypedValue value in readBack.Data)
+                        {
+                            //System.Diagnostics.Debug.Print("===== OUR DATA: " + value.TypeCode.ToString() + ". " + value.Value.ToString());
+                            MessageBox.Show(value.TypeCode + @"." + value.Value);
+                        }
+
                     }
-
                 }
-
                 transaction.Commit();
             }
         }
@@ -87,7 +95,7 @@ namespace Fences
                     ed.WriteMessage("У этого объекта нет сохраненных данных");
 
                 DBDictionary dbExt = (DBDictionary) tr.GetObject(extId, OpenMode.ForRead);
-                ObjectId recId = dbExt.GetAt(ExtDbPos);
+                ObjectId recId = dbExt.GetAt("1");
 
                 Xrecord readBack = (Xrecord) tr.GetObject(recId, OpenMode.ForRead);
                 /*

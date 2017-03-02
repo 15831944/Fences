@@ -18,20 +18,25 @@ namespace Fences
 {
     public class SimpleFences
     {
-        private readonly MetaInfoManager _metaInfoManager = new MetaInfoManager();
         /*
          * TODO Add the ability to change the unit height to DialogBox
          * TODO Move FirstFloor to basic class
          * TODO Add the ability to miror dimension lines 
          */
+
+        private readonly MetaInfoManager _metaInfoManager = new MetaInfoManager();
+        private readonly FileDatabase _fileDatabase = new FileDatabase();
+
         private Database _database;
         private Document _document;
+        private Editor _editor;
+
         private int _guessnum = 1;
         private int _numbars;
-        private int _numLines;
+
         private PromptSelectionResult _selAll;
         private SelectionSet _selectionSet;
-        private FileDatabase _fileDatabase = new FileDatabase();
+
 
         [CommandMethod("CreateFenceSetting", CommandFlags.Modal)]
         public void CreateFenceSetting()
@@ -43,13 +48,13 @@ namespace Fences
         public void CreateFence()
         {
             _metaInfoManager.InitializeIfNeeded();
+
             _document = Application.DocumentManager.MdiActiveDocument;
             _database = _document.Database;
+            _editor = _document.Editor;
 
-            Editor editor = _document.Editor;
-
-            editor.WriteMessage("Выберите ось ограждения:");
-            _selAll = editor.GetSelection();
+            _editor.WriteMessage("Выберите ось ограждения:");
+            _selAll = _editor.GetSelection();
             _selectionSet = _selAll.Value;
 
             MySelect();
@@ -68,7 +73,7 @@ namespace Fences
             File.WriteAllText(Settings.Default.path, string.Empty);
         }
 
-        [CommandMethod("CreateFenceGetFirstFloor", CommandFlags.Modal)] //TODO Kinda worst solution
+        [CommandMethod("CreateFenceGetFirstFloor", CommandFlags.Modal)] //TODO Kinda bad solution
         public void CreateFenceGetFirstFloor()
         {
             Settings.Default.pilLength = 1.41;
@@ -112,25 +117,30 @@ namespace Fences
                                     points.Count - 1);
                                 int dist = 0;
                                 Point2d[] pills = new Point2d[segments.Length - 1];
+
                                 for (int k = 0; k < segments.Length - 1; k++)
                                 {
                                     dist += segments[k];
                                     pills[k] = MoveDist(points[i], points[i + 1], dist);
                                     DrawBar(pills[k], points[i].GetVectorTo(points[i + 1]).Angle);
                                 }
+
                                 FenceEntry entry = new FenceEntry(new LineSegment2d(points[i], points[i + 1]), pills);
                                 fence.AddEntry(entry);
+
                                 FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]),
                                     segments.Length - 1, Settings.Default.path, _guessnum);
+
                                 _numbars = segments.Length - 1;
-                                //_fileDatabase.SaveToDB(id, _guessnum, _numbars, _numLines);
                             }
                             Layer.ChangeLayer(transaction,
                                 Layer.CreateLayer("КМ-РАЗМ", Color.FromColorIndex(ColorMethod.ByAci, 1),
                                     LineWeight.LineWeight020), _database);
+
                             foreach (FenceEntry entry in fence.GetEntries())
                             foreach (LineSegment2d segment in entry.SplitByPills())
                                 Dimension.Dim(segment);
+                            _fileDatabase.SaveToDB(id, _guessnum, _numbars, pl.NumberOfVertices - 1); //TODO Have to call it as much times as number of pl parts. Need fix
                         }
                         else
                         {
@@ -142,8 +152,7 @@ namespace Fences
 
         private void GetNumFloor()
         {
-            _document.Editor.WriteMessage("На скольких этажах встречается({0}):", _guessnum);
-            //TODO Doesn't work as should
+            _document.Editor.WriteMessage("На скольких этажах встречается({0}):", _guessnum); //TODO Doesn't work as have to 
             PromptIntegerOptions pKeyOpts = new PromptIntegerOptions("");
 
             PromptIntegerResult pKeyRes = _document.Editor.GetInteger(pKeyOpts);
@@ -170,6 +179,7 @@ namespace Fences
                     return new[] {firstLen, lenght - firstLen};
                 return new[] {lenght - lastLen, lastLen};
             }
+
             int middleLen = lenght - firstLen - lastLen;
             int numSeg = middleLen % 900 == 0 ? middleLen / 900 : middleLen / 900 + 1;
             int minSegLenght = middleLen / numSeg / 10 * 10;
@@ -177,6 +187,7 @@ namespace Fences
             int[] result = new int[numSeg + 2];
             result[0] = firstLen;
             result[result.Length - 1] = lastLen;
+
             for (int i = 1; i < result.Length - 1; i++)
             {
                 result[i] = minSegLenght;
@@ -184,6 +195,7 @@ namespace Fences
                 result[i] += curRest;
                 rest -= curRest;
             }
+
             return result;
         }
 

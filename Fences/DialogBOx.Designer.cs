@@ -220,7 +220,7 @@
             this.changeMassButton.TabIndex = 16;
             this.changeMassButton.Text = "Сохранить";
             this.changeMassButton.UseVisualStyleBackColor = true;
-            this.changeMassButton.Click += new System.EventHandler(this.button3_Click);
+            this.changeMassButton.Click += new System.EventHandler(this.changeMassButton_Click);
             // 
             // textBox7
             // 

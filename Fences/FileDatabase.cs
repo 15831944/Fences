@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Windows.Forms;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
@@ -8,60 +9,62 @@ namespace Fences
 {
     public class FileDatabase
     {
-        public void SaveToDB()
+        private const string ExtDbPos = "TEST";
+        public void SaveToDB(ObjectId objectId, int floorNum, int numBars, int numLine)
         {
-            Document doc = Application.DocumentManager.MdiActiveDocument;
-            Database db = doc.Database;
-            Editor ed = doc.Editor;
+            Document document = Application.DocumentManager.MdiActiveDocument;
+            Database database = document.Database;
+            //Editor editor = document.Editor;
 
-            PromptEntityResult ers = ed.GetEntity("Select entity to add" +
-                                                  " extension dictionary ");
-            if (ers.Status != PromptStatus.OK)
-                return;
-
-            using (Transaction tr = db.TransactionManager.StartTransaction())
+            using (Transaction transaction = database.TransactionManager.StartTransaction())
             {
-                DBObject dbObj = tr.GetObject(ers.ObjectId,
-                    OpenMode.ForRead);
+                DBObject dbObject = transaction.GetObject(objectId, OpenMode.ForRead);
 
-                ObjectId extId = dbObj.ExtensionDictionary;
+                ObjectId extId = dbObject.ExtensionDictionary;
 
                 if (extId == ObjectId.Null)
                 {
-                    dbObj.UpgradeOpen();
-                    dbObj.CreateExtensionDictionary();
-                    extId = dbObj.ExtensionDictionary;
+                    dbObject.UpgradeOpen();
+                    dbObject.CreateExtensionDictionary();
+                    extId = dbObject.ExtensionDictionary;
                 }
 
-                DBDictionary dbExt =
-                    (DBDictionary) tr.GetObject(extId, OpenMode.ForRead);
+                DBDictionary dbExt = (DBDictionary) transaction.GetObject(extId, OpenMode.ForRead);
 
-                if (!dbExt.Contains("TEST"))
+                //int floornum = SimpleFences.GetFloorNum(ObjectId);
+                //int pilnum = SimpleFences.GetPilNum(ObjectId);
+
+                if (!dbExt.Contains(ExtDbPos)) //TODO Add here calculation of bar/pil numbers
                 {
                     dbExt.UpgradeOpen();
                     Xrecord xRec = new Xrecord();
                     ResultBuffer rb = new ResultBuffer
                     {
-                        new TypedValue(
-                            (int) DxfCode.ExtendedDataAsciiString, "Data"),
-                        new TypedValue((int) DxfCode.ExtendedDataReal, new double[] {1, 2, 3})
+                        new TypedValue((int) DxfCode.ExtendedDataAsciiString, floorNum.ToString()),
+                        new TypedValue((int) DxfCode.ExtendedDataAsciiString, numBars.ToString())
                     };
 
                     xRec.Data = rb;
 
-                    dbExt.SetAt("TEST", xRec);
-                    tr.AddNewlyCreatedDBObject(xRec, true);
-                }
-                else
-                {
-                    ed.WriteMessage("entity contains the TEST data\n");
+                    dbExt.SetAt(ExtDbPos, xRec);
+
+                    transaction.AddNewlyCreatedDBObject(xRec, true);
+                    
+                    ObjectId recID = dbExt.GetAt(ExtDbPos);
+                    
+                    Xrecord readBack = (Xrecord)transaction.GetObject(recID, OpenMode.ForRead);
+                    foreach (TypedValue value in readBack.Data)
+                    {
+                        //System.Diagnostics.Debug.Print("===== OUR DATA: " + value.TypeCode.ToString() + ". " + value.Value.ToString());
+                        MessageBox.Show(value.TypeCode + @"." + value.Value);
+                    }
+
                 }
 
-
-                tr.Commit();
+                transaction.Commit();
             }
         }
-        
+
         public void GetFromDB()
         {
             Document doc = Application.DocumentManager.MdiActiveDocument;
@@ -84,12 +87,18 @@ namespace Fences
                     ed.WriteMessage("У этого объекта нет сохраненных данных");
 
                 DBDictionary dbExt = (DBDictionary) tr.GetObject(extId, OpenMode.ForRead);
-                ObjectId recId = dbExt.GetAt("TEST");
+                ObjectId recId = dbExt.GetAt(ExtDbPos);
 
-                Xrecord readBack = (Xrecord) tr.GetObject(
-                    recId, OpenMode.ForRead);
+                Xrecord readBack = (Xrecord) tr.GetObject(recId, OpenMode.ForRead);
+                /*
                 foreach (TypedValue value in readBack.Data)
                     Debug.Print("===== OUR DATA: " + value.TypeCode + ". " + value.Value);
+                    */
+                string[] valTest = new string[readBack.Data.AsArray().Length];
+                for (int i = 0; i < readBack.Data.AsArray().Length; i++)
+                {
+                    valTest[i] = readBack.Data.AsArray()[i].Value.ToString();
+                }
             }
         }
     }

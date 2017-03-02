@@ -27,6 +27,8 @@ namespace Fences
         private Database _database;
         private Document _document;
         private int _guessnum = 1;
+        private int _numbars;
+        private int _numLines;
         private PromptSelectionResult _selAll;
         private SelectionSet _selectionSet;
         private FileDatabase _fileDatabase = new FileDatabase();
@@ -57,12 +59,6 @@ namespace Fences
         public void GetFromDb()
         {
             _fileDatabase.GetFromDB();
-        }
-
-        [CommandMethod("SaveToDB", CommandFlags.Modal)]
-        public void SaveToDb()
-        {
-            _fileDatabase.SaveToDB();
         }
 
         [CommandMethod("CreateFenceGet", CommandFlags.Modal)]
@@ -126,6 +122,8 @@ namespace Fences
                                 fence.AddEntry(entry);
                                 FileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]),
                                     segments.Length - 1, Settings.Default.path, _guessnum);
+                                _numbars = segments.Length - 1;
+                                //_fileDatabase.SaveToDB(id, _guessnum, _numbars, _numLines);
                             }
                             Layer.ChangeLayer(transaction,
                                 Layer.CreateLayer("КМ-РАЗМ", Color.FromColorIndex(ColorMethod.ByAci, 1),

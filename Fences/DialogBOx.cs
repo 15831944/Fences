@@ -39,7 +39,7 @@ namespace Fences
             Settings.Default.path = createFileRadioButton.Checked ? CreateFile() : OpenFile();
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void changeMassButton_Click(object sender, EventArgs e)
         {
             Settings.Default.pil = double.Parse(pilBox.Text);
             Settings.Default.btm = double.Parse(btmBox.Text);

@@ -18,6 +18,7 @@ namespace Fences
 {
     public class SimpleFences
     {
+        private readonly FileDatabase _fileDatabase = new FileDatabase();
         /*
          * TODO Add the ability to change the unit height to DialogBox
          * TODO Move FirstFloor to basic class
@@ -25,7 +26,6 @@ namespace Fences
          */
 
         private readonly MetaInfoManager _metaInfoManager = new MetaInfoManager();
-        private readonly FileDatabase _fileDatabase = new FileDatabase();
 
         private Database _database;
         private Document _document;
@@ -57,7 +57,7 @@ namespace Fences
             _selAll = _editor.GetSelection();
             _selectionSet = _selAll.Value;
 
-            MySelect();
+            UserSelection();
         }
 
         [CommandMethod("GetFromDB", CommandFlags.Modal)]
@@ -90,7 +90,7 @@ namespace Fences
             Settings.Default.Counter = 0;
         }
 
-        private void MySelect()
+        private void UserSelection()
         {
             if (_selAll.Status == PromptStatus.OK)
                 using (Transaction transaction = _document.TransactionManager.StartTransaction())
@@ -140,7 +140,7 @@ namespace Fences
                             foreach (FenceEntry entry in fence.GetEntries())
                             foreach (LineSegment2d segment in entry.SplitByPills())
                                 Dimension.Dim(segment);
-                            _fileDatabase.SaveToDB(id, _guessnum, _numbars, pl.NumberOfVertices - 1); //TODO Have to call it as much times as number of pl parts. Need fix
+                            //_fileDatabase.SaveToDB(id, _guessnum, _numbars, pl.NumberOfVertices - 1); TODO Have to call it as much times as number of pl parts. Need fix
                         }
                         else
                         {
@@ -152,13 +152,17 @@ namespace Fences
 
         private void GetNumFloor()
         {
-            _document.Editor.WriteMessage("На скольких этажах встречается({0}):", _guessnum); //TODO Doesn't work as have to 
-            PromptIntegerOptions pKeyOpts = new PromptIntegerOptions("");
+            PromptIntegerOptions options = new PromptIntegerOptions("");
 
-            PromptIntegerResult pKeyRes = _document.Editor.GetInteger(pKeyOpts);
+            options.Message = "\nВведите количество этажей или ";
+            options.AllowZero = false;
+            options.AllowNegative = false;
+            options.AllowNone = true;
+            options.DefaultValue = _guessnum;
 
-            if (pKeyRes.Value != _guessnum || pKeyRes.Value >= 0)
-                _guessnum = pKeyRes.Value;
+            PromptIntegerResult result = _document.Editor.GetInteger(options);
+            if (result.Value != _guessnum)
+                _guessnum = result.Value;
         }
 
         public static int[] Divide(int lenght, int index, int n)

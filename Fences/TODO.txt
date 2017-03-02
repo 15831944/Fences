@@ -18,4 +18,3 @@
     TODO Kinda bad solution
     TODO Have to make first layer current
     TODO Have to call it as much times as number of pl parts. Need fix
-    TODO Doesn't work as have to

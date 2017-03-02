@@ -64,7 +64,7 @@ namespace Fences
                         foreach (TypedValue value in readBack.Data)
                         {
                             //System.Diagnostics.Debug.Print("===== OUR DATA: " + value.TypeCode.ToString() + ". " + value.Value.ToString());
-                            MessageBox.Show(value.TypeCode + @"." + value.Value);
+                            MessageBox.Show($"{value.TypeCode}.{value.Value}");
                         }
 
                     }

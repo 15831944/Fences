@@ -168,7 +168,7 @@ namespace Fences
         public static int[] Divide(int lenght, int index, int n)
         {
             if (lenght < 200)
-                throw new ArgumentException($"Такой длины не бывает: {lenght}");
+                throw new ArgumentException("Такой длины не бывает: " + lenght);
             int firstLen = 150;
             int lastLen = 150;
 

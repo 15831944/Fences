@@ -11,7 +11,7 @@ using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace Fences
 {
-    public static class FileCreator //TODO Fix static
+    public class FileCreator
     {
         public static void GetFromFile(string path) // TODO Remake a nonstandard flor with inheritance
         {
@@ -35,7 +35,7 @@ namespace Fences
             Calculator(lng, pls, brs);
         }
 
-        public static void ToFile(string id, double length, int pilnum, string path, int flrnum)
+        public void ToFile(string id, double length, int pilnum, string path, int flrnum)
         {
             int barnum = (int) Math.Ceiling(length / 100 - pilnum);
 

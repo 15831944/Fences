@@ -8,22 +8,24 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using Fences.Properties;
+using static System.Int32;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace Fences
 {
     public class UserSelection
     {
-        private readonly FileCreator _fileCreator = new FileCreator();
+        private readonly TableCreator _tableCreator = new TableCreator();
+        private readonly FileDatabase _fileDatabase = new FileDatabase();
+        private Database _database;
 
         private Document _document;
-        private Database _database;
         private Editor _editor;
 
         private int _guessnum = 1;
-        private int _numbars;
+        private int _numbars = 0;
 
-        private PromptSelectionResult _selAll;
+        private PromptSelectionResult _selectionResult;
         private SelectionSet _selectionSet;
 
         public void SelectPolyline()
@@ -32,10 +34,10 @@ namespace Fences
             _editor = _document.Editor;
             _database = _document.Database;
 
-            _selAll = _editor.GetSelection();
-            _selectionSet = _selAll.Value;
+            _selectionResult = _editor.GetSelection();
+            _selectionSet = _selectionResult.Value;
 
-            if (_selAll.Status != PromptStatus.OK) return;
+            if (_selectionResult.Status != PromptStatus.OK) return;
             using (Transaction transaction = _document.TransactionManager.StartTransaction())
                 //TODO Have to make first layer current
             {
@@ -44,7 +46,7 @@ namespace Fences
                     if (id.ObjectClass == RXObject.GetClass(typeof(Polyline)))
                     {
                         GetNumFloor();
-                        Polyline pl = (Polyline)transaction.GetObject(id, OpenMode.ForRead);
+                        Polyline pl = (Polyline) transaction.GetObject(id, OpenMode.ForRead);
                         List<Point2d> points = new List<Point2d>();
 
                         for (int j = 0; j < pl.NumberOfVertices; j++)
@@ -56,7 +58,7 @@ namespace Fences
 
                         for (int i = 0; i < points.Count - 1; i++)
                         {
-                            int[] segments = Divide((int)points[i].GetDistanceTo(points[i + 1]), i,
+                            int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i,
                                 points.Count - 1);
                             int dist = 0;
                             Point2d[] pills = new Point2d[segments.Length - 1];
@@ -71,10 +73,7 @@ namespace Fences
                             FenceEntry entry = new FenceEntry(new LineSegment2d(points[i], points[i + 1]), pills);
                             fence.AddEntry(entry);
 
-                            _fileCreator.ToFile(id.ToString(), points[i].GetDistanceTo(points[i + 1]),
-                                segments.Length - 1, Settings.Default.path, _guessnum);
-
-                            _numbars = segments.Length - 1;
+                            _numbars += segments.Length - 1;
                         }
                         Layer.ChangeLayer(transaction,
                             Layer.CreateLayer("КМ-РАЗМ", Color.FromColorIndex(ColorMethod.ByAci, 1),
@@ -83,11 +82,13 @@ namespace Fences
                         foreach (FenceEntry entry in fence.GetEntries())
                         foreach (LineSegment2d segment in entry.SplitByPills())
                             Dimension.Dim(segment);
-                        //_fileDatabase.SaveToDB(id, _guessnum, _numbars, pl.NumberOfVertices - 1); TODO Have to call it as much times as number of pl parts. Need fix
+
+                        _fileDatabase.SaveToDB(id, _guessnum, _numbars);
+                        _numbars = 0;
                     }
                     else
                     {
-                        MessageBox.Show("Используйте только полилинии");
+                        MessageBox.Show(@"Используйте только полилинии");
                     }
                 transaction.Commit();
             }
@@ -123,8 +124,8 @@ namespace Fences
             if (lenght < firstLen + 190 + lastLen)
             {
                 if (index == 0)
-                    return new[] { firstLen, lenght - firstLen };
-                return new[] { lenght - lastLen, lastLen };
+                    return new[] {firstLen, lenght - firstLen};
+                return new[] {lenght - lastLen, lastLen};
             }
 
             int middleLen = lenght - firstLen - lastLen;
@@ -159,7 +160,8 @@ namespace Fences
                 BlockTable blockTable = transaction.GetObject(_database.BlockTableId, OpenMode.ForRead) as BlockTable;
 
                 BlockTableRecord blockTableRecord =
-                    transaction.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+                    transaction.GetObject(blockTable[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as
+                        BlockTableRecord;
 
                 Layer.ChangeLayer(transaction,
                     Layer.CreateLayer("Опорная плита стойки", Color.FromColorIndex(ColorMethod.ByAci, 50),
@@ -223,6 +225,45 @@ namespace Fences
                     {
                         blockTableRecord.AppendEntity(acEnt);
                         transaction.AddNewlyCreatedDBObject(acEnt, true);
+                    }
+                }
+                transaction.Commit();
+            }
+        }
+
+        public void GetDataFromSelection() //TODO Finish
+        {
+            _document = Application.DocumentManager.MdiActiveDocument;
+            _editor = _document.Editor;
+            _database = _document.Database;
+            _editor.WriteMessage("Выделите секцию/секции, для которых нужно создать таблицу:");
+
+            _selectionResult = _editor.GetSelection();
+            _selectionSet = _selectionResult.Value;
+
+            if (_selectionResult.Status != PromptStatus.OK) return;
+
+            using (Transaction transaction = _document.TransactionManager.StartTransaction())
+            //TODO Have to make first layer current
+            {
+                Settings.Default.Counter += _selectionSet.GetObjectIds().Length;
+                foreach (ObjectId id in _selectionSet.GetObjectIds())
+                {
+                    if (id.ObjectClass == RXObject.GetClass(typeof(Polyline)))
+                    {
+                        ObjectId extId = transaction.GetObject(id, OpenMode.ForRead).ExtensionDictionary;
+                        DBDictionary dbExt = (DBDictionary)transaction.GetObject(extId, OpenMode.ForRead);
+                        if (dbExt.Contains("CustomProp"))
+                        {
+                            ObjectId recId = dbExt.GetAt("TEST");
+                            Xrecord readBack = (Xrecord)transaction.GetObject(recId, OpenMode.ForRead);
+                            int[] dataInPl = new int[2];
+                            for (int i = 0; i < 2; i++)
+                            {
+                                dataInPl[i] = Parse(readBack.Data.AsArray()[i].ToString());
+                            }
+                        }
+
                     }
                 }
                 transaction.Commit();

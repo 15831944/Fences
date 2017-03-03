@@ -11,65 +11,8 @@ using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace Fences
 {
-    public class FileCreator
+    public class TableCreator
     {
-        public static void GetFromFile(string path) // TODO Remake a nonstandard flor with inheritance
-        {
-            string text = File.ReadAllText(path);
-
-            int lines = TotalLines(path);
-            lines--;
-            string[] bits = text.Split('\n');
-            double[] lng = new double[lines];
-            double[] pls = new double[lines];
-            double[] brs = new double[lines];
-
-            for (int i = 1; i <= lines; i++)
-            {
-                string[] get = bits[i].Split('\t');
-                lng[i - 1] = Convert.ToDouble(get[2]);
-                pls[i - 1] = Convert.ToDouble(get[3]);
-                brs[i - 1] = Convert.ToDouble(get[4]);
-            }
-
-            Calculator(lng, pls, brs);
-        }
-
-        public void ToFile(string id, double length, int pilnum, string path, int flrnum)
-        {
-            int barnum = (int) Math.Ceiling(length / 100 - pilnum);
-
-            length = length * flrnum;
-            pilnum = pilnum * flrnum;
-            barnum = barnum * flrnum;
-
-            Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
-            if (!File.Exists(path))
-            {
-                using (StreamWriter sw = File.CreateText(path))
-                {
-                    sw.WriteLine("#\tID\tLength\tNumber of pillars\tNumber of bars");
-                    sw.WriteLine(1 + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
-                }
-            }
-            else
-            {
-                string text = File.ReadLines(path).Last();
-                string[] bits = text.Split('\t');
-
-                string x = bits[0];
-                ed.WriteMessage(x);
-
-                int num = int.Parse(x);
-                if ("id" + id != bits[1])
-                    num++;
-                using (StreamWriter file = new StreamWriter(path, true))
-                {
-                    file.WriteLine(num + "\tid" + id + "\t" + length + "\t" + pilnum + "\t" + barnum);
-                }
-            }
-        }
-
         private static void Calculator(double[] lng, double[] pls, double[] brs) //TODO Check barnum calculation
         {
             double total60X30X4 = Math.Ceiling(lng.Sum() * Settings.Default.top * 0.001);
@@ -308,16 +251,6 @@ namespace Fences
                     tr.AddNewlyCreatedDBObject(ts, true);
                     tr.Commit();
                 }
-            }
-        }
-
-        private static int TotalLines(string filePath)
-        {
-            using (StreamReader r = new StreamReader(filePath))
-            {
-                int i = 0;
-                while (r.ReadLine() != null) i++;
-                return i;
             }
         }
     }

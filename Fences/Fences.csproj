@@ -158,6 +158,7 @@
     </Compile>
     <Compile Include="SteelMassStat.cs" />
     <Compile Include="SteelType.cs" />
+    <Compile Include="UserSelection.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DialogBox.resx">
@@ -201,9 +202,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\КМ_У7_Ограждения балконов_1-Model1.jpg" />

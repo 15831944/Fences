@@ -93,8 +93,6 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="ViewportsLock.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -1,13 +1,13 @@
-﻿using Fences;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
+using Assert = NUnit.Framework.Assert;
 
-namespace FencesTests
+namespace Fences.Tests
 {
-    [TestClass]
-    public class MyCommandsTests
+    [TestFixture()]
+    public class UserSelectionTests
     {
         readonly UserSelection _userSelection = new UserSelection();
-        [TestMethod]
+        [Test()]
         public void LengthOfAllSegmentsMustBeDivisibleByTen()
         {
             int[] segments = _userSelection.Divide(5000, 0, 3);
@@ -22,7 +22,7 @@ namespace FencesTests
             Assert.AreEqual(150, segments[7]);
         }
 
-        [TestMethod]
+        [Test()]
         public void Test()
         {
             int[] segments = _userSelection.Divide(5000, 0, 1);
@@ -37,7 +37,7 @@ namespace FencesTests
             Assert.AreEqual(100, segments[7]);
         }
 
-        [TestMethod]
+        [Test()]
         public void DivisionWithoutRest()
         {
             int[] segments = _userSelection.Divide(2100, 2, 5);
@@ -48,7 +48,7 @@ namespace FencesTests
             Assert.AreEqual(150, segments[3]);
         }
 
-        [TestMethod]
+        [Test()]
         public void IfLineIsTooSmallThereMustBeOneBar()
         {
             int[] segments = _userSelection.Divide(200, 0, 3);
@@ -57,7 +57,7 @@ namespace FencesTests
             Assert.AreEqual(100, segments[1]);
         }
 
-        [TestMethod]
+        [Test()]
         public void IfLastOneIsTooSmallThereMustBeOneBar()
         {
             int[] segments = _userSelection.Divide(230, 2, 3);

@@ -1,11 +1,13 @@
 ﻿using Fences;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework.Constraints;
 
 namespace FencesTests
 {
     [TestClass]
     public class MyCommandsTests
     {
+        private bool a = true;
         readonly UserSelection _userSelection = new UserSelection();
         [TestMethod]
         public void LengthOfAllSegmentsMustBeDivisibleByTen()

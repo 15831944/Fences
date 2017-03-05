@@ -45,7 +45,7 @@ namespace Fences
 
                 for (int i = 0; i < points.Count - 1; i++)
                 {
-                    int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i,
+                    int[] segments = PositionCalculator.Divide((int) points[i].GetDistanceTo(points[i + 1]), i,
                         points.Count - 1);
                     int dist = 0;
                     Point2d[] pills = new Point2d[segments.Length - 1];
@@ -89,44 +89,6 @@ namespace Fences
             PromptIntegerResult result = _document.Editor.GetInteger(options);
             if (result.Value != _guessnum)
                 _guessnum = result.Value;
-        }
-
-        public int[] Divide(int lenght, int index, int n)
-        {
-            if (lenght < 200)
-                throw new ArgumentException("Такой длины не бывает: " + lenght);
-            int firstLen = 150;
-            int lastLen = 150;
-
-            if (index == 0)
-                firstLen = 100;
-            if (index == n - 1)
-                lastLen = 100;
-
-            if (lenght < firstLen + 190 + lastLen)
-            {
-                if (index == 0)
-                    return new[] {firstLen, lenght - firstLen};
-                return new[] {lenght - lastLen, lastLen};
-            }
-
-            int middleLen = lenght - firstLen - lastLen;
-            int numSeg = middleLen % 900 == 0 ? middleLen / 900 : middleLen / 900 + 1;
-            int minSegLenght = middleLen / numSeg / 10 * 10;
-            int rest = middleLen - numSeg * minSegLenght;
-            int[] result = new int[numSeg + 2];
-            result[0] = firstLen;
-            result[result.Length - 1] = lastLen;
-
-            for (int i = 1; i < result.Length - 1; i++)
-            {
-                result[i] = minSegLenght;
-                int curRest = Math.Min(rest, 10);
-                result[i] += curRest;
-                rest -= curRest;
-            }
-
-            return result;
         }
 
         private static Point2d MoveDist(Point2d p1, Point2d p2, double dist)

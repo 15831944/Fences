@@ -1,17 +1,15 @@
 ﻿using Fences;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
-namespace Fences.Tests
+namespace FencesTests
 {
     [TestFixture()]
     public class UserSelectionTests
     {
-        private bool a = true;
-        readonly UserSelection _userSelection = new UserSelection();
         [Test()]
         public void LengthOfAllSegmentsMustBeDivisibleByTen()
         {
-            int[] segments = _userSelection.Divide(5000, 0, 3);
+            int[] segments = PositionCalculator.Divide(5000, 0, 3);
             Assert.AreEqual(8, segments.Length);
             Assert.AreEqual(100, segments[0]);
             Assert.AreEqual(800, segments[1]);
@@ -26,7 +24,7 @@ namespace Fences.Tests
         [Test()]
         public void Test()
         {
-            int[] segments = _userSelection.Divide(5000, 0, 1);
+            int[] segments = PositionCalculator.Divide(5000, 0, 1);
             Assert.AreEqual(8, segments.Length);
             Assert.AreEqual(100, segments[0]);
             Assert.AreEqual(800, segments[1]);
@@ -41,7 +39,7 @@ namespace Fences.Tests
         [Test()]
         public void DivisionWithoutRest()
         {
-            int[] segments = _userSelection.Divide(2100, 2, 5);
+            int[] segments = PositionCalculator.Divide(2100, 2, 5);
             Assert.AreEqual(4, segments.Length);
             Assert.AreEqual(150, segments[0]);
             Assert.AreEqual(900, segments[1]);
@@ -52,7 +50,7 @@ namespace Fences.Tests
         [Test()]
         public void IfLineIsTooSmallThereMustBeOneBar()
         {
-            int[] segments = _userSelection.Divide(200, 0, 3);
+            int[] segments = PositionCalculator.Divide(200, 0, 3);
             Assert.AreEqual(2, segments.Length);
             Assert.AreEqual(100, segments[0]);
             Assert.AreEqual(100, segments[1]);
@@ -61,7 +59,7 @@ namespace Fences.Tests
         [Test()]
         public void IfLastOneIsTooSmallThereMustBeOneBar()
         {
-            int[] segments = _userSelection.Divide(230, 2, 3);
+            int[] segments = PositionCalculator.Divide(230, 2, 3);
             Assert.AreEqual(2, segments.Length);
             Assert.AreEqual(130, segments[0]);
             Assert.AreEqual(100, segments[1]);

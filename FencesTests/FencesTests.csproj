@@ -54,14 +54,17 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="MyCommandsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserSelectionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Fences\Fences.csproj">
       <Project>{DC9B2FF9-D29C-409A-A92F-C75FF8D216FF}</Project>
       <Name>Fences</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

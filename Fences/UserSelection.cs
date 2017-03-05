@@ -1,96 +1,78 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.Runtime;
-using Fences.Properties;
-using static System.Int32;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace Fences
 {
     public class UserSelection
     {
-        private readonly TableCreator _tableCreator = new TableCreator();
         private readonly FileDatabase _fileDatabase = new FileDatabase();
+        private readonly TableCreator _tableCreator = new TableCreator();
         private Database _database;
 
         private Document _document;
         private Editor _editor;
 
-        private int _guessnum = 1;
-        private int _numbars = 0;
+        private readonly FencesAcad _fencesAcad = new RealFencesAcad(Application.DocumentManager.MdiActiveDocument);
 
-        private PromptSelectionResult _selectionResult;
-        private SelectionSet _selectionSet;
+        private int _guessnum = 1;
+        private int _numbars;
 
         public void SelectPolyline()
         {
             _document = Application.DocumentManager.MdiActiveDocument;
-            _editor = _document.Editor;
             _database = _document.Database;
+            ISet<ObjectId> ids = _fencesAcad.GetSelectedFenceIds();
 
-            _selectionResult = _editor.GetSelection();
-            _selectionSet = _selectionResult.Value;
+            //TODO Have to make first layer current
 
-            if (_selectionResult.Status != PromptStatus.OK) return;
-            using (Transaction transaction = _document.TransactionManager.StartTransaction())
-                //TODO Have to make first layer current
+            foreach (Polyline pl in _fencesAcad.GetFences(ids))
             {
-                Settings.Default.Counter += _selectionSet.GetObjectIds().Length;
-                foreach (ObjectId id in _selectionSet.GetObjectIds())
-                    if (id.ObjectClass == RXObject.GetClass(typeof(Polyline)))
+                GetNumFloor();
+                List<Point2d> points = new List<Point2d>();
+
+                for (int j = 0; j < pl.NumberOfVertices; j++)
+                {
+                    Point2d pt = pl.GetPoint2dAt(j);
+                    points.Add(pt);
+                }
+                Fence fence = new Fence();
+
+                for (int i = 0; i < points.Count - 1; i++)
+                {
+                    int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i,
+                        points.Count - 1);
+                    int dist = 0;
+                    Point2d[] pills = new Point2d[segments.Length - 1];
+
+                    for (int k = 0; k < segments.Length - 1; k++)
                     {
-                        GetNumFloor();
-                        Polyline pl = (Polyline) transaction.GetObject(id, OpenMode.ForRead);
-                        List<Point2d> points = new List<Point2d>();
-
-                        for (int j = 0; j < pl.NumberOfVertices; j++)
-                        {
-                            Point2d pt = pl.GetPoint2dAt(j);
-                            points.Add(pt);
-                        }
-                        Fence fence = new Fence();
-
-                        for (int i = 0; i < points.Count - 1; i++)
-                        {
-                            int[] segments = Divide((int) points[i].GetDistanceTo(points[i + 1]), i,
-                                points.Count - 1);
-                            int dist = 0;
-                            Point2d[] pills = new Point2d[segments.Length - 1];
-
-                            for (int k = 0; k < segments.Length - 1; k++)
-                            {
-                                dist += segments[k];
-                                pills[k] = MoveDist(points[i], points[i + 1], dist);
-                                DrawBar(pills[k], points[i].GetVectorTo(points[i + 1]).Angle);
-                            }
-
-                            FenceEntry entry = new FenceEntry(new LineSegment2d(points[i], points[i + 1]), pills);
-                            fence.AddEntry(entry);
-
-                            _numbars += segments.Length - 1;
-                        }
-                        Layer.ChangeLayer(transaction,
-                            Layer.CreateLayer("КМ-РАЗМ", Color.FromColorIndex(ColorMethod.ByAci, 1),
-                                LineWeight.LineWeight020), _database);
-
-                        foreach (FenceEntry entry in fence.GetEntries())
-                        foreach (LineSegment2d segment in entry.SplitByPills())
-                            Dimension.Dim(segment);
-
-                        _fileDatabase.SaveToDB(id, _guessnum, _numbars);
-                        _numbars = 0;
+                        dist += segments[k];
+                        pills[k] = MoveDist(points[i], points[i + 1], dist);
+                        DrawBar(pills[k], points[i].GetVectorTo(points[i + 1]).Angle);
                     }
-                    else
-                    {
-                        MessageBox.Show(@"Используйте только полилинии");
-                    }
-                transaction.Commit();
+
+                    FenceEntry entry = new FenceEntry(new LineSegment2d(points[i], points[i + 1]), pills);
+                    fence.AddEntry(entry);
+
+                    _numbars += segments.Length - 1;
+                }
+                /*
+                Layer.ChangeLayer(transaction,
+                    Layer.CreateLayer("КМ-РАЗМ", Color.FromColorIndex(ColorMethod.ByAci, 1),
+                        LineWeight.LineWeight020), _database);
+                        */
+                foreach (FenceEntry entry in fence.GetEntries())
+                foreach (LineSegment2d segment in entry.SplitByPills())
+                    Dimension.Dim(segment);
+
+                //_fileDatabase.SaveToDB(id, _guessnum, _numbars);
+                //_numbars = 0;
             }
         }
 
@@ -231,6 +213,7 @@ namespace Fences
             }
         }
 
+        /*
         public void GetDataFromSelection() //TODO Finish
         {
             _document = Application.DocumentManager.MdiActiveDocument;
@@ -238,7 +221,7 @@ namespace Fences
             _database = _document.Database;
             _editor.WriteMessage("Выделите секцию/секции, для которых нужно создать таблицу:");
 
-            _selectionResult = _editor.GetSelection();
+            //_selectionResult = _editor.GetSelection();
             _selectionSet = _selectionResult.Value;
 
             if (_selectionResult.Status != PromptStatus.OK) return;
@@ -255,7 +238,7 @@ namespace Fences
                         DBDictionary dbExt = (DBDictionary)transaction.GetObject(extId, OpenMode.ForRead);
                         if (dbExt.Contains("CustomProp"))
                         {
-                            ObjectId recId = dbExt.GetAt("TEST");
+                            ObjectId recId = dbExt.GetAt("CustomProp");
                             Xrecord readBack = (Xrecord)transaction.GetObject(recId, OpenMode.ForRead);
                             int[] dataInPl = new int[2];
                             for (int i = 0; i < 2; i++)
@@ -269,5 +252,6 @@ namespace Fences
                 transaction.Commit();
             }
         }
+        */
     }
 }

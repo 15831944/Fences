@@ -140,9 +140,11 @@
     </Compile>
     <Compile Include="Fence.cs" />
     <Compile Include="FenceEntry.cs" />
+    <Compile Include="FencesAcad.cs" />
     <Compile Include="FileDatabase.cs" />
     <Compile Include="Layer.cs" />
     <Compile Include="MetaInfoManager.cs" />
+    <Compile Include="RealFencesAcad.cs" />
     <Compile Include="SimpleFences.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -202,6 +204,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

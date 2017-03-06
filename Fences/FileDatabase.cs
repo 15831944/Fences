@@ -69,11 +69,12 @@ namespace Fences
                         Xrecord readBack = (Xrecord)transaction.GetObject(recID, OpenMode.ForRead);
                         numfloor = int.Parse(readBack.Data.AsArray()[0].Value.ToString());
                         numbars = int.Parse(readBack.Data.AsArray()[1].Value.ToString());
+                        Properties.Settings.Default.CounterLength = list[i].Length * numfloor;
+                        Properties.Settings.Default.CounterPils = numfloor * numbars;
                     }
                     transaction.Commit();
                 }
-                Properties.Settings.Default.CounterLength += list[i].Length * numfloor;
-                Properties.Settings.Default.CounterPils += numfloor * numbars;
+
             }
         }
     }

@@ -194,10 +194,13 @@ namespace Fences
             foreach (Polyline pl in _fencesAcad.GetFences(ids))
             {
                 if (pl.Layer == "КМ-ОСН") //TODO: Kinda terrible solution
+                {
                     list.Add(pl);
 
-                _fileDatabase.GetTotalNumbers(list);
-                _tableCreator.Calculator(Settings.Default.CounterLength, Settings.Default.CounterPils);
+                    _fileDatabase.GetTotalNumbers(list);
+                    _tableCreator.Calculator(Settings.Default.CounterLength, Settings.Default.CounterPils);
+                }
+
             }
         }
 

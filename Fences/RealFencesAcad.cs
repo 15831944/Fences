@@ -33,6 +33,7 @@ namespace Fences
                     fenceIds.Add(id);
                 }
             }
+
             return fenceIds;
         }
 

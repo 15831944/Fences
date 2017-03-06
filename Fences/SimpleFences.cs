@@ -1,11 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using Autodesk.AutoCAD.Runtime;
 using Fences;
 using Fences.Properties;
+using Exception = System.Exception;
 
 [assembly: CommandClass(typeof(SimpleFences))]
 
@@ -21,8 +20,8 @@ namespace Fences
         private readonly MetaInfoManager _metaInfoManager = new MetaInfoManager();
         private readonly UserSelection _userSelection = new UserSelection();
 
-        [DllImport("acad.exe", EntryPoint = "?acedDisableDefaultARXExceptionHandler@@YAXH@Z")]
-        public static extern void acedDisableDefaultARXExceptionHandler(int value);
+        // [DllImport("acad.exe", EntryPoint = "?acedDisableDefaultARXExceptionHandler@@YAXH@Z")]
+        // public static extern void acedDisableDefaultARXExceptionHandler(int value);
 
         [CommandMethod("SimpleFencesSettings", CommandFlags.Modal)]
         public void SimpleFencesSettings()
@@ -33,6 +32,13 @@ namespace Fences
         [CommandMethod("SimpleFencesCreate", CommandFlags.Modal)]
         public void SimpleFencesCreate()
         {
+            Settings.Default.CounterLength = 0;
+            Settings.Default.CounterPils = 0;
+            Settings.Default.total40X4 = 0;
+            Settings.Default.total60X30X4 = 0;
+            Settings.Default.totalT10 = 0;
+            Settings.Default.totalT14 = 0;
+            Settings.Default.totalT4 = 0;
             try
             {
                 Application.ThreadException +=
@@ -42,16 +48,14 @@ namespace Fences
                         MessageBox.Show("Caught using event: " + args.Exception.Message, "Exception");
                     };
 
-
-                _metaInfoManager.InitializeIfNeeded();
+               // _metaInfoManager.InitializeIfNeeded();
                 _userSelection.SelectPolyline();
             }
-            catch(System.Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
-                MessageBox.Show("Caught using catch: " +ex.Message,"Exception");
+                MessageBox.Show("Caught using catch: " + ex.Message, "Exception");
             }
-
         }
 
         [CommandMethod("SimpleFencesGetTable", CommandFlags.Modal)]
@@ -60,7 +64,21 @@ namespace Fences
             TableCreator.CreateTable(Settings.Default.total60X30X4, Settings.Default.total40X4,
                 Settings.Default.totalT10,
                 Settings.Default.totalT4, Settings.Default.totalT14);
-            Settings.Default.Counter = 0;
+            Settings.Default.CounterLength = 0;
+            Settings.Default.CounterPils = 0;
+        }
+
+        [CommandMethod("SimpleFencesFirstFloor", CommandFlags.Modal)] //TODO Not so good one
+        public void SimpleFencesFirstFloor()
+        {
+            _userSelection.SelectPolyline();
+            _userSelection.GetDataFromSelection(true);
+        }
+
+        [CommandMethod("SimpleFencesGet", CommandFlags.Modal)]
+        public void SimpleFencesGet()
+        {
+            _userSelection.GetDataFromSelection();
         }
     }
 }

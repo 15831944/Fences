@@ -182,12 +182,48 @@ namespace Fences.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double Counter {
+        public double CounterLength {
             get {
-                return ((double)(this["Counter"]));
+                return ((double)(this["CounterLength"]));
             }
             set {
-                this["Counter"] = value;
+                this["CounterLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int CounterPils {
+            get {
+                return ((int)(this["CounterPils"]));
+            }
+            set {
+                this["CounterPils"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.45")]
+        public double pilLengthFirst {
+            get {
+                return ((double)(this["pilLengthFirst"]));
+            }
+            set {
+                this["pilLengthFirst"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int NumEnd {
+            get {
+                return ((int)(this["NumEnd"]));
+            }
+            set {
+                this["NumEnd"] = value;
             }
         }
     }

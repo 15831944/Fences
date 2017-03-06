@@ -1,24 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
+using Fences.Properties;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace Fences
 {
     public class UserSelection
     {
+        private readonly FencesAcad _fencesAcad = new RealFencesAcad(Application.DocumentManager.MdiActiveDocument);
         private readonly FileDatabase _fileDatabase = new FileDatabase();
         private readonly TableCreator _tableCreator = new TableCreator();
         private Database _database;
 
         private Document _document;
         private Editor _editor;
-
-        private readonly FencesAcad _fencesAcad = new RealFencesAcad(Application.DocumentManager.MdiActiveDocument);
 
         private int _guessnum = 1;
         private int _numbars;
@@ -62,17 +61,21 @@ namespace Fences
 
                     _numbars += segments.Length - 1;
                 }
-                /*
-                Layer.ChangeLayer(transaction,
-                    Layer.CreateLayer("КМ-РАЗМ", Color.FromColorIndex(ColorMethod.ByAci, 1),
-                        LineWeight.LineWeight020), _database);
-                        */
+                using (Transaction transaction = _database.TransactionManager.StartTransaction())
+                {
+                    Layer.ChangeLayer(transaction,
+                        Layer.CreateLayer("КМ-РАЗМ", Color.FromColorIndex(ColorMethod.ByAci, 1),
+                            LineWeight.LineWeight020), _database);
+                    transaction.Commit();
+                }
+
                 foreach (FenceEntry entry in fence.GetEntries())
                 foreach (LineSegment2d segment in entry.SplitByPills())
                     Dimension.Dim(segment);
 
-                //_fileDatabase.SaveToDB(id, _guessnum, _numbars);
-                //_numbars = 0;
+                _fileDatabase.SaveToDB(pl.ObjectId, _guessnum, _numbars);
+                Settings.Default.NumEnd += 2;
+                _numbars = 0;
             }
         }
 
@@ -175,45 +178,52 @@ namespace Fences
             }
         }
 
-        /*
         public void GetDataFromSelection() //TODO Finish
         {
             _document = Application.DocumentManager.MdiActiveDocument;
-            _editor = _document.Editor;
             _database = _document.Database;
+            _editor = _document.Editor;
             _editor.WriteMessage("Выделите секцию/секции, для которых нужно создать таблицу:");
 
-            //_selectionResult = _editor.GetSelection();
-            _selectionSet = _selectionResult.Value;
+            ISet<ObjectId> ids = _fencesAcad.GetSelectedFenceIds();
 
-            if (_selectionResult.Status != PromptStatus.OK) return;
-
-            using (Transaction transaction = _document.TransactionManager.StartTransaction())
             //TODO Have to make first layer current
-            {
-                Settings.Default.Counter += _selectionSet.GetObjectIds().Length;
-                foreach (ObjectId id in _selectionSet.GetObjectIds())
-                {
-                    if (id.ObjectClass == RXObject.GetClass(typeof(Polyline)))
-                    {
-                        ObjectId extId = transaction.GetObject(id, OpenMode.ForRead).ExtensionDictionary;
-                        DBDictionary dbExt = (DBDictionary)transaction.GetObject(extId, OpenMode.ForRead);
-                        if (dbExt.Contains("CustomProp"))
-                        {
-                            ObjectId recId = dbExt.GetAt("CustomProp");
-                            Xrecord readBack = (Xrecord)transaction.GetObject(recId, OpenMode.ForRead);
-                            int[] dataInPl = new int[2];
-                            for (int i = 0; i < 2; i++)
-                            {
-                                dataInPl[i] = Parse(readBack.Data.AsArray()[i].ToString());
-                            }
-                        }
 
-                    }
-                }
-                transaction.Commit();
+            List<Polyline> list = new List<Polyline>();
+
+            foreach (Polyline pl in _fencesAcad.GetFences(ids))
+            {
+                if (pl.Layer == "КМ-ОСН") //TODO: Kinda terrible solution
+                    list.Add(pl);
+
+                _fileDatabase.GetTotalNumbers(list);
+                _tableCreator.Calculator(Settings.Default.CounterLength, Settings.Default.CounterPils);
             }
         }
-        */
+
+        public void GetDataFromSelection(bool firstFloor) //TODO Finish
+        {
+            if (!firstFloor)
+                return;
+            _document = Application.DocumentManager.MdiActiveDocument;
+            _database = _document.Database;
+            _editor = _document.Editor;
+            _editor.WriteMessage("Выделите секцию/секции, для которых нужно создать таблицу:");
+
+            ISet<ObjectId> ids = _fencesAcad.GetSelectedFenceIds();
+
+            //TODO Have to make first layer current
+
+            List<Polyline> list = new List<Polyline>();
+
+            foreach (Polyline pl in _fencesAcad.GetFences(ids))
+            {
+                if (pl.Layer == "КМ-ОСН") //TODO: Kinda terrible solution
+                    list.Add(pl);
+
+                _fileDatabase.GetTotalNumbers(list);
+                _tableCreator.Calculator(Settings.Default.CounterLength, Settings.Default.CounterPils, firstFloor);
+            }
+        }
     }
 }

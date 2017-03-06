@@ -41,7 +41,16 @@
     <Setting Name="totalT14" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="Counter" Type="System.Double" Scope="User">
+    <Setting Name="CounterLength" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="CounterPils" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="pilLengthFirst" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1.45</Value>
+    </Setting>
+    <Setting Name="NumEnd" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>

@@ -65,7 +65,7 @@ namespace Fences
 
         private string CountFences()
         {
-            string n = Settings.Default.Counter.ToString(CultureInfo.CurrentCulture);
+            string n = Settings.Default.CounterLength.ToString(CultureInfo.CurrentCulture);
             return "Учтено" + n + "ограждений";
         }
     }

@@ -52,15 +52,13 @@ namespace Fences
 
         public static void CreateTable(double t60, double t40, double t10, double t4, double t14)
         {
-            //EditTablestyle(); TODO Doesn't work
-
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;
 
             PromptPointResult pr = ed.GetPoint("\nУкажите место расположения таблицы :");
             Table tb = new Table();
-            EditTablestyle();
+            EditTablestyle(doc);
             tb.TableStyle = db.Tablestyle;
             tb.SetSize(14, 6);
             tb.SetRowHeight(3);
@@ -184,10 +182,8 @@ namespace Fences
             Settings.Default.totalT14 = 0;
         }
 
-        private static void EditTablestyle() //TODO Add method for TableStyle
+        private static void EditTablestyle(Document doc) //TODO Add method for TableStyle
         {
-            Document doc =
-                Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
 
             Transaction tr =
@@ -255,6 +251,7 @@ namespace Fences
                     ts.PostTableStyleToDatabase(db, styleName);
                     tr.AddNewlyCreatedDBObject(ts, true);
                     tr.Commit();
+                    db.Tablestyle = ts.ObjectId;
                 }
             }
         }

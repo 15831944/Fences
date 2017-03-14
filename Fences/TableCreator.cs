@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
-using System.Linq;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
@@ -35,7 +33,7 @@ namespace Fences
         {
             if (!firstFloor)
                 return;
-            int brs = (int)Math.Ceiling(lng / 100 - pls);
+            int brs = (int) Math.Ceiling(lng / 100 - pls);
             double total60X30X4 = Math.Ceiling(lng * Settings.Default.top * 0.001);
             double total40X4 = pls * Settings.Default.pil * Settings.Default.pilLengthFirst +
                                (lng * 0.001 - 0.04 * pls) * Settings.Default.pil;
@@ -78,7 +76,7 @@ namespace Fences
             str[1, 4] = "Ограждение";
             str[1, 5] = "Общая масса, т";
             str[2, 0] = "Трубы стальные прямоугольные по ГОСТ 8645-68";
-            str[2, 1] = "C255 ГОСТ 27772-2015";
+            str[2, 1] = "Cт3пс ГОСТ 380-2005";
             str[2, 2] = "Гн □ 60х30х4";
             str[2, 4] = t60.ToString(CultureInfo.CurrentCulture);
             str[2, 5] = t60.ToString(CultureInfo.CurrentCulture);
@@ -86,7 +84,7 @@ namespace Fences
             str[3, 5] = t60.ToString(CultureInfo.CurrentCulture);
             str[3, 0] = "Всего профиля";
             str[4, 0] = "Стальные гнутые замкнутые сварные квадратные профили по ГОСТ 30245 - 2003";
-            str[4, 1] = "C255 ГОСТ 27772-2015";
+            str[4, 1] = "Cт3пс ГОСТ 380-2005";
             str[4, 2] = "Гн □ 40х4";
             str[4, 4] = t40.ToString(CultureInfo.CurrentCulture);
             str[4, 5] = t40.ToString(CultureInfo.CurrentCulture);
@@ -104,8 +102,8 @@ namespace Fences
             str[8, 4] = (t4 + t10).ToString(CultureInfo.CurrentCulture);
             str[8, 5] = (t4 + t10).ToString(CultureInfo.CurrentCulture);
             str[8, 0] = "Всего профиля";
-            str[9, 0] = "Прокат стальной горячекатаный квадратный ГОСТ 2591-88";
-            str[9, 1] = "C245 ГОСТ 27772-2015";
+            str[9, 0] = "Прокат стальной горячекатаный квадратный ГОСТ 2591-2006";
+            str[9, 1] = "Cт3пс ГОСТ 380-2005";
             str[9, 2] = "■ 14";
             str[9, 4] = t14.ToString(CultureInfo.CurrentCulture);
             str[9, 5] = t14.ToString(CultureInfo.CurrentCulture);
@@ -116,12 +114,12 @@ namespace Fences
             str[11, 5] = (t14 + t4 + t10 + t40 + t60).ToString(CultureInfo.CurrentCulture);
             str[11, 0] = "Всего масса материала по обьекту";
             str[12, 0] = "В том числе по маркам стали";
-            str[12, 2] = "С255";
-            str[12, 4] = (t40 + t60).ToString(CultureInfo.CurrentCulture);
-            str[12, 5] = (t40 + t60).ToString(CultureInfo.CurrentCulture);
+            str[12, 2] = "Ст3пс";
+            str[12, 4] = (t14 + t40 + t60).ToString(CultureInfo.CurrentCulture);
+            str[12, 5] = (t14 + t40 + t60).ToString(CultureInfo.CurrentCulture);
             str[13, 2] = "С245";
-            str[13, 4] = (t14 + t4 + t10).ToString(CultureInfo.CurrentCulture);
-            str[13, 5] = (t14 + t4 + t10).ToString(CultureInfo.CurrentCulture);
+            str[13, 4] = (t4 + t10).ToString(CultureInfo.CurrentCulture);
+            str[13, 5] = (t4 + t10).ToString(CultureInfo.CurrentCulture);
 
             for (int i = 0; i < 12; i++)
                 str[i + 2, 3] = (i + 1).ToString();
@@ -158,8 +156,8 @@ namespace Fences
                 doc.TransactionManager.StartTransaction();
             using (tr)
             {
-                 Layer.ChangeLayer(tr, Layer.CreateLayer("ТАБЛИЦА", Color.FromColorIndex(ColorMethod.ByAci, 20),
-    LineWeight.LineWeight030), db);
+                Layer.ChangeLayer(tr, Layer.CreateLayer("ТАБЛИЦА", Color.FromColorIndex(ColorMethod.ByAci, 20),
+                    LineWeight.LineWeight030), db);
                 BlockTable bt =
                     (BlockTable) tr.GetObject(
                         doc.Database.BlockTableId,
@@ -182,7 +180,7 @@ namespace Fences
             Settings.Default.totalT14 = 0;
         }
 
-        private static void EditTablestyle(Document doc) //TODO Add method for TableStyle
+        private static void EditTablestyle(Document doc) //TODO Not useful now
         {
             Database db = doc.Database;
 
@@ -190,7 +188,7 @@ namespace Fences
                 doc.TransactionManager.StartTransaction();
             using (tr)
             {
-                const string styleName = "Garish Table Style";
+                const string styleName = "Расчет ограждений";
 
                 DBDictionary sd =
                     (DBDictionary) tr.GetObject(
@@ -205,48 +203,10 @@ namespace Fences
                 else
                 {
                     TableStyle ts = new TableStyle();
-
-                    ts.SetBackgroundColor(
-                        Color.FromColorIndex(ColorMethod.ByAci, 1),
-                        (int) (RowType.TitleRow |
-                               RowType.HeaderRow)
-                    );
-
-                    ts.SetBackgroundColor(
-                        Color.FromColorIndex(ColorMethod.ByAci, 2),
-                        (int) RowType.DataRow
-                    );
-                    
-                    ts.SetColor(
-                        Color.FromColorIndex(ColorMethod.ByAci, 6),
+                    ts.SetAlignment(CellAlignment.MiddleCenter,
                         (int) (RowType.TitleRow |
                                RowType.HeaderRow |
-                               RowType.DataRow)
-                    );
-
-                    ts.SetGridColor(
-                        Color.FromColorIndex(ColorMethod.ByAci, 4),
-                        (int) GridLineType.OuterGridLines,
-                        (int) (RowType.TitleRow |
-                               RowType.HeaderRow |
-                               RowType.DataRow)
-                    );
-
-                    ts.SetGridColor(
-                        Color.FromColorIndex(ColorMethod.ByAci, 3),
-                        (int) GridLineType.InnerGridLines,
-                        (int) (RowType.TitleRow |
-                               RowType.HeaderRow |
-                               RowType.DataRow)
-                    );
-
-                    ts.SetGridLineWeight(
-                        LineWeight.LineWeight211,
-                        (int) GridLineType.AllGridLines,
-                        (int) (RowType.TitleRow |
-                               RowType.HeaderRow |
-                               RowType.DataRow)
-                    );
+                               RowType.DataRow));
 
                     ts.PostTableStyleToDatabase(db, styleName);
                     tr.AddNewlyCreatedDBObject(ts, true);

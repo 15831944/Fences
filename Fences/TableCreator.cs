@@ -160,8 +160,8 @@ namespace Fences
                 doc.TransactionManager.StartTransaction();
             using (tr)
             {
-                /* MyCommands.ChangeLayer(tr, MyCommands.CreateLayer("ТАБЛИЦА", Color.FromColorIndex(ColorMethod.ByAci, 20),
-    LineWeight.LineWeight030));*/ //TODO Program crushes for unknown reasson
+                 Layer.ChangeLayer(tr, Layer.CreateLayer("ТАБЛИЦА", Color.FromColorIndex(ColorMethod.ByAci, 20),
+    LineWeight.LineWeight030), db);
                 BlockTable bt =
                     (BlockTable) tr.GetObject(
                         doc.Database.BlockTableId,
@@ -194,9 +194,6 @@ namespace Fences
                 doc.TransactionManager.StartTransaction();
             using (tr)
             {
-                // First let us create our custom style,
-                //  if it doesn't exist
-
                 const string styleName = "Garish Table Style";
 
                 DBDictionary sd =
@@ -205,19 +202,13 @@ namespace Fences
                         OpenMode.ForRead
                     );
 
-                // Use the style if it already exists
-
                 if (sd.Contains(styleName))
                 {
                     sd.GetAt(styleName);
                 }
                 else
                 {
-                    // Otherwise we have to create it
-
                     TableStyle ts = new TableStyle();
-
-                    // Make the header area red
 
                     ts.SetBackgroundColor(
                         Color.FromColorIndex(ColorMethod.ByAci, 1),
@@ -225,23 +216,17 @@ namespace Fences
                                RowType.HeaderRow)
                     );
 
-                    // And the data area yellow
-
                     ts.SetBackgroundColor(
                         Color.FromColorIndex(ColorMethod.ByAci, 2),
                         (int) RowType.DataRow
                     );
-
-                    // With magenta text everywhere (yeuch :-)
-
+                    
                     ts.SetColor(
                         Color.FromColorIndex(ColorMethod.ByAci, 6),
                         (int) (RowType.TitleRow |
                                RowType.HeaderRow |
                                RowType.DataRow)
                     );
-
-                    // And now with cyan outer grid-lines
 
                     ts.SetGridColor(
                         Color.FromColorIndex(ColorMethod.ByAci, 4),
@@ -251,8 +236,6 @@ namespace Fences
                                RowType.DataRow)
                     );
 
-                    // And bright green inner grid-lines
-
                     ts.SetGridColor(
                         Color.FromColorIndex(ColorMethod.ByAci, 3),
                         (int) GridLineType.InnerGridLines,
@@ -261,8 +244,6 @@ namespace Fences
                                RowType.DataRow)
                     );
 
-                    // And we'll make the grid-lines nice and chunky
-
                     ts.SetGridLineWeight(
                         LineWeight.LineWeight211,
                         (int) GridLineType.AllGridLines,
@@ -270,9 +251,6 @@ namespace Fences
                                RowType.HeaderRow |
                                RowType.DataRow)
                     );
-
-                    // Add our table style to the dictionary
-                    //  and to the transaction
 
                     ts.PostTableStyleToDatabase(db, styleName);
                     tr.AddNewlyCreatedDBObject(ts, true);

@@ -56,7 +56,7 @@ namespace Fences
 
             PromptPointResult pr = ed.GetPoint("\nУкажите место расположения таблицы :");
             Table tb = new Table();
-            EditTablestyle(doc);
+            //EditTablestyle(doc);
             tb.TableStyle = db.Tablestyle;
             tb.SetSize(14, 6);
             tb.SetRowHeight(3);
@@ -179,7 +179,7 @@ namespace Fences
             Settings.Default.totalT4 = 0;
             Settings.Default.totalT14 = 0;
         }
-
+        /*
         private static void EditTablestyle(Document doc) //TODO Not useful now
         {
             Database db = doc.Database;
@@ -214,6 +214,6 @@ namespace Fences
                     db.Tablestyle = ts.ObjectId;
                 }
             }
-        }
+        } */
     }
 }

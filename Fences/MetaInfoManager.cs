@@ -7,9 +7,6 @@ namespace Fences
     {
         public void CreateFenceSettings()
         {
-            DialogBox m = new DialogBox();
-            m.ShowDialog();
-            Settings.Default.Save();
         }
 
         private bool IsInitialized()

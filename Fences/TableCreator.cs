@@ -14,42 +14,38 @@ namespace Fences
         public void Calculator(double lng, double pls)
         {
             //lng = lng * 0.001;
-            int brs = (int) Math.Ceiling(lng * 0.001 / 0.100 - pls);
+            int brs = (int)Math.Ceiling(lng * 0.001 / 0.100 - pls);
             double total60X30X4 = Math.Ceiling(lng * Settings.Default.top * 0.001);
             double total40X4 = pls * Settings.Default.pil * Settings.Default.pilLength +
                                (lng * 0.001 - 0.04 * pls) * Settings.Default.pil;
             double totalT10 = pls * Settings.Default.btm;
-            double totalT4 = Settings.Default.NumEnd * Settings.Default.ending;
             double totalT14 = brs * Settings.Default.barLength * Settings.Default.bar;
 
             Settings.Default.total60X30X4 += Math.Ceiling(total60X30X4) * 0.001;
             Settings.Default.total40X4 += Math.Ceiling(total40X4) * 0.001;
             Settings.Default.totalT10 += Math.Ceiling(totalT10) * 0.001;
-            Settings.Default.totalT4 += Math.Ceiling(totalT4) * 0.001;
+
             Settings.Default.totalT14 += Math.Ceiling(totalT14) * 0.001;
         }
 
-        public void Calculator(double lng, double pls, bool firstFloor)
+        public void CalculatorFirst(double lng, double pls)
         {
-            if (!firstFloor)
-                return;
-            int brs = (int) Math.Ceiling(lng / 100 - pls);
+            int brs = (int)Math.Ceiling(lng * 0.001 / 0.100 - pls);
             double total60X30X4 = Math.Ceiling(lng * Settings.Default.top * 0.001);
             double total40X4 = pls * Settings.Default.pil * Settings.Default.pilLengthFirst +
                                (lng * 0.001 - 0.04 * pls) * Settings.Default.pil;
             double totalT10 = pls * Settings.Default.btm;
-            double totalT4 = lng * 2 * Settings.Default.ending;
             double totalT14 = brs * Settings.Default.barLength * Settings.Default.bar;
-
             Settings.Default.total60X30X4 += Math.Ceiling(total60X30X4) * 0.001;
             Settings.Default.total40X4 += Math.Ceiling(total40X4) * 0.001;
             Settings.Default.totalT10 += Math.Ceiling(totalT10) * 0.001;
-            Settings.Default.totalT4 += Math.Ceiling(totalT4) * 0.001;
             Settings.Default.totalT14 += Math.Ceiling(totalT14) * 0.001;
         }
 
         public static void CreateTable(double t60, double t40, double t10, double t4, double t14)
         {
+            Settings.Default.totalT4 += Math.Ceiling(Settings.Default.NumEnd * Settings.Default.ending) * 0.001;
+
             Document doc = Application.DocumentManager.MdiActiveDocument;
             Database db = doc.Database;
             Editor ed = doc.Editor;

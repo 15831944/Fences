@@ -25,7 +25,7 @@ namespace Fences.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("4.93")]
+        [global::System.Configuration.DefaultSettingValueAttribute("3.77")]
         public double top {
             get {
                 return ((double)(this["top"]));
@@ -224,6 +224,30 @@ namespace Fences.Properties {
             }
             set {
                 this["NumEnd"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double CounterLengthFirst {
+            get {
+                return ((double)(this["CounterLengthFirst"]));
+            }
+            set {
+                this["CounterLengthFirst"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public decimal CounterPilsFirst {
+            get {
+                return ((decimal)(this["CounterPilsFirst"]));
+            }
+            set {
+                this["CounterPilsFirst"] = value;
             }
         }
     }

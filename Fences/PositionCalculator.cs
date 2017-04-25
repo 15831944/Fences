@@ -25,7 +25,7 @@ namespace Fences
             }
 
             int middleLen = lenght - firstLen - lastLen;
-            int numSeg = middleLen % 900 == 0 ? middleLen / 900 : middleLen / 900 + 1;
+            int numSeg = middleLen % 1200 == 0 ? middleLen / 1200 : middleLen / 1200 + 1;
             int minSegLenght = middleLen / numSeg / 10 * 10;
             int rest = middleLen - numSeg * minSegLenght;
             int[] result = new int[numSeg + 2];

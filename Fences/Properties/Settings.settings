@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="top" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">4.93</Value>
+      <Value Profile="(Default)">3.77</Value>
     </Setting>
     <Setting Name="pil" Type="System.Double" Scope="User">
       <Value Profile="(Default)">4.2</Value>
@@ -51,6 +51,12 @@
       <Value Profile="(Default)">1.45</Value>
     </Setting>
     <Setting Name="NumEnd" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="CounterLengthFirst" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="CounterPilsFirst" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>

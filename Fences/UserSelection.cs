@@ -115,7 +115,7 @@ namespace Fences
                     Layer.CreateLayer("Опорная плита стойки", Color.FromColorIndex(ColorMethod.ByAci, 50),
                         LineWeight.LineWeight018), _database);
 
-                const double w = 180;
+                const double w = 200;
                 const double h = 120;
 
                 Polyline bar = new Polyline();

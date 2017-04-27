@@ -9,8 +9,8 @@ namespace Fences
         {
             if (lenght < 200)
                 throw new ArgumentException("Такой длины не бывает: " + lenght);
-            int firstLen = 150;
-            int lastLen = 150;
+            int firstLen = 185;
+            int lastLen = 185;
 
             if (index == 0)
                 firstLen = 100;

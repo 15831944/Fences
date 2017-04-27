@@ -95,7 +95,7 @@ namespace Fences
                 _guessnum = result.Value;
         }
 
-        private static Point2d MoveDist(Point2d p1, Point2d p2, double dist)
+        private Point2d MoveDist(Point2d p1, Point2d p2, double dist)
         {
             Vector2d p12 = p1.GetVectorTo(p2);
             return p1.Add(p12.GetNormal().MultiplyBy(dist));
@@ -119,13 +119,13 @@ namespace Fences
                 const double h = 120;
 
                 Polyline bar = new Polyline();
-                
+
                 bar.AddVertexAt(0, p.Add(new Vector2d(w / 2, h - 35)), 0, 0, 0);
                 bar.AddVertexAt(0, p.Add(new Vector2d(-w / 2, h - 35)), 0, 0, 0);
                 bar.AddVertexAt(0, p.Add(new Vector2d(-w / 2, -h + 85)), 0, 0, 0);
                 bar.AddVertexAt(0, p.Add(new Vector2d(w / 2, -h + 85)), 0, 0, 0);
                 bar.AddVertexAt(0, p.Add(new Vector2d(w / 2, h - 35)), 0, 0, 0);
-                
+
                 /*
                 bar.AddVertexAt(0, p.Add(new Vector2d(w / 2, h / 2)), 0, 0, 0);
                 bar.AddVertexAt(0, p.Add(new Vector2d(-w / 2, h / 2)), 0, 0, 0);
@@ -171,7 +171,7 @@ namespace Fences
 
                 rack.Closed = true;
 
-                rack.TransformBy(Matrix3d.Rotation(ang + Math.PI/2, curUcs.Zaxis, new Point3d(p.X, p.Y, 0)));
+                rack.TransformBy(Matrix3d.Rotation(ang + Math.PI / 2, curUcs.Zaxis, new Point3d(p.X, p.Y, 0)));
 
                 if (blockTableRecord != null)
                 {
@@ -199,43 +199,19 @@ namespace Fences
 
             ISet<ObjectId> ids = _fencesAcad.GetSelectedFenceIds();
 
-            //TODO Have to make first layer current
+            //TODO Need to make first layer current
 
             List<Polyline> list = new List<Polyline>();
 
             foreach (Polyline pl in _fencesAcad.GetFences(ids))
-            {
-                if (pl.Layer == "КМ-ОСН") //TODO: Kinda terrible solution
-                {
+                if (pl.Layer == "КМ-ОСН") //TODO: Bad solution
                     list.Add(pl);
-                }
-            }
             _fileDatabase.GetTotalNumbers(list);
             _tableCreator.Calculator(Settings.Default.CounterLength, Settings.Default.CounterPils);
-        }
 
-        public void GetDataFromSelectionFirst() //TODO Finish
-        {
-            _document = Application.DocumentManager.MdiActiveDocument;
-            _database = _document.Database;
-            _editor = _document.Editor;
-            _editor.WriteMessage("Выделите секцию/секции, для которых нужно создать таблицу:");
-
-            ISet<ObjectId> ids = _fencesAcad.GetSelectedFenceIds();
-
-            //TODO Have to make first layer current
-
-            List<Polyline> list = new List<Polyline>();
-
-            foreach (Polyline pl in _fencesAcad.GetFences(ids))
-            {
-                if (pl.Layer == "КМ-ОСН")
-                {
-                    list.Add(pl);
-                }
-            }
-            _fileDatabase.GetTotalNumbersFirst(list);
-            _tableCreator.CalculatorFirst(Settings.Default.CounterLength, Settings.Default.CounterPils);
+            _tableCreator.CreateTable(Settings.Default.total60X30X4, Settings.Default.total40X4,
+                Settings.Default.totalT10,
+                Settings.Default.totalT4, Settings.Default.totalT14);
         }
     }
 }

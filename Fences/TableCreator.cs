@@ -42,7 +42,7 @@ namespace Fences
             Settings.Default.totalT14 += Math.Ceiling(totalT14) * 0.001;
         }
 
-        public static void CreateTable(double t60, double t40, double t10, double t4, double t14)
+        public void CreateTable(double t60, double t40, double t10, double t4, double t14)
         {
             Settings.Default.totalT4 += Math.Ceiling(Settings.Default.NumEnd * Settings.Default.ending) * 0.001;
 

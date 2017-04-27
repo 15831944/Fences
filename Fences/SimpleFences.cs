@@ -16,6 +16,7 @@ namespace Fences
         private readonly UserSelection _userSelection = new UserSelection();
         private readonly Cleaner _cleaner = new Cleaner();
 
+
         [CommandMethod("SimpleFencesCreate", CommandFlags.Modal)]
         public void SimpleFencesCreate()
         {
@@ -42,9 +43,6 @@ namespace Fences
         public void SimpleFencesGetTable()
         {
             _userSelection.GetDataFromSelection();
-            TableCreator.CreateTable(Settings.Default.total60X30X4, Settings.Default.total40X4,
-                Settings.Default.totalT10,
-                Settings.Default.totalT4, Settings.Default.totalT14);
             Settings.Default.CounterLength = 0;
             Settings.Default.CounterPils = 0;
             Settings.Default.NumEnd = 0;

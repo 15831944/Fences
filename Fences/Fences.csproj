@@ -141,12 +141,7 @@
     <Compile Include="MetaInfoManager.cs" />
     <Compile Include="PositionCalculator.cs" />
     <Compile Include="RealFencesAcad.cs" />
-    <Compile Include="SimpleFences.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SimpleFences.resx</DependentUpon>
-    </Compile>
-    <Compile Include="SimpleFences.cs" />
+    <Compile Include="FencesUnicorn.cs" />
     <Compile Include="TableCreator.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -163,11 +158,6 @@
     <Compile Include="UserSelection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="SimpleFences.resx">
-      <DependentUpon>SimpleFences.cs</DependentUpon>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>SimpleFences.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

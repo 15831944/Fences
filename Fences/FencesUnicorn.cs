@@ -7,17 +7,18 @@ using Fences.Properties;
 using Application = System.Windows.Forms.Application;
 using Exception = System.Exception;
 
-[assembly: CommandClass(typeof(SimpleFences))]
+[assembly: CommandClass(typeof(FencesUnicorn))]
 
 namespace Fences
 {
-    public class SimpleFences
+    public class FencesUnicorn
     {
         private readonly UserSelection _userSelection = new UserSelection();
         private readonly Cleaner _cleaner = new Cleaner();
+        private readonly TableCreator _tableCreator = new TableCreator();
 
 
-        [CommandMethod("SimpleFencesCreate", CommandFlags.Modal)]
+        [CommandMethod("FUNCreate", CommandFlags.Modal)]
         public void SimpleFencesCreate()
         {
             _cleaner.CleanSettings();
@@ -39,16 +40,16 @@ namespace Fences
             }
         }
 
-        [CommandMethod("SimpleFencesGetTable", CommandFlags.Modal)]
+        [CommandMethod("FUNGetTable", CommandFlags.Modal)]
         public void SimpleFencesGetTable()
         {
-            _userSelection.GetDataFromSelection();
+            _tableCreator.GetDataFromSelection();
             Settings.Default.CounterLength = 0;
             Settings.Default.CounterPils = 0;
             Settings.Default.NumEnd = 0;
         }
 
-        [CommandMethod("SimpleFencesClear", CommandFlags.Modal)]
+        [CommandMethod("FUNClear", CommandFlags.Modal)]
         public void SimpleFencesClear()
         {
             _cleaner.CleanAllPoly();

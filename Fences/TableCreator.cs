@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Colors;
@@ -11,7 +12,35 @@ namespace Fences
 {
     public class TableCreator
     {
-        public void Calculator(double lng, double pls)
+        private Document _document;
+        private Editor _editor;
+        private readonly FencesAcad _fencesAcad = new RealFencesAcad(Application.DocumentManager.MdiActiveDocument);
+        private readonly FileDatabase _fileDatabase = new FileDatabase();
+
+        public void GetDataFromSelection() //TODO Finish
+        {
+            _document = Application.DocumentManager.MdiActiveDocument;
+            _editor = _document.Editor;
+            _editor.WriteMessage("Выделите секцию/секции, для которых нужно создать таблицу:");
+
+            ISet<ObjectId> ids = _fencesAcad.GetSelectedFenceIds();
+
+            //TODO Need to make first layer current
+
+            List<Polyline> list = new List<Polyline>();
+
+            foreach (Polyline pl in _fencesAcad.GetFences(ids))
+                if (pl.Layer == "КМ-ОСН") //TODO: Bad solution
+                    list.Add(pl);
+            _fileDatabase.GetTotalNumbers(list);
+            Calculator(Settings.Default.CounterLength, Settings.Default.CounterPils);
+
+            CreateTable(Settings.Default.total60X30X4, Settings.Default.total40X4,
+                Settings.Default.totalT10,
+                Settings.Default.totalT4, Settings.Default.totalT14);
+        }
+
+        private void Calculator(double lng, double pls)
         {
             //lng = lng * 0.001;
             int brs = (int)Math.Ceiling(lng * 0.001 / 0.100 - pls);
@@ -28,21 +57,7 @@ namespace Fences
             Settings.Default.totalT14 += Math.Ceiling(totalT14) * 0.001;
         }
 
-        public void CalculatorFirst(double lng, double pls)
-        {
-            int brs = (int)Math.Ceiling(lng * 0.001 / 0.100 - pls);
-            double total60X30X4 = Math.Ceiling(lng * Settings.Default.top * 0.001);
-            double total40X4 = pls * Settings.Default.pil * Settings.Default.pilLengthFirst +
-                               (lng * 0.001 - 0.04 * pls) * Settings.Default.pil;
-            double totalT10 = pls * Settings.Default.btm;
-            double totalT14 = brs * Settings.Default.barLength * Settings.Default.bar;
-            Settings.Default.total60X30X4 += Math.Ceiling(total60X30X4) * 0.001;
-            Settings.Default.total40X4 += Math.Ceiling(total40X4) * 0.001;
-            Settings.Default.totalT10 += Math.Ceiling(totalT10) * 0.001;
-            Settings.Default.totalT14 += Math.Ceiling(totalT14) * 0.001;
-        }
-
-        public void CreateTable(double t60, double t40, double t10, double t4, double t14)
+        private void CreateTable(double t60, double t40, double t10, double t4, double t14)
         {
             Settings.Default.totalT4 += Math.Ceiling(Settings.Default.NumEnd * Settings.Default.ending) * 0.001;
 
@@ -176,7 +191,7 @@ namespace Fences
             Settings.Default.totalT14 = 0;
         }
         /*
-        private static void EditTablestyle(Document doc) //TODO Not useful now
+        private static void EditTablestyle(Document doc)
         {
             Database db = doc.Database;
 

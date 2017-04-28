@@ -14,11 +14,9 @@ namespace Fences
     {
         private readonly FencesAcad _fencesAcad = new RealFencesAcad(Application.DocumentManager.MdiActiveDocument);
         private readonly FileDatabase _fileDatabase = new FileDatabase();
-        private readonly TableCreator _tableCreator = new TableCreator();
         private Database _database;
 
         private Document _document;
-        private Editor _editor;
 
         private int _guessnum = 1;
         private int _numbars;
@@ -28,8 +26,6 @@ namespace Fences
             _document = Application.DocumentManager.MdiActiveDocument;
             _database = _document.Database;
             ISet<ObjectId> ids = _fencesAcad.GetSelectedFenceIds();
-
-            //TODO Have to make first layer current
 
             foreach (Polyline pl in _fencesAcad.GetFences(ids))
             {
@@ -53,7 +49,7 @@ namespace Fences
                     for (int k = 0; k < segments.Length - 1; k++)
                     {
                         dist += segments[k];
-                        pills[k] = MoveDist(points[i], points[i + 1], dist);
+                        pills[k] = MovePoint(points[i], points[i + 1], dist);
                         DrawBar(pills[k], points[i].GetVectorTo(points[i + 1]).Angle);
                     }
 
@@ -82,20 +78,21 @@ namespace Fences
 
         private void GetNumFloor()
         {
-            PromptIntegerOptions options = new PromptIntegerOptions("");
-
-            options.Message = "\nВведите количество этажей или ";
-            options.AllowZero = false;
-            options.AllowNegative = false;
-            options.AllowNone = true;
-            options.DefaultValue = _guessnum;
+            PromptIntegerOptions options = new PromptIntegerOptions("")
+            {
+                Message = "\nВведите количество этажей или ",
+                AllowZero = false,
+                AllowNegative = false,
+                AllowNone = true,
+                DefaultValue = _guessnum
+            };
 
             PromptIntegerResult result = _document.Editor.GetInteger(options);
             if (result.Value != _guessnum)
                 _guessnum = result.Value;
         }
 
-        private Point2d MoveDist(Point2d p1, Point2d p2, double dist)
+        private Point2d MovePoint(Point2d p1, Point2d p2, double dist)
         {
             Vector2d p12 = p1.GetVectorTo(p2);
             return p1.Add(p12.GetNormal().MultiplyBy(dist));
@@ -188,30 +185,6 @@ namespace Fences
                 }
                 transaction.Commit();
             }
-        }
-
-        public void GetDataFromSelection() //TODO Finish
-        {
-            _document = Application.DocumentManager.MdiActiveDocument;
-            _database = _document.Database;
-            _editor = _document.Editor;
-            _editor.WriteMessage("Выделите секцию/секции, для которых нужно создать таблицу:");
-
-            ISet<ObjectId> ids = _fencesAcad.GetSelectedFenceIds();
-
-            //TODO Need to make first layer current
-
-            List<Polyline> list = new List<Polyline>();
-
-            foreach (Polyline pl in _fencesAcad.GetFences(ids))
-                if (pl.Layer == "КМ-ОСН") //TODO: Bad solution
-                    list.Add(pl);
-            _fileDatabase.GetTotalNumbers(list);
-            _tableCreator.Calculator(Settings.Default.CounterLength, Settings.Default.CounterPils);
-
-            _tableCreator.CreateTable(Settings.Default.total60X30X4, Settings.Default.total40X4,
-                Settings.Default.totalT10,
-                Settings.Default.totalT4, Settings.Default.totalT14);
         }
     }
 }

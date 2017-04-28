@@ -138,7 +138,6 @@
     <Compile Include="FencesAcad.cs" />
     <Compile Include="FileDatabase.cs" />
     <Compile Include="Layer.cs" />
-    <Compile Include="MetaInfoManager.cs" />
     <Compile Include="PositionCalculator.cs" />
     <Compile Include="RealFencesAcad.cs" />
     <Compile Include="FencesUnicorn.cs" />

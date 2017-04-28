@@ -11,8 +11,8 @@ namespace Viewports
 {
     public class ViewportsLock
     {
-        [CommandMethod("LockViewport", CommandFlags.Modal)]
-        public void LockViewport()
+        [CommandMethod("LockAllViewports", CommandFlags.Modal)]
+        public void LockAllViewports()
         {
             Document acDoc = Application.DocumentManager.MdiActiveDocument;
             Database acCurDb = acDoc.Database;
@@ -35,8 +35,8 @@ namespace Viewports
             }
         }
 
-        [CommandMethod("UnlockViewport", CommandFlags.Modal)]
-        public void UnlockViewport()
+        [CommandMethod("UnlockAllViewports", CommandFlags.Modal)]
+        public void UnlockAllViewports()
         {
             Document acDoc = Application.DocumentManager.MdiActiveDocument;
             Database acCurDb = acDoc.Database;

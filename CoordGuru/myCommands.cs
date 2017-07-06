@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using Autodesk.AutoCAD.ApplicationServices;
@@ -16,15 +17,18 @@ namespace CoordGuru
 {
     public class MyCommands
     {
+        private Document _acDoc;
+        private Database _acCurDb;
+
         [CommandMethod("CoordGuru", CommandFlags.Modal)]
         public void CoordGuru()
         {
-            Document acDoc = Application.DocumentManager.MdiActiveDocument;
-            Database acCurDb = acDoc.Database;
+            _acDoc = Application.DocumentManager.MdiActiveDocument;
+            _acCurDb = _acDoc.Database;
 
             PromptStringOptions pStrOpts = new PromptStringOptions("\nВведите адрес сайта с координатами: ");
             pStrOpts.AllowSpaces = true;
-            PromptResult pStrRes = acDoc.Editor.GetString(pStrOpts);
+            PromptResult pStrRes = _acDoc.Editor.GetString(pStrOpts);
 
             string address = pStrRes.StringResult;
             List<string> data = WebGetter(address);
@@ -38,28 +42,7 @@ namespace CoordGuru
                 if (counter == 4)
                     counter = 1;
             }
-
-            using (Transaction acTrans = acCurDb.TransactionManager.StartTransaction())
-            {
-                BlockTable acBlkTbl;
-                acBlkTbl = acTrans.GetObject(acCurDb.BlockTableId,
-                    OpenMode.ForRead) as BlockTable;
-
-                BlockTableRecord acBlkTblRec;
-                acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
-                    OpenMode.ForWrite) as BlockTableRecord;
-
-                using (Polyline acPoly = new Polyline())
-                {
-                    for (int i = 0; i < points.Count; i++)
-                        acPoly.AddVertexAt(i, points[i], 0, 0, 0);
-
-                    acBlkTblRec.AppendEntity(acPoly);
-                    acPoly.Closed = true;
-                    acTrans.AddNewlyCreatedDBObject(acPoly, true);
-                }
-                acTrans.Commit();
-            }
+            Divider(points);
         }
 
         public List<string> WebGetter(string address)
@@ -84,5 +67,47 @@ namespace CoordGuru
 
             return tableCells;
         }
+
+        public void Drawer(List<Point2d> points)
+        {
+            using (Transaction acTrans = _acCurDb.TransactionManager.StartTransaction())
+            {
+                BlockTable acBlkTbl;
+                acBlkTbl = acTrans.GetObject(_acCurDb.BlockTableId,
+                    OpenMode.ForRead) as BlockTable;
+
+                BlockTableRecord acBlkTblRec;
+                acBlkTblRec = acTrans.GetObject(acBlkTbl[BlockTableRecord.ModelSpace],
+                    OpenMode.ForWrite) as BlockTableRecord;
+
+                using (Polyline acPoly = new Polyline())
+                {
+                    for (int i = 0; i < points.Count; i++)
+                        acPoly.AddVertexAt(i, points[i], 0, 0, 0);
+
+                    acBlkTblRec.AppendEntity(acPoly);
+                    acPoly.Closed = true;
+                    acTrans.AddNewlyCreatedDBObject(acPoly, true);
+                }
+                acTrans.Commit();
+            }
+        }
+
+        public void Divider(List<Point2d> points)
+        {
+            int counter = 0;
+            for (int i = 0; i < points.Count; i++)
+            {
+                counter++;
+                if (i > 0 && points[i] == points[0])
+                {
+                    Drawer(points.GetRange(0, counter));
+                    if (i != points.Count - 1)
+                    {
+                        Divider(points.GetRange(i + 1, points.Count - counter));
+                    }
+                }
+            }
+        } 
     }
 }

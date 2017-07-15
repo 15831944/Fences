@@ -6,15 +6,19 @@ namespace CoordGuru
 {
     public class GetFromExcel : IDataProvider
     {
-        public List<string> GetData()
-        {
-            AcadProvider acadProvider = new AcadProvider();
-            string location = acadProvider.GetFile();
+        private string _location;
 
-            return ExcelReader(location);
+        public GetFromExcel(string location)
+        {
+            this._location = location;
         }
 
-        private List<string> ExcelReader(string path)
+        public List<Point> GetData()
+        {
+            return ReadExcel(_location);
+        }
+
+        private List<Point> ReadExcel(string path)
         {
             Excel.Application application = new Excel.Application();
             Excel.Workbook workbook = application.Workbooks.Open(path, ReadOnly: true);
@@ -35,11 +39,11 @@ namespace CoordGuru
                 listX.Add(colX[i, 1].ToString());
             }
 
-            List<string> outList = new List<string>();
+            List<Point> outList = new List<Point>();
             for (int i = 0; i < listY.Count; i++)
             {
-                outList.Add(listX[i]);
-                outList.Add(listY[i]);
+                Point point = new Point(double.Parse(listX[i]), double.Parse(listY[i]));
+                outList.Add(point);
             }
 
             return outList;

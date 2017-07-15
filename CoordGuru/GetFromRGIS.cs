@@ -7,12 +7,25 @@ namespace CoordGuru
 {
     public class GetFromRgis : IDataProvider
     {
-        public List<string> GetData()
+        private string address;
+
+        public GetFromRgis(string address)
         {
-            AcadProvider provider = new AcadProvider();
-            string input = "\nВведите адрес сайта с координатами: ";
-            List<string> webdata = WebGetter(provider.StringInput(input));
-            return FilterListRGIS(webdata);
+            this.address = address;
+        }
+
+        public List<Point> GetData()
+        {
+            List<string> webdata = WebGetter(address);
+            List<string> coordList = FilterListRGIS(webdata);
+            List<Point> points = new List<Point>();
+
+            for (int i = 0; i < coordList.Count; i += 2)
+            {
+                Point point = new Point(double.Parse(coordList[i]), double.Parse(coordList[i + 1]));
+                points.Add(point);
+            }
+            return points;
         }
 
         private List<string> WebGetter(string address)
@@ -26,7 +39,7 @@ namespace CoordGuru
             var query = from table in doc.DocumentNode.SelectNodes("//table")
                 from row in table.SelectNodes("tr")
                 from cell in row.SelectNodes("th|td")
-                select new { Table = table.Id, CellText = cell.InnerText };
+                select new {Table = table.Id, CellText = cell.InnerText};
 
             List<string> tableCells = new List<string>();
 

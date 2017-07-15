@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fences", "Fences\Fences.csproj", "{DC9B2FF9-D29C-409A-A92F-C75FF8D216FF}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viewports", "Viewports\Viewports.csproj", "{4F3B1D94-3C29-45F1-A4E2-5256223043AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoordGuru", "CoordGuru\CoordGuru.csproj", "{F72F45B2-BB51-4546-AA3B-F975DE5270B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoordGuruTests", "CoordGuruTests\CoordGuruTests.csproj", "{5BDB8126-684E-4064-81C7-647000CC444B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +54,14 @@ Global
 		{F72F45B2-BB51-4546-AA3B-F975DE5270B0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F72F45B2-BB51-4546-AA3B-F975DE5270B0}.Release|x86.ActiveCfg = Release|x86
 		{F72F45B2-BB51-4546-AA3B-F975DE5270B0}.Release|x86.Build.0 = Release|x86
+		{5BDB8126-684E-4064-81C7-647000CC444B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BDB8126-684E-4064-81C7-647000CC444B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BDB8126-684E-4064-81C7-647000CC444B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5BDB8126-684E-4064-81C7-647000CC444B}.Debug|x86.Build.0 = Debug|Any CPU
+		{5BDB8126-684E-4064-81C7-647000CC444B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BDB8126-684E-4064-81C7-647000CC444B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BDB8126-684E-4064-81C7-647000CC444B}.Release|x86.ActiveCfg = Release|Any CPU
+		{5BDB8126-684E-4064-81C7-647000CC444B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

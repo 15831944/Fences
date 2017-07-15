@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
-using Autodesk.AutoCAD.Geometry;
+//using Autodesk.AutoCAD.Geometry;
 
 namespace CoordGuru
 {
     public class Drawer
     {
-        public void CreatePolylines(List<string> pointsCoord)
+        public void CreatePolylines(List<Point> pointsCoord)
         {
-            List<Point2d> points = new List<Point2d>();
+            //List<Point2d> points = new List<Point2d>();
             for (int i = 0; i < pointsCoord.Count; i += 2)
             {
-                points.Add(new Point2d(float.Parse(pointsCoord[i]), float.Parse(pointsCoord[i + 1])));
+                //points.Add(new Point2d(float.Parse(pointsCoord[i]), float.Parse(pointsCoord[i + 1])));
             }
-            FinalDrawing(points);
+            //FinalDrawing(points);
         }
-
+        /*
         private void FinalDrawing(List<Point2d> points)
         {
             int counter = 0;
@@ -31,6 +31,6 @@ namespace CoordGuru
                     }
                 }
             }
-        }
+        }*/
     }
 }

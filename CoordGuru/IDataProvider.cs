@@ -4,6 +4,6 @@ namespace CoordGuru
 {
     public interface IDataProvider
     {
-        List<string> GetData();
+        List<Point> GetData();
     }
 }
